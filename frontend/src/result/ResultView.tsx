@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
-import { buildCalendar, calendarActions, downloadCalendar, googleCalendarUrl } from "../engine";
+import { googleCalendarUrl } from "../engine";
 import { won, pct } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
@@ -165,10 +165,6 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
   const hidden = rec.waterfall.length - shown.length;
 
-  // 마감(deadline)이 있는 액션만 캘린더로 내보낼 수 있음.
-  const deadlineActions = calendarActions(rec.actions);
-  const onDownloadCalendar = () => downloadCalendar(buildCalendar(rec.actions, rec.asOf));
-
   return (
     <>
       <BackHeader />
@@ -194,17 +190,6 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
                 <ActionItem key={a.id} a={a} />
               ))}
             </div>
-
-            {deadlineActions.length > 0 && (
-              <button
-                type="button"
-                onClick={onDownloadCalendar}
-                title="모든 마감일을 .ics 파일로 받아 캘린더에 등록 (D-7 알림 포함, iOS·Android·Outlook)"
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-line px-3 py-2 text-[12px] text-muted outline-none transition-colors hover:border-gold/50 hover:text-gold focus-visible:border-gold/50"
-              >
-                ⬇ 전체 마감일 .ics로 받기 ({deadlineActions.length})
-              </button>
-            )}
           </section>
         </Reveal>
       )}
