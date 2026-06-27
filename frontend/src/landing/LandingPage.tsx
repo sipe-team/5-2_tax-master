@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { recommend, buildCliffChart, projectGap } from "../engine";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
-import { CliffSection } from "../result/CliffSection";
+import { CliffSection } from "./sections/CliffSection";
 import { GapSection } from "../result/GapSection";
 import EventsPanel from "./sections/EventsPanel";
 

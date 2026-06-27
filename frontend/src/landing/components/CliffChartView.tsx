@@ -1,4 +1,4 @@
-import type { CliffChart } from "./engine";
+import type { CliffChart } from "../../engine";
 
 /**
  * 연봉 절벽 차트 (와우모먼트): "연봉이 이 선을 넘으면 절세액이 떨어진다."
