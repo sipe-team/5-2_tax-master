@@ -285,7 +285,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       <section className="mb-7">
         <h2 className="mb-3 text-[13px] font-600 tracking-wide text-muted">매달 적립 우선순위</h2>
         {rec.waterfall.length === 0 ? (
-          <p className="text-[14px] text-muted">조건에 맞는 절세 그릇이 없어요.</p>
+          <p className="text-[14px] text-muted">조건에 맞는 절세 계좌가 없어요.</p>
         ) : (
           <>
             <div className="mb-5 rounded-xl bg-surface/60 p-4 ring-1 ring-line">
@@ -293,7 +293,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
                 매달 모을 수 있는{" "}
                 <span className="font-display tnum font-600">{won(budgetMonthly)}원</span> 중{" "}
                 <span className="font-display tnum font-600">{won(allocatedMonthly)}원</span>을 아래
-                순서대로 절세 그릇에 나눠 담아요.
+                순서대로 절세 계좌에 나눠 담아요.
               </p>
               {totalFirstYear > 0 && (
                 <p className="mt-1.5 text-[13px] leading-relaxed text-gray800">
@@ -305,7 +305,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
                 </p>
               )}
               <p className="mt-2 text-[11px] leading-relaxed text-muted">
-                각 그릇의 <span className="text-gold">첫 해 절세</span> 금액을 더한 값이에요. 1번부터
+                각 계좌의 <span className="text-gold">첫 해 절세</span> 금액을 더한 값이에요. 1번부터
                 채우는 게 가장 효율이 높아요.
               </p>
             </div>

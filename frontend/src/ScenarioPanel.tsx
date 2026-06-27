@@ -148,7 +148,7 @@ export default function ScenarioPanel({
             </div>
           </div>
           <div className="rounded-xl border border-line bg-surface p-3">
-            <div className="text-[11px] text-muted">첫 해 절세(워터폴)</div>
+            <div className="text-[11px] text-muted">첫 해 절세(우선순위)</div>
             <div className="mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg">
               {won(delta.baseFirstYearBenefit)}{" "}
               <DeltaArrow from={delta.baseFirstYearBenefit} to={delta.scenarioFirstYearBenefit} />{" "}
@@ -188,7 +188,7 @@ export default function ScenarioPanel({
         <div className="mt-5 border-t border-line pt-5">
           {/* 추천 공고 — 초기 노출 + 로켓펀치 출처 */}
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] tracking-wide text-muted">추천 공고 · 로켓펀치 인기</span>
+            <span className="text-[11px] tracking-wide text-muted">이 회사로 옮기면 절세는? 눌러서 시뮬</span>
             <a
               href="https://www.rocketpunch.com/jobs"
               target="_blank"
@@ -250,7 +250,7 @@ export default function ScenarioPanel({
         {/* 새 자격 */}
         {delta.gained.length > 0 && (
           <div className="mt-3 rounded-xl border-l-2 border-gold bg-gold/5 p-3">
-            <div className="text-[12px] font-600 text-gold">새로 가능해지는 그릇</div>
+            <div className="text-[12px] font-600 text-gold">새로 가능해지는 계좌</div>
             <ul className="mt-1.5">
               {delta.gained.map((id) => (
                 <li key={id} className="text-[13px] text-ink">
