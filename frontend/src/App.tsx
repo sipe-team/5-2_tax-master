@@ -1,12 +1,49 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ruleSet } from "./rules/products";
 import type { IncomeType, UserProfile } from "./rules/schema";
 import { recommend, buildCalendar, downloadCalendar } from "./engine";
 import type { Allocation, Badge, UrgentAction } from "./engine";
+import { PERSONAS, type Persona } from "./personas";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * 목표값으로 부드럽게 차오르는 카운트업. 결과가 바뀔 때마다 0→N이 아니라
+ * 이전값→새값으로 이어져 페르소나 전환 시 숫자가 "굴러가는" 와우모먼트.
+ * prefers-reduced-motion이면 애니메이션 없이 target을 그대로 반환(접근성).
+ */
+function useCountUp(target: number, durationMs = 900): number {
+  const reduce = prefersReducedMotion();
+  const [shown, setShown] = useState(target);
+  const fromRef = useRef(target);
+  const rafRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (reduce) return;
+    const from = fromRef.current;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      setShown(Math.round(from + (target - from) * eased));
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
+      else fromRef.current = target;
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      fromRef.current = target;
+    };
+  }, [target, durationMs, reduce]);
+
+  return reduce ? target : shown;
+}
 
 const BADGE_STYLE: Record<Badge["kind"], string> = {
   assumed: "border-line text-muted",
@@ -148,6 +185,36 @@ export default function App() {
   const [overseasValueMan, setOverseasValueMan] = useState(5000);
   const [overseasCostMan, setOverseasCostMan] = useState(500);
 
+  function applyPersona(p: Persona) {
+    setAge(p.age);
+    setIncomeType(p.incomeType);
+    setIncomeMan(p.incomeMan);
+    setMonthlyMan(p.monthlyMan);
+    setHorizonYears(p.horizonYears);
+    if (p.overseas) {
+      setHasOverseas(true);
+      setOverseasValueMan(p.overseas.valueMan);
+      setOverseasCostMan(p.overseas.costMan);
+      setShowMore(true);
+    } else {
+      setHasOverseas(false);
+    }
+  }
+
+  // 활성 페르소나는 저장하지 않고 현재 입력에서 파생 — 수동 편집 시 자동으로 하이라이트 해제(desync 불가).
+  const activePersona = useMemo(() => {
+    const match = PERSONAS.find(
+      (p) =>
+        p.age === age &&
+        p.incomeType === incomeType &&
+        p.incomeMan === incomeMan &&
+        p.monthlyMan === monthlyMan &&
+        p.horizonYears === horizonYears &&
+        !!p.overseas === hasOverseas,
+    );
+    return match?.id ?? null;
+  }, [age, incomeType, incomeMan, monthlyMan, horizonYears, hasOverseas]);
+
   const profile: UserProfile = useMemo(
     () => ({
       age,
@@ -167,6 +234,14 @@ export default function App() {
 
   const rec = useMemo(() => recommend(profile, ruleSet), [profile]);
 
+  // 헤드라인: 워터폴 첫 해 절세 합계 + 긴급 트랙 일회성 절감(RIA 등).
+  const annualBenefit = useMemo(() => {
+    const waterfall = rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
+    const urgent = rec.urgent.reduce((s, u) => s + (u.estimatedBenefit ?? 0), 0);
+    return waterfall + urgent;
+  }, [rec]);
+  const shownBenefit = useCountUp(annualBenefit);
+
   const selectCls =
     "bg-transparent border-b border-line pb-1 font-sans text-[15px] text-ink outline-none focus:border-gold";
 
@@ -184,6 +259,52 @@ export default function App() {
           흩어진 절세 그릇을 한도까지 차례로 채우고, 지금 마감되는 기회를 먼저 잡으세요.
         </p>
       </header>
+
+      {/* 와우모먼트: 버튼 한 번으로 "내 결과" 즉시 체험 */}
+      <section className="mb-7">
+        <p className="mb-2.5 text-[12px] tracking-wide text-muted">
+          나와 비슷한 사람으로 시작해 보세요 — 버튼 하나면 끝.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {PERSONAS.map((p) => {
+            const on = activePersona === p.id;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => applyPersona(p)}
+                aria-pressed={on}
+                className={`flex flex-col items-start rounded-xl border px-3.5 py-2 text-left outline-none transition-colors focus-visible:border-gold ${
+                  on ? "border-gold bg-gold/10" : "border-line hover:border-gold/50"
+                }`}
+              >
+                <span className="text-[14px] font-600">
+                  {p.emoji} {p.label}
+                </span>
+                <span className="text-[11px] text-muted">{p.tagline}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 헤드라인: 차오르는 연간 절세액 */}
+      <section className="mb-7 overflow-hidden rounded-2xl bg-gradient-to-br from-gold/10 to-transparent p-6 ring-1 ring-gold/30">
+        <div className="text-[12px] tracking-wide text-muted">예상 절세 효과 (첫 해)</div>
+        <div className="mt-1 flex items-baseline gap-1.5">
+          <span className="font-display text-[44px] font-700 leading-none text-gold tnum">
+            {Math.round(shownBenefit / 10_000).toLocaleString()}
+          </span>
+          <span className="text-lg text-muted">만원</span>
+          {annualBenefit > 0 && (
+            <span className="ml-auto text-[12px] text-muted">월 {won(profile.monthlyInvestable)}원 적립 기준</span>
+          )}
+        </div>
+        <p className="mt-2 text-[12px] leading-relaxed text-locked">
+          워터폴 첫 해 세제혜택{rec.urgent.some((u) => u.estimatedBenefit) ? " + 마감 임박 일회성 절감" : ""} 합산.
+          아래에서 어떤 그릇에 얼마씩, 무엇이 급한지 확인하세요.
+        </p>
+      </section>
 
       {/* 흐름의 시작 = 입력 */}
       <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
