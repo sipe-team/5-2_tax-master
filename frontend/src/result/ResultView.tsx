@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Recommendation } from "../engine";
 import { splitWaterfallAndStrategyActions, totalMaxBenefitWon } from "../engine";
+import { wonToMan } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import ScenarioPanel from "./sections/ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
@@ -26,7 +27,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   };
 
   const { strategyActions, actionByProduct } = splitWaterfallAndStrategyActions(rec);
-  const maxBenefitMan = Math.round(totalMaxBenefitWon(rec) / 10_000);
+  const maxBenefitMan = wonToMan(totalMaxBenefitWon(rec));
 
   return (
     <>

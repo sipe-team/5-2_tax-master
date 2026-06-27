@@ -4,7 +4,7 @@ import { ruleSet } from "../../rules/products";
 import { diffScenarios } from "../../engine";
 import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "../../data/jobs";
 import { salaryGuideFor } from "../../data/salaryGuide";
-import { pct, won } from "../../lib/format";
+import { pct, won, wonToMan } from "../../lib/format";
 
 function DeltaArrow({ from, to }: { from: number; to: number }) {
   if (Math.abs(to - from) < 1e-9) return <span className="text-muted">→</span>;
@@ -44,7 +44,7 @@ function JobResultChip({ job, onPick }: { job: JobChip; onPick: (j: JobChip) => 
 }
 
 export default function ScenarioPanel({ profile }: { profile: UserProfile }) {
-  const [scenarioMan, setScenarioMan] = useState(() => Math.round(profile.income / 10_000) + 1000);
+  const [scenarioMan, setScenarioMan] = useState(() => wonToMan(profile.income) + 1000);
   // 시나리오 소득 유형은 직장인(총급여)으로 고정.
   const scenarioIncomeType: IncomeType = "earned";
   const [picked, setPicked] = useState<JobChip | null>(null);
@@ -123,7 +123,7 @@ export default function ScenarioPanel({ profile }: { profile: UserProfile }) {
             />
             <span className="text-xs text-muted">만원</span>
             <span className="ml-2 text-[12px] text-muted tnum">
-              현재 {Math.round(profile.income / 10_000).toLocaleString()}만 → 가정{" "}
+              현재 {wonToMan(profile.income).toLocaleString()}만 → 가정{" "}
               {scenarioMan.toLocaleString()}만
             </span>
           </span>
