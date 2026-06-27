@@ -249,7 +249,7 @@ function StepBasic({
 }) {
   const [age, setAge] = useState(value.age ?? 30);
   const [incomeTypeUI, setIncomeTypeUI] = useState<IncomeTypeUI>(value.incomeTypeUI ?? "employee");
-  const [incomeMan, setIncomeMan] = useState(value.incomeMan ?? 5000);
+  const [incomeMan, setIncomeMan] = useState(value.incomeMan ?? 7000);
   const [monthlyMan, setMonthlyMan] = useState(value.monthlyMan ?? 50);
   const [horizonYears, setHorizonYears] = useState(value.horizonYears ?? 3);
   const noIncome = incomeTypeUI === "none";

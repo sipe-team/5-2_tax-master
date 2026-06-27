@@ -8,11 +8,11 @@ import { CliffSection } from "../result/CliffSection";
 import { GapSection } from "../result/GapSection";
 import EventsPanel from "../EventsPanel";
 
-// 랜딩 티저용 대표 샘플 — 실제 추천이 아닌 '예시' 수치 (직장인 연봉 5,000만)
+// 랜딩 티저용 대표 샘플 — 실제 추천이 아닌 '예시' 수치 (직장인 연봉 7,000만)
 const SAMPLE: UserProfile = {
   age: 30,
   incomeType: "earned",
-  income: 50_000_000,
+  income: 70_000_000,
   monthlyInvestable: 500_000,
   horizonYears: 3,
   asOf: "2026-06-27",
@@ -24,7 +24,7 @@ function TeaserCaption() {
       <span className="rounded-full border border-line px-2 py-0.5 text-[11px] font-600 text-muted">
         예시
       </span>
-      <span className="text-[13px] text-muted">직장인 연봉 5,000만 · 월 50만 · 3년 기준</span>
+      <span className="text-[13px] text-muted">직장인 연봉 7,000만 · 월 50만 · 3년 기준</span>
     </div>
   );
 }
