@@ -12,7 +12,12 @@ export { buildCliffChart } from "./cliff";
 export type { CliffChart } from "./cliff";
 export { projectGap } from "./gap";
 export type { GapProjection } from "./gap";
-export { splitWaterfallAndStrategyActions, totalMaxBenefitWon } from "./recommendation-summary";
+export {
+  splitWaterfallAndStrategyActions,
+  totalFirstYearBenefit,
+  totalMaxBenefitWon,
+  totalMonthlyAmount,
+} from "./recommendation-summary";
 
 const FINANCE_TOP_THRESHOLD = 20_000_000; // §10 금소세 2,000만
 

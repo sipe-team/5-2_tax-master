@@ -1,5 +1,6 @@
 import { motion, type Variants } from "framer-motion";
 import type { ActionCard, Allocation } from "../../engine";
+import { totalFirstYearBenefit, totalMonthlyAmount } from "../../engine";
 import { won } from "../../lib/format";
 import { Reveal } from "../components/Reveal";
 import { Vessel } from "../components/Vessel";
@@ -29,9 +30,9 @@ export function WaterfallSection({
 }) {
   const shown = expanded ? waterfall : waterfall.slice(0, TOP_N);
   const hidden = waterfall.length - shown.length;
-  const allocatedMonthly = waterfall.reduce((s, a) => s + a.monthlyAmount, 0);
+  const allocatedMonthly = totalMonthlyAmount(waterfall);
   const budgetMonthly = allocatedMonthly + leftoverMonthly;
-  const totalFirstYear = waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
+  const totalFirstYear = totalFirstYearBenefit(waterfall);
 
   return (
     <Reveal>

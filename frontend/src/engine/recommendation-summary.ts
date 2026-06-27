@@ -1,4 +1,4 @@
-import type { ActionCard, Recommendation } from "./types";
+import type { ActionCard, Allocation, Recommendation } from "./types";
 
 // 결과 화면 표시용 파생 계산. recommend()의 출력에서 화면 단위로 다시 정리.
 // (엔진은 도메인 로직만 두고 화면 분기 로직은 여기서 분리)
@@ -29,7 +29,16 @@ export function splitWaterfallAndStrategyActions(rec: Recommendation): {
  * estimatedBenefit이 null인 액션(증여처럼 추정 불가)은 0으로 본다.
  */
 export function totalMaxBenefitWon(rec: Recommendation): number {
-  const waterfallBenefit = rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
   const actionBenefit = rec.actions.reduce((s, a) => s + (a.estimatedBenefit ?? 0), 0);
-  return waterfallBenefit + actionBenefit;
+  return totalFirstYearBenefit(rec.waterfall) + actionBenefit;
+}
+
+/** 워터폴 전체 그릇의 월 적립 금액 합계 (원). */
+export function totalMonthlyAmount(waterfall: Allocation[]): number {
+  return waterfall.reduce((s, a) => s + a.monthlyAmount, 0);
+}
+
+/** 워터폴 전체 그릇의 첫 해 절세 합계 (원). */
+export function totalFirstYearBenefit(waterfall: Allocation[]): number {
+  return waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
 }
