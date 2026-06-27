@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
+
 import { ruleSet } from "../../rules/products";
-import { recommend } from "../index";
-import { projectGap } from "../gap";
 import type { UserProfile } from "../../rules/schema";
+import { projectGap } from "../gap";
+import { recommend } from "../index";
 
 const asOf = "2026-06-27";
 // 30대 직장인: 노후(25년) 가정이라 연금 워터폴이 충분히 채워진다.

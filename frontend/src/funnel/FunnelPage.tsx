@@ -1,6 +1,7 @@
-import { useNavigate } from "react-router";
 import { useFunnel } from "@use-funnel/react-router";
-import { FunnelDataSchema, type FunnelData, toProfile } from "../rules/profile";
+import { useNavigate } from "react-router";
+
+import { type FunnelData, FunnelDataSchema, toProfile } from "../rules/profile";
 import { StepAccounts } from "./steps/StepAccounts";
 import { StepBasic } from "./steps/StepBasic";
 import { StepIncome } from "./steps/StepIncome";

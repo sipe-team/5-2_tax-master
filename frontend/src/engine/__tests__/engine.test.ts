@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
+
 import { ruleSet } from "../../rules/products";
 import type { UserProfile } from "../../rules/schema";
-import { recommend } from "../index";
-import { resolveProduct } from "../eligibility";
 import { tranchesFor } from "../benefit";
+import { resolveProduct } from "../eligibility";
+import { recommend } from "../index";
 import { lockupExceedsHorizon } from "../waterfall";
 
 const base: UserProfile = {

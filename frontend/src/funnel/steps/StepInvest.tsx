@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import type { FunnelData } from "../../rules/profile";
 import { CheckRow } from "../components/CheckRow";
 import { Collapse } from "../components/Collapse";

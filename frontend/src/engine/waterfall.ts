@@ -1,7 +1,7 @@
 import type { Lockup, RuleSet, UserProfile } from "../rules/schema";
+import { type Tranche,tranchesFor } from "./benefit";
 import { confirmed } from "./confirmed";
 import type { ResolvedProduct } from "./eligibility";
-import { tranchesFor, type Tranche } from "./benefit";
 import type { Allocation } from "./types";
 
 interface Excluded {

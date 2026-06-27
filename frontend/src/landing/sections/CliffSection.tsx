@@ -1,5 +1,5 @@
-import { won } from "../../lib/format";
 import type { CliffChart } from "../../engine";
+import { won } from "../../lib/format";
 import { CliffChartView } from "../components/CliffChartView";
 
 // 연봉 절벽 (와우모먼트): 룰에 박힌 숨은 절벽

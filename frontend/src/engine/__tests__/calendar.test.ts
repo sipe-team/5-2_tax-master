@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import type { ActionCard } from "../types";
+
 import { buildCalendar, calendarActions, googleCalendarUrl } from "../calendar";
+import type { ActionCard } from "../types";
 
 const asOf = "2026-06-27";
 

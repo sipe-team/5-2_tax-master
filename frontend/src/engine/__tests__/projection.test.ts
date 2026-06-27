@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { ruleSet } from "../../rules/products";
 import type { UserProfile } from "../../rules/schema";
 import { recommend } from "../index";

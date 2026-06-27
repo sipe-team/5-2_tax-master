@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+
 import backIcon from "../assets/backbutton-left.svg";
 
 // 사양: w-full · h-54 · padding 10px 20px · items-center · sticky top

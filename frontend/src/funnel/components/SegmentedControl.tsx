@@ -1,5 +1,5 @@
-import { useId } from "react";
 import { motion } from "framer-motion";
+import { useId } from "react";
 
 // 토스 스타일 분절형 토글 — 활성 옵션 흰색 pill이 layoutId로 부드럽게 슬라이드
 export function SegmentedControl<T extends string>({

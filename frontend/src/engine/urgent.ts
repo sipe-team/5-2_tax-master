@@ -1,6 +1,6 @@
 import type { UserProfile } from "../rules/schema";
-import { confirmed } from "./confirmed";
 import { effectiveBenefit } from "./benefit";
+import { confirmed } from "./confirmed";
 import type { ResolvedProduct } from "./eligibility";
 import { type ActionCard, URGENCY_WEIGHT } from "./types";
 

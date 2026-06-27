@@ -1,17 +1,15 @@
 import type { RuleSet, UserProfile } from "../rules/schema";
-import { resolveProduct, type ResolvedProduct } from "./eligibility";
-import { buildWaterfall } from "./waterfall";
-import { buildUrgentActions } from "./urgent";
+import { type ResolvedProduct,resolveProduct } from "./eligibility";
 import { buildStrategyActions } from "./strategies";
 import type { ActionCard, Badge, Recommendation } from "./types";
+import { buildUrgentActions } from "./urgent";
+import { buildWaterfall } from "./waterfall";
 
-export * from "./types";
-export { diffScenarios } from "./scenario";
 export { googleCalendarUrl } from "./calendar";
-export { buildCliffChart } from "./cliff";
 export type { CliffChart } from "./cliff";
-export { projectGap } from "./gap";
+export { buildCliffChart } from "./cliff";
 export type { GapProjection } from "./gap";
+export { projectGap } from "./gap";
 export {
   splitWaterfallAndStrategyActions,
   totalAnnualAmount,
@@ -19,6 +17,8 @@ export {
   totalMaxBenefitWon,
   totalMonthlyAmount,
 } from "./recommendation-summary";
+export { diffScenarios } from "./scenario";
+export * from "./types";
 
 const FINANCE_TOP_THRESHOLD = 20_000_000; // §10 금소세 2,000만
 

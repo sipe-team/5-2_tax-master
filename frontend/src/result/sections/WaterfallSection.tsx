@@ -1,4 +1,5 @@
 import { motion, type Variants } from "framer-motion";
+
 import type { ActionCard, Allocation } from "../../engine";
 import { totalFirstYearBenefit, totalMonthlyAmount } from "../../engine";
 import { won } from "../../lib/format";

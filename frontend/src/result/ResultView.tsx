@@ -1,15 +1,16 @@
 import { useState } from "react";
+
+import { BackHeader } from "../components/BackHeader";
 import type { Recommendation } from "../engine";
 import { splitWaterfallAndStrategyActions, totalMaxBenefitWon } from "../engine";
 import { wonToMan } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
-import ScenarioPanel from "./sections/ScenarioPanel";
-import { BackHeader } from "../components/BackHeader";
 import { Reveal } from "./components/Reveal";
 import { AssumptionsSection } from "./sections/AssumptionsSection";
 import { DisclaimerFooter } from "./sections/DisclaimerFooter";
 import { HeroSummary } from "./sections/HeroSummary";
 import { PdfSaveButton } from "./sections/PdfSaveButton";
+import ScenarioPanel from "./sections/ScenarioPanel";
 import { StrategyActionsSection } from "./sections/StrategyActionsSection";
 import { WaterfallSection } from "./sections/WaterfallSection";
 

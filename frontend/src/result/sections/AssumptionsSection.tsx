@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+
 import type { Badge } from "../../engine";
 import { Badges } from "../components/Badges";
 import { Reveal } from "../components/Reveal";

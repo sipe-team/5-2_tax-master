@@ -1,7 +1,8 @@
 import { useState } from "react";
+
 import {
-  INCOME_TYPE_LABEL,
   type FunnelData,
+  INCOME_TYPE_LABEL,
   type IncomeTypeUI,
 } from "../../rules/profile";
 import { Collapse } from "../components/Collapse";

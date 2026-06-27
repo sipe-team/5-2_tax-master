@@ -1,5 +1,5 @@
-import { won, pct } from "../../lib/format";
 import type { GapProjection } from "../../engine";
+import { pct,won } from "../../lib/format";
 import { GapChartView } from "../components/GapChartView";
 
 // N년 후 격차 (와우모먼트): 절세계좌 vs 일반계좌

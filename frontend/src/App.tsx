@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
-import LandingPage from "./landing/LandingPage";
+
 import FunnelPage from "./funnel/FunnelPage";
+import LandingPage from "./landing/LandingPage";
 import ResultPage from "./result/ResultPage";
 
 export default function App() {

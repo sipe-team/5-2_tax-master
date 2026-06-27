@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { recommend, buildCliffChart, projectGap } from "../engine";
-import type { UserProfile } from "../rules/schema";
+
+import { buildCliffChart, projectGap,recommend } from "../engine";
 import { ruleSet } from "../rules/products";
+import type { UserProfile } from "../rules/schema";
 import { CliffSection } from "./sections/CliffSection";
-import { GapSection } from "./sections/GapSection";
 import EventsPanel from "./sections/EventsPanel";
+import { GapSection } from "./sections/GapSection";
 
 // 랜딩 티저용 대표 샘플 — 실제 추천이 아닌 '예시' 수치 (직장인 연봉 7,000만)
 const SAMPLE: UserProfile = {

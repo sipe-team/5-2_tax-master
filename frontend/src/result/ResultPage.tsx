@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useLocation } from "react-router";
+
 import { recommend } from "../engine";
 import { ruleSet } from "../rules/products";
 import type { UserProfile } from "../rules/schema";

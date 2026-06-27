@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import type { IncomeType, UserProfile } from "../../rules/schema";
-import { ruleSet } from "../../rules/products";
-import { diffScenarios } from "../../engine";
-import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "../../data/jobs";
+
+import { companySizeLabel, type JobChip,ProxyError, searchJobs } from "../../data/jobs";
 import { salaryGuideFor } from "../../data/salaryGuide";
+import { diffScenarios } from "../../engine";
 import { pct, won, wonToMan } from "../../lib/format";
+import { ruleSet } from "../../rules/products";
+import type { IncomeType, UserProfile } from "../../rules/schema";
 
 function DeltaArrow({ from, to }: { from: number; to: number }) {
   if (Math.abs(to - from) < 1e-9) return <span className="text-muted">→</span>;

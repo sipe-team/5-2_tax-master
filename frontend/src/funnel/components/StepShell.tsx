@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+
 import { BackHeader } from "../../components/BackHeader";
 
 // 펀넬 단계 컨테이너 — 상단 진행 바, 타이틀/서브타이틀, children, 하단 액션 바

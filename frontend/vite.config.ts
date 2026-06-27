@@ -1,6 +1,7 @@
-import { defineConfig, loadEnv, type PluginOption } from "vite";
-import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig, loadEnv, type PluginOption } from "vite";
+
 import { rpProxy } from "./server/rpProxy";
 
 /**
