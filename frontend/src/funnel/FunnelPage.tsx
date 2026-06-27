@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useFunnel } from "@use-funnel/react-router";
-import { SegmentedControl } from "@toss/tds-mobile";
+import checkedIcon from "../assets/checked.svg";
+import defaultCheckIcon from "../assets/default-check.svg";
 import {
   FunnelDataSchema,
   INCOME_TYPE_LABEL,
@@ -10,13 +11,43 @@ import {
   toProfile,
 } from "../rules/profile";
 
+function SegmentedControl<T extends string>({
+  value,
+  options,
+  onChange,
+}: {
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="inline-flex w-full rounded-xl bg-paper p-1">
+      {options.map((opt) => {
+        const active = opt.value === value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={`flex-1 rounded-lg py-2 text-[14px] font-600 transition-colors ${
+              active ? "bg-surface text-ink shadow-sm" : "text-muted"
+            }`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 type Ctx = Partial<FunnelData>;
 
 const STEPS = ["basic", "accounts", "invest", "income"] as const;
 
-// ── 공용 입력 ───────────────────────────────────────────
-const inputCls =
-  "w-full bg-transparent border-b border-line pb-1 font-display text-lg tnum text-ink outline-none transition-colors focus:border-gold placeholder:text-locked";
+// ── 공용 입력 (Toss 박스 스타일) ─────────────────────────
+// 사양: w-full · padding 20px · gap 14px · border-radius 8px · bg #FFF
+// 에러: border 1px #FF5761 (error 토큰)
 
 function NumberField({
   label,
@@ -24,23 +55,29 @@ function NumberField({
   onChange,
   suffix,
   placeholder,
+  error,
 }: {
   label: string;
   value: number | undefined;
   onChange: (n: number) => void;
   suffix: string;
   placeholder?: string;
+  error?: boolean;
 }) {
   const [draft, setDraft] = useState<string | null>(null);
   const shown = draft ?? (value ? String(value) : "");
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex w-full flex-col gap-1.5">
       <span className="text-[12px] text-muted">{label}</span>
-      <span className="flex items-baseline gap-1.5">
+      <span
+        className={`flex w-full items-center gap-3.5 rounded-lg border bg-surface p-5 transition-colors ${
+          error ? "border-error" : "border-line focus-within:border-gold"
+        }`}
+      >
         <input
           type="text"
           inputMode="numeric"
-          className={inputCls}
+          className="min-w-0 flex-1 bg-transparent font-sans text-base font-medium leading-none tracking-[-0.3px] tnum text-gray800 outline-none placeholder:text-locked"
           value={shown}
           placeholder={placeholder}
           onFocus={(e) => e.currentTarget.select()}
@@ -51,7 +88,7 @@ function NumberField({
           }}
           onBlur={() => setDraft(null)}
         />
-        <span className="text-xs text-muted">{suffix}</span>
+        <span className="whitespace-nowrap text-xs text-muted">{suffix}</span>
       </span>
     </label>
   );
@@ -61,14 +98,37 @@ function CheckRow({
   label,
   checked,
   onChange,
+  error,
 }: {
   label: string;
   checked: boolean;
   onChange: (v: boolean) => void;
+  error?: boolean;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2.5 py-1 text-[15px]">
-      <input type="checkbox" className="h-4 w-4 accent-gold" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+    <label
+      className={`flex w-full cursor-pointer items-center gap-3.5 rounded-lg p-5 transition-colors ${
+        checked
+          ? "bg-primary-light text-[18px] font-semibold leading-5 tracking-[-0.54px] text-gray800 backdrop-blur-[50px]"
+          : error
+            ? "border border-error bg-surface text-[15px]"
+            : "border border-line bg-surface text-[15px]"
+      }`}
+    >
+      <input
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      <img
+        src={checked ? checkedIcon : defaultCheckIcon}
+        alt=""
+        aria-hidden
+        width={24}
+        height={24}
+        className="shrink-0"
+      />
       {label}
     </label>
   );
@@ -145,13 +205,14 @@ function StepBasic({ value, onNext }: { value: Ctx; onNext: (p: Ctx) => void }) 
       <NumberField label="나이" value={age} onChange={setAge} suffix="세" />
       <div className="flex flex-col gap-2">
         <span className="text-[12px] text-muted">소득 유형</span>
-        <SegmentedControl value={incomeTypeUI} onChange={(v) => setIncomeTypeUI(v as IncomeTypeUI)}>
-          {(Object.keys(INCOME_TYPE_LABEL) as IncomeTypeUI[]).map((t) => (
-            <SegmentedControl.Item key={t} value={t}>
-              {INCOME_TYPE_LABEL[t]}
-            </SegmentedControl.Item>
-          ))}
-        </SegmentedControl>
+        <SegmentedControl
+          value={incomeTypeUI}
+          onChange={setIncomeTypeUI}
+          options={(Object.keys(INCOME_TYPE_LABEL) as IncomeTypeUI[]).map((t) => ({
+            value: t,
+            label: INCOME_TYPE_LABEL[t],
+          }))}
+        />
       </div>
       {!noIncome && (
         <NumberField
