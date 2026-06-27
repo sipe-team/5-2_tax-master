@@ -5,6 +5,7 @@ import { recommend } from "./engine";
 import type { Allocation, Badge, UrgentAction } from "./engine";
 import ScenarioPanel from "./ScenarioPanel";
 import ProjectionPanel from "./ProjectionPanel";
+import EventsPanel from "./EventsPanel";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
@@ -358,6 +359,9 @@ export default function App() {
 
       {/* 이직 시나리오 (연봉 변화 시뮬레이터) */}
       <ScenarioPanel profile={profile} rules={ruleSet} />
+
+      {/* 재테크/비즈니스 이벤트 (마감 임박순) */}
+      <EventsPanel asOf={profile.asOf} />
 
       {/* 가정·제외 */}
       {rec.assumptions.length > 0 && (

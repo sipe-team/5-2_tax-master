@@ -14,6 +14,7 @@ const RP_BASE = "https://openapi.rocketpunch.com/v1";
 /** 허용 하위 경로(그 외 404). */
 const ALLOWED_PATHS = new Set([
   "jobs",
+  "events",
   "codes/job-categories",
   "codes/seniorities",
   "codes/employment-types",
@@ -33,6 +34,9 @@ const ALLOWED_JOB_PARAMS = new Set([
   "page",
   "pageSize",
 ]);
+
+/** /events 허용 쿼리 파라미터(그 외 폐기). 이벤트는 서버 필터가 불안정해 page/pageSize만 신뢰. */
+const ALLOWED_EVENT_PARAMS = new Set(["page", "pageSize"]);
 
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const cache = new Map<string, { at: number; status: number; body: string }>();
@@ -94,8 +98,34 @@ function whitelistJobs(raw: RawJobsResponse): unknown {
   };
 }
 
+/** /events 응답에서 필요한 필드만 통과(과다 노출 방지). */
+function whitelistEvents(raw: RawJobsResponse): unknown {
+  const items = (raw.items ?? []).map((it) => {
+    const location = (it.location ?? {}) as Record<string, unknown>;
+    return {
+      eventId: it.eventId,
+      eventName: it.eventName,
+      eventCategories: it.eventCategories,
+      eventSubjects: it.eventSubjects,
+      startAt: it.startAt,
+      endAt: it.endAt,
+      eventOpenType: it.eventOpenType,
+      location: { country: location.country, region: location.region, locality: location.locality },
+      bannerUrl: it.bannerUrl,
+      webUrl: it.webUrl,
+    };
+  });
+  return {
+    totalItems: raw.totalItems,
+    totalPages: raw.totalPages,
+    page: raw.page,
+    pageSize: raw.pageSize,
+    items,
+  };
+}
+
 /**
- * @param subpath  /api/rp 이후의 하위 경로 (예: "jobs", "codes/seniorities")
+ * @param subpath  /api/rp 이후의 하위 경로 (예: "jobs", "events", "codes/seniorities")
  * @param search   원본 쿼리스트링 파라미터
  * @param apiKey   RP_APP_KEY (없으면 503)
  */
@@ -108,11 +138,15 @@ export async function rpProxy(
   if (!ALLOWED_PATHS.has(path)) return err(404, `허용되지 않은 경로: ${path}`);
   if (!apiKey) return err(503, "RP_APP_KEY가 설정되지 않았습니다(.env.local).");
 
-  // 파라미터 화이트리스트(jobs만 쿼리 허용, codes는 무시).
+  // 파라미터 화이트리스트(jobs/events만 쿼리 허용, codes는 무시).
   const out = new URLSearchParams();
   if (path === "jobs") {
     for (const [k, v] of search.entries()) {
       if (ALLOWED_JOB_PARAMS.has(k)) out.append(k, v);
+    }
+  } else if (path === "events") {
+    for (const [k, v] of search.entries()) {
+      if (ALLOWED_EVENT_PARAMS.has(k)) out.append(k, v);
     }
   }
   const qs = out.toString();
@@ -139,6 +173,12 @@ export async function rpProxy(
       body = JSON.stringify(whitelistJobs(JSON.parse(text)));
     } catch {
       body = text; // 파싱 실패 시 원문(드묾)
+    }
+  } else if (upstream.ok && path === "events") {
+    try {
+      body = JSON.stringify(whitelistEvents(JSON.parse(text)));
+    } catch {
+      body = text;
     }
   }
 
