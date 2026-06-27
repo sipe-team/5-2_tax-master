@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
-import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
+import type { ActionCard, Allocation, Recommendation } from "../engine";
 import { googleCalendarUrl } from "../engine";
 import { won, pct } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ScenarioPanel from "../ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
+import { Badges } from "./components/Badges";
 import { Reveal } from "./components/Reveal";
 
 // 워터폴 1, 2, 3 ... 순차 등장 (스크롤 무관, 마운트 시 cascade)
@@ -22,35 +23,6 @@ const vesselItem: Variants = {
     transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
   },
 };
-
-const BADGE_STYLE: Record<Badge["kind"], string> = {
-  assumed: "border-line text-muted",
-  upsell: "border-gold/50 text-gold",
-  warning: "border-clay/50 text-clay",
-  info: "border-line text-muted",
-};
-const BADGE_LABEL: Record<Badge["kind"], string> = {
-  assumed: "가정",
-  upsell: "더 받기",
-  warning: "주의",
-  info: "참고",
-};
-
-function Badges({ items }: { items: Badge[] }) {
-  if (!items.length) return null;
-  return (
-    <div className="mt-2 flex flex-wrap gap-1.5">
-      {items.map((b, i) => (
-        <span
-          key={i}
-          className={`rounded-full border px-2 py-0.5 text-[11px] leading-tight ${BADGE_STYLE[b.kind]}`}
-        >
-          <span className="font-600">{BADGE_LABEL[b.kind]}</span> {b.text}
-        </span>
-      ))}
-    </div>
-  );
-}
 
 function ActionItem({ a }: { a: ActionCard }) {
   const isImmediate = a.urgency === "immediate";
