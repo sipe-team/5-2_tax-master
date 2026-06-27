@@ -6,6 +6,7 @@ import { won, pct } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ScenarioPanel from "../ScenarioPanel";
+import EventsPanel from "../EventsPanel";
 import { BackHeader } from "../components/BackHeader";
 
 // 스크롤로 뷰포트에 진입할 때 한 번 부드럽게 등장
@@ -282,6 +283,11 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       {/* 이직 시나리오 (연봉 변화 시뮬레이터) */}
       <Reveal>
         <ScenarioPanel profile={profile} rules={ruleSet} />
+      </Reveal>
+
+      {/* 재테크/비즈니스 이벤트 (마감 임박순) */}
+      <Reveal>
+        <EventsPanel asOf={profile.asOf} />
       </Reveal>
 
       <Reveal>
