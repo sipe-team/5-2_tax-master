@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
+import { buildCalendar, calendarActions, downloadCalendar } from "../engine";
 import { won, pct } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
@@ -104,6 +105,11 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
   const hidden = rec.waterfall.length - shown.length;
 
+  // 마감(deadline)이 있는 액션만 캘린더로 내보낼 수 있음.
+  const deadlineActions = calendarActions(rec.actions);
+  const onDownloadCalendar = () =>
+    downloadCalendar(buildCalendar(rec.actions, rec.asOf));
+
   return (
     <div className="mx-auto max-w-[640px] px-5 py-10">
       <header className="mb-8">
@@ -124,6 +130,17 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
               <ActionItem key={a.id} a={a} />
             ))}
           </div>
+
+          {deadlineActions.length > 0 && (
+            <button
+              type="button"
+              onClick={onDownloadCalendar}
+              title="마감일을 캘린더(.ics)로 내보내 D-7 알림을 받으세요 (iOS·Android 지원)"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+            >
+              📅 마감일 캘린더에 추가 ({deadlineActions.length})
+            </button>
+          )}
         </section>
       )}
 
