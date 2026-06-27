@@ -1,4 +1,5 @@
-import type { IncomeType } from "./rules/schema";
+import type { IncomeType, UserProfile } from "./rules/schema";
+import { todayISO } from "./lib/format";
 
 /**
  * 데모 페르소나 프리셋 (와우모먼트).
@@ -62,3 +63,29 @@ export const PERSONAS: Persona[] = [
     overseas: { valueMan: 5000, costMan: 500 },
   },
 ];
+
+const MAN = 10_000;
+
+/**
+ * 페르소나 프리셋 → 엔진 UserProfile (만원→원).
+ *
+ * 퍼널 입력을 건너뛰고 ResultPage로 바로 보낼 값. 퍼널의 toProfile()과 동일한
+ * 단위 변환·RIA 매핑을 따른다(결정론 유지: asOf만 오늘 날짜).
+ */
+export function personaToProfile(p: Persona): UserProfile {
+  const overseas = p.overseas
+    ? { marketValue: p.overseas.valueMan * MAN, costBasis: p.overseas.costMan * MAN }
+    : undefined;
+  return {
+    age: p.age,
+    incomeType: p.incomeType,
+    income: p.incomeType === "none" ? 0 : p.incomeMan * MAN,
+    monthlyInvestable: p.monthlyMan * MAN,
+    horizonYears: p.horizonYears,
+    asOf: todayISO(),
+    overseasHoldings: overseas,
+    overseasUnrealizedProfit: overseas
+      ? Math.max(0, overseas.marketValue - overseas.costBasis)
+      : undefined,
+  };
+}
