@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
-import { buildCalendar, calendarActions, downloadCalendar } from "../engine";
+import { buildCalendar, calendarActions, downloadCalendar, googleCalendarUrl } from "../engine";
 import { won, pct } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
@@ -104,6 +104,16 @@ function ActionItem({ a }: { a: ActionCard }) {
       )}
       {a.warning && <p className="mt-1 text-[12px] text-clay">⚠ {a.warning}</p>}
       {a.deadline && <p className="mt-1 text-[11px] text-locked tnum">마감 {a.deadline}</p>}
+      {googleCalendarUrl(a) && (
+        <a
+          href={googleCalendarUrl(a)!}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 inline-flex items-center gap-1 rounded-md border border-gold/50 px-2.5 py-1 text-[12px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+        >
+          📅 캘린더에 추가
+        </a>
+      )}
       <Badges items={a.badges} />
     </div>
   );
@@ -189,10 +199,10 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
               <button
                 type="button"
                 onClick={onDownloadCalendar}
-                title="마감일을 캘린더(.ics)로 내보내 D-7 알림을 받으세요 (iOS·Android 지원)"
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+                title="모든 마감일을 .ics 파일로 받아 캘린더에 등록 (D-7 알림 포함, iOS·Android·Outlook)"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-line px-3 py-2 text-[12px] text-muted outline-none transition-colors hover:border-gold/50 hover:text-gold focus-visible:border-gold/50"
               >
-                📅 마감일 캘린더에 추가 ({deadlineActions.length})
+                ⬇ 전체 마감일 .ics로 받기 ({deadlineActions.length})
               </button>
             )}
           </section>

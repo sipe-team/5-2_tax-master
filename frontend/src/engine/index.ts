@@ -10,7 +10,7 @@ export { diffScenarios } from "./scenario";
 export type { ScenarioDelta, ProductShift, ShiftStatus } from "./scenario";
 export { projectWealth, monthsToReach } from "./projection";
 export type { WealthProjection, ProjectionPoint } from "./projection";
-export { buildCalendar, downloadCalendar, calendarActions } from "./calendar";
+export { buildCalendar, downloadCalendar, calendarActions, googleCalendarUrl } from "./calendar";
 
 const FINANCE_TOP_THRESHOLD = 20_000_000; // §10 금소세 2,000만
 

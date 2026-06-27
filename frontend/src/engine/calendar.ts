@@ -117,6 +117,28 @@ export function buildCalendar(actions: ActionCard[], asOf: string): string {
   return lines.map(foldLine).join("\r\n");
 }
 
+/**
+ * 단일 액션 → 구글 캘린더 '일정 추가' 딥링크.
+ * 탭하면 모바일/데스크탑 모두 구글 캘린더 추가 화면이 바로 열린다(.ics 다운로드 불필요).
+ * 종일 이벤트(dates=시작/마감+1일). 마감 없으면 null.
+ */
+export function googleCalendarUrl(a: ActionCard): string | null {
+  if (!a.deadline) return null;
+  const start = toIcsDate(a.deadline);
+  const end = nextDay(a.deadline); // 종일 이벤트는 종료일 배타적
+  const benefit =
+    a.estimatedBenefit != null
+      ? ` 예상 절감 약 ${Math.round(a.estimatedBenefit / 10_000).toLocaleString()}만원.`
+      : "";
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `[절세 마감] ${a.name}`,
+    dates: `${start}/${end}`,
+    details: `${a.action}${benefit}\n\n${a.reason}\n※ 정보 제공 목적이며 투자·세무 자문이 아닙니다.`,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
 /** 생성한 .ics 를 브라우저에서 다운로드. (서버 미전송) */
 export function downloadCalendar(ics: string, filename = "절세-마감.ics"): void {
   const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });

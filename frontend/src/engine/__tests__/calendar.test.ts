@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ActionCard } from "../types";
-import { buildCalendar, calendarActions } from "../calendar";
+import { buildCalendar, calendarActions, googleCalendarUrl } from "../calendar";
 
 const asOf = "2026-06-27";
 
@@ -71,5 +71,21 @@ describe("buildCalendar", () => {
     );
     expect(ics.match(/BEGIN:VEVENT/g)?.length).toBe(2);
     expect(ics).toContain("DTSTART;VALUE=DATE:20261231");
+  });
+});
+
+describe("googleCalendarUrl", () => {
+  it("마감 없으면 null", () => {
+    expect(googleCalendarUrl(action({ deadline: undefined }))).toBeNull();
+  });
+
+  it("render 딥링크 + 종일 dates(시작/마감+1일)", () => {
+    const url = googleCalendarUrl(action({}))!;
+    expect(url.startsWith("https://calendar.google.com/calendar/render?")).toBe(true);
+    const p = new URL(url).searchParams;
+    expect(p.get("action")).toBe("TEMPLATE");
+    expect(p.get("dates")).toBe("20260703/20260704");
+    expect(p.get("text")).toContain("청년미래적금");
+    expect(p.get("details")).toContain("자문이 아닙니다");
   });
 });
