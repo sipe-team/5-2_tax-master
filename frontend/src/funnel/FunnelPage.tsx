@@ -7,56 +7,12 @@ import { NumberField } from "./components/NumberField";
 import { StepShell } from "./components/StepShell";
 import { StepAccounts } from "./steps/StepAccounts";
 import { StepBasic } from "./steps/StepBasic";
+import { StepInvest } from "./steps/StepInvest";
 import { FunnelDataSchema, type FunnelData, toProfile } from "../rules/profile";
 
 type Ctx = Partial<FunnelData>;
 
 const STEPS = ["basic", "accounts", "invest", "income"] as const;
-
-// ── 3단계: 투자 현황 ────────────────────────────────────
-function StepInvest({
-  value,
-  onNext,
-  onSkip,
-}: {
-  value: Ctx;
-  onNext: (p: Ctx) => void;
-  onSkip: () => void;
-}) {
-  const [hasOverseas, setHasOverseas] = useState(value.hasOverseas ?? false);
-  const [overseasValueMan, setOverseasValue] = useState(value.overseasValueMan ?? 0);
-  const [overseasCostMan, setOverseasCost] = useState(value.overseasCostMan ?? 0);
-
-  return (
-    <StepShell
-      step={3}
-      totalSteps={STEPS.length}
-      title="해외주식을 보유하고 있나요?"
-      subtitle="보유 중이면 RIA 감면·분산매도·증여 전략을 검토해요."
-      primaryLabel="다음"
-      onSkip={onSkip}
-      onPrimary={() => onNext({ hasOverseas, overseasValueMan, overseasCostMan })}
-    >
-      <CheckRow label="해외주식 보유 중" checked={hasOverseas} onChange={setHasOverseas} />
-      <Collapse open={hasOverseas}>
-        <div className="ml-6 flex flex-col gap-4">
-          <NumberField
-            label="평가액"
-            value={overseasValueMan}
-            onChange={setOverseasValue}
-            suffix="만원"
-          />
-          <NumberField
-            label="취득가"
-            value={overseasCostMan}
-            onChange={setOverseasCost}
-            suffix="만원"
-          />
-        </div>
-      </Collapse>
-    </StepShell>
-  );
-}
 
 // ── 4단계: 소득·가족 ────────────────────────────────────
 function StepIncome({
@@ -153,6 +109,7 @@ export default function FunnelPage() {
       invest={({ context, history }) => (
         <StepInvest
           value={context}
+          totalSteps={STEPS.length}
           onNext={(p) => history.push("income", { ...context, ...p })}
           onSkip={() => history.push("income", { ...context })}
         />
