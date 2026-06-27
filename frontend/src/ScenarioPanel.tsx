@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { IncomeType, RuleSet, UserProfile } from "./rules/schema";
-import { diffScenarios, type ProductShift } from "./engine";
-import {
-  companySizeLabel,
-  inferIncomeType,
-  ProxyError,
-  searchJobs,
-  type JobChip,
-} from "./data/jobs";
+import { diffScenarios } from "./engine";
+import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "./data/jobs";
 import { salaryGuideFor, SALARY_GUIDE_NOTE } from "./data/salaryGuide";
 
 const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
@@ -17,23 +11,6 @@ function DeltaArrow({ from, to }: { from: number; to: number }) {
   if (Math.abs(to - from) < 1e-9) return <span className="text-muted">→</span>;
   const up = to > from;
   return <span className={up ? "text-gold" : "text-clay"}>{up ? "↑" : "↓"}</span>;
-}
-
-function ChangedRow({ s }: { s: ProductShift }) {
-  const f = s.fromEfficiency;
-  const t = s.toEfficiency;
-  return (
-    <li className="flex items-baseline justify-between gap-3 py-1 text-[13px]">
-      <span className="text-ink">{s.name}</span>
-      {f != null && t != null ? (
-        <span className="font-display tnum text-muted">
-          효율 {pct(f)} <DeltaArrow from={f} to={t} /> <span className="text-ink">{pct(t)}</span>
-        </span>
-      ) : (
-        <span className="text-muted">등급 변경</span>
-      )}
-    </li>
-  );
 }
 
 function JobResultChip({ job, onPick }: { job: JobChip; onPick: (j: JobChip) => void }) {
@@ -75,8 +52,8 @@ export default function ScenarioPanel({
   rules: RuleSet;
 }) {
   const [scenarioMan, setScenarioMan] = useState(() => Math.round(profile.income / 10_000) + 1000);
-  const [scenarioIncomeType, setScenarioIncomeType] = useState<IncomeType>(profile.incomeType);
-  const [incomeTypeInferred, setIncomeTypeInferred] = useState(false);
+  // 시나리오 소득 유형은 직장인(총급여)으로 고정.
+  const scenarioIncomeType: IncomeType = "earned";
 
   // 공고 검색(부가 레이어 — 실패해도 수동 입력은 동작).
   const [keyword, setKeyword] = useState("");
@@ -128,11 +105,6 @@ export default function ScenarioPanel({
 
   function pickJob(job: JobChip) {
     setPicked(job);
-    const it = inferIncomeType(job.employmentTypes);
-    if (it) {
-      setScenarioIncomeType(it);
-      setIncomeTypeInferred(true);
-    }
     const guide = salaryGuideFor(job.seniority);
     if (guide) {
       setScenarioMan(guide.mid);
@@ -148,7 +120,13 @@ export default function ScenarioPanel({
     () => new Map((delta?.shifts ?? []).map((s) => [s.productId, s])),
     [delta],
   );
-  const changed = (delta?.shifts ?? []).filter((s) => s.status === "changed");
+
+  // 10년 누적 절세 증감 (현재 연봉 vs 가정 연봉).
+  // projection.ts 정의와 동일: 첫 해 절세액이 매년 반복된다고 가정(누계 = 연절세 × 연수, 명목값).
+  const TEN_YEARS = 10;
+  const tenYearFrom = delta.baseFirstYearBenefit * TEN_YEARS;
+  const tenYearTo = delta.scenarioFirstYearBenefit * TEN_YEARS;
+  const tenYearDiff = delta.netFirstYearBenefitChange * TEN_YEARS;
 
   return (
     <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
@@ -262,32 +240,6 @@ export default function ScenarioPanel({
         </label>
         {salaryHint && <p className="mt-1.5 text-[11px] text-gold">{salaryHint}</p>}
 
-        {/* 소득 유형(고용형태 기반) */}
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
-          <span className="text-muted">소득 유형</span>
-          <select
-            className="rounded-lg border border-line bg-surface px-3 py-1.5 text-[14px] text-gray800 outline-none transition-colors focus:border-gold"
-            value={scenarioIncomeType}
-            onChange={(e) => {
-              setScenarioIncomeType(e.target.value as IncomeType);
-              setIncomeTypeInferred(false);
-            }}
-          >
-            <option value="earned">직장인(총급여)</option>
-            <option value="comprehensive">사업·기타(종합소득)</option>
-          </select>
-          {incomeTypeInferred && (
-            <span className="rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">
-              <span className="font-600">가정</span> 공고 고용형태로 추정
-            </span>
-          )}
-          {delta.incomeTypeChanged && (
-            <span className="text-[11px] text-gold">
-              현재와 소득유형이 달라요 → 공제율·상한 재적용됨
-            </span>
-          )}
-        </div>
-
         {/* 2열 핵심 비교 */}
         <div className="mt-5 grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-line bg-surface p-3">
@@ -307,6 +259,32 @@ export default function ScenarioPanel({
               <span className="text-xs text-muted">원</span>
             </div>
           </div>
+        </div>
+
+        {/* 10년 누적 절세 증감 — 연봉 변화가 장기에 누적되는 효과 */}
+        <div className="mt-3 rounded-xl border border-line bg-surface p-3">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="text-[11px] text-muted">10년 누적 절세 (이대로 매년 반복 시)</span>
+            {Math.abs(tenYearDiff) >= 10_000 && (
+              <span
+                className={`font-display tnum text-[12px] font-600 ${
+                  tenYearDiff > 0 ? "text-gold" : "text-clay"
+                }`}
+              >
+                {tenYearDiff > 0 ? "+" : "−"}
+                {won(Math.abs(tenYearDiff))}원
+              </span>
+            )}
+          </div>
+          <div className="mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg">
+            {won(tenYearFrom)} <DeltaArrow from={tenYearFrom} to={tenYearTo} />{" "}
+            <span className="text-gold">{won(tenYearTo)}</span>
+            <span className="text-xs text-muted">원</span>
+          </div>
+          <p className="mt-1 text-[11px] leading-relaxed text-locked">
+            첫 해 절세액이 10년간 동일하게 반복된다고 가정한 누계예요. 투자 수익률·물가는 빼고
+            계산했어요.
+          </p>
         </div>
 
         {/* 한계세율 설명 */}
@@ -349,21 +327,9 @@ export default function ScenarioPanel({
           </div>
         )}
 
-        {/* 효율/등급 변화 */}
-        {changed.length > 0 && (
-          <div className="mt-3 border-t border-line pt-3">
-            <div className="mb-1 text-[12px] text-muted">효율·등급 변화</div>
-            <ul>
-              {changed.map((s) => (
-                <ChangedRow key={s.productId} s={s} />
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {delta.lost.length === 0 && delta.gained.length === 0 && changed.length === 0 && (
+        {delta.lost.length === 0 && delta.gained.length === 0 && (
           <p className="mt-4 text-[13px] text-muted">
-            이 연봉 변화로는 자격·효율이 크게 달라지지 않아요.
+            이 연봉 변화로는 가입 가능한 그릇이 크게 달라지지 않아요.
           </p>
         )}
       </div>
