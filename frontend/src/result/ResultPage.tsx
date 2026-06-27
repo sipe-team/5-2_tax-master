@@ -9,7 +9,11 @@ import { ResultView } from "./ResultView";
 function ResultLoading() {
   return (
     <div className="result-loading">
-      <img className="result-loading__mascot" src="/mascot.png" alt="절세비서" />
+      {/* 온보딩 로고와 동일한 톤: 흰 배경 + 마스코트 뒤 컬러 원 */}
+      <div className="result-loading__logo">
+        <span aria-hidden className="result-loading__halo" />
+        <img className="result-loading__mascot" src="/mascot.png" alt="절세비서" />
+      </div>
       <div className="result-loading__spinner" />
       <p className="result-loading__text">나에게 맞는 절세 전략을 분석하고 있어요…</p>
     </div>
