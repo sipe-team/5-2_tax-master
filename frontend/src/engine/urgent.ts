@@ -34,7 +34,7 @@ export function buildUrgentActions(resolved: ResolvedProduct[], user: UserProfil
         urgency: "immediate",
         score: immediateScore(null),
         estimatedBenefit: null,
-        reason: `신청 기간 ${app.open} ~ ${app.close}. 놓치면 다음 회차까지 대기.`,
+        reason: `신청 기간 ${app.open} ~ ${app.close}`,
         action: "기간 내 신청",
         warning: null,
         deadline: app.close,
