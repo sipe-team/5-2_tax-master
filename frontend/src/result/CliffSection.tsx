@@ -6,11 +6,9 @@ import { CliffChartView } from "../CliffChartView";
 export function CliffSection({
   cliff,
   currentIncome,
-  asOfLabel,
 }: {
   cliff: CliffChart;
   currentIncome: number;
-  asOfLabel: string;
 }) {
   return (
     <section className="rounded-2xl bg-surface p-5 ring-1 ring-line">
@@ -24,7 +22,7 @@ export function CliffSection({
       <div className="mt-4">
         <CliffChartView chart={cliff} currentIncome={currentIncome} />
       </div>
-      <div className="mt-4 flex flex-col gap-2.5">
+      <div className="mt-4 flex flex-col gap-3">
         {cliff.markers.map((m) => (
           <div
             key={`${m.income}-${m.label}`}
@@ -39,9 +37,6 @@ export function CliffSection({
           </div>
         ))}
       </div>
-      <p className="mt-3 text-[12px] font-medium leading-relaxed tracking-[-0.3px] text-locked">
-        ※ 그래프는 {asOfLabel} 법령 경계를 그대로 표시합니다. 정보 제공 목적이며 자문이 아닙니다.
-      </p>
     </section>
   );
 }
