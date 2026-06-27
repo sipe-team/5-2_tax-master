@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import type { ActionCard, Recommendation } from "../engine";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ScenarioPanel from "../ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
-import { Badges } from "./components/Badges";
 import { Reveal } from "./components/Reveal";
+import { AssumptionsSection } from "./sections/AssumptionsSection";
 import { HeroSummary } from "./sections/HeroSummary";
 import { PdfSaveButton } from "./sections/PdfSaveButton";
 import { StrategyActionsSection } from "./sections/StrategyActionsSection";
@@ -76,47 +75,11 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
           <ScenarioPanel profile={profile} rules={ruleSet} />
         </Reveal>
 
-        {rec.assumptions.length > 0 && (
-          <Reveal>
-            <section className="mb-7">
-              <button
-                type="button"
-                onClick={() => setAssumptionsOpen((v) => !v)}
-                aria-expanded={assumptionsOpen}
-                className="flex cursor-pointer items-center gap-1 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800 outline-none transition-colors hover:text-gold focus-visible:text-gold"
-              >
-                가정 · 제외 <span className="text-locked tnum">{rec.assumptions.length}</span>
-                <svg
-                  className={`h-3.5 w-3.5 transition-transform ${assumptionsOpen ? "rotate-180" : ""}`}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M6 8l4 4 4-4"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <AnimatePresence initial={false}>
-                {assumptionsOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                    className="overflow-hidden px-1"
-                  >
-                    <Badges items={rec.assumptions} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </section>
-          </Reveal>
-        )}
+        <AssumptionsSection
+          items={rec.assumptions}
+          open={assumptionsOpen}
+          onToggle={() => setAssumptionsOpen((v) => !v)}
+        />
 
         <Reveal>
           <footer className="border-t border-line pt-5 text-[12px] leading-relaxed text-muted">
