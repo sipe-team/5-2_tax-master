@@ -3,7 +3,7 @@ import type { Recommendation } from "../engine";
 import { splitWaterfallAndStrategyActions, totalMaxBenefitWon } from "../engine";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
-import ScenarioPanel from "../ScenarioPanel";
+import ScenarioPanel from "./sections/ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
 import { Reveal } from "./components/Reveal";
 import { AssumptionsSection } from "./sections/AssumptionsSection";

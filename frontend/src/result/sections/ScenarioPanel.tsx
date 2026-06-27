@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import type { IncomeType, RuleSet, UserProfile } from "./rules/schema";
-import { diffScenarios } from "./engine";
-import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "./data/jobs";
-import { salaryGuideFor } from "./data/salaryGuide";
+import type { IncomeType, RuleSet, UserProfile } from "../../rules/schema";
+import { diffScenarios } from "../../engine";
+import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "../../data/jobs";
+import { salaryGuideFor } from "../../data/salaryGuide";
 
 const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
