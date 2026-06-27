@@ -11,6 +11,10 @@ export type { ScenarioDelta, ProductShift, ShiftStatus } from "./scenario";
 export { projectWealth, monthsToReach } from "./projection";
 export type { WealthProjection, ProjectionPoint } from "./projection";
 export { buildCalendar, downloadCalendar, calendarActions, googleCalendarUrl } from "./calendar";
+export { buildCliffChart } from "./cliff";
+export type { CliffChart, CliffPoint, CliffMarker } from "./cliff";
+export { projectGap } from "./gap";
+export type { GapProjection, GapPoint } from "./gap";
 
 const FINANCE_TOP_THRESHOLD = 20_000_000; // §10 금소세 2,000만
 
