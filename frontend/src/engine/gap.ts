@@ -1,5 +1,6 @@
 import type { RuleSet } from "../rules/schema";
 import { confirmed } from "./confirmed";
+import { totalAnnualAmount, totalFirstYearBenefit } from "./recommendation-summary";
 import type { Recommendation } from "./types";
 
 /**
@@ -44,9 +45,9 @@ export function projectGap(
 
   const annualContribution = monthlyInvestable * 12;
   // 절세 경로로 실제 들어가는 연 납입(워터폴 배분 합). 남는 돈은 양쪽 동일하게 일반 취급.
-  const shelteredAnnual = rec.waterfall.reduce((s, a) => s + a.annualAmount, 0);
+  const shelteredAnnual = totalAnnualAmount(rec.waterfall);
   // 첫 해 환급(세액·소득공제) — 절세 경로에서 재투자되는 추가 원금.
-  const firstYearRefund = rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
+  const firstYearRefund = totalFirstYearBenefit(rec.waterfall);
 
   const points: GapPoint[] = [{ year: 0, taxed: 0, sheltered: 0 }];
 

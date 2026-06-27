@@ -13,6 +13,7 @@ import type { IncomeType, RuleSet, UserProfile } from "../rules/schema";
 import { marginalRate, tranchesFor } from "./benefit";
 import { resolveProduct } from "./eligibility";
 import { recommend } from "./index";
+import { totalFirstYearBenefit } from "./recommendation-summary";
 import type { Recommendation } from "./types";
 
 type ShiftStatus = "gained" | "lost" | "changed" | "same";
@@ -63,10 +64,6 @@ interface ProductSnapshot {
   variantId?: string;
   topEfficiency?: number;
   fundedMonthly?: number;
-}
-
-function totalFirstYearBenefit(rec: Recommendation): number {
-  return rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
 }
 
 /** 한 연소득에서의 상품별 스냅샷(자격·등급·본연효율·실적립). */
@@ -150,8 +147,8 @@ export function diffScenarios(
     });
   }
 
-  const baseFirstYearBenefit = totalFirstYearBenefit(baseSnap.rec);
-  const scenarioFirstYearBenefit = totalFirstYearBenefit(scenSnap.rec);
+  const baseFirstYearBenefit = totalFirstYearBenefit(baseSnap.rec.waterfall);
+  const scenarioFirstYearBenefit = totalFirstYearBenefit(scenSnap.rec.waterfall);
 
   return {
     baseIncome: user.income,

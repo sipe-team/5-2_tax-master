@@ -11,6 +11,7 @@
 
 import type { RuleSet, UserProfile } from "../rules/schema";
 import { confirmed } from "./confirmed";
+import { totalFirstYearBenefit } from "./recommendation-summary";
 import type { Recommendation } from "./types";
 
 interface ProjectionPoint {
@@ -41,10 +42,6 @@ function fvAnnuity(monthly: number, monthlyRate: number, months: number): number
   return monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
 }
 
-function totalAnnualTaxBenefit(rec: Recommendation): number {
-  return rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
-}
-
 export function projectWealth(
   rec: Recommendation,
   user: UserProfile,
@@ -62,7 +59,7 @@ export function projectWealth(
   const projectedBalance = Math.round(fvAnnuity(monthly, r, months));
   const growth = projectedBalance - totalContributed;
 
-  const annualTaxBenefit = totalAnnualTaxBenefit(rec);
+  const annualTaxBenefit = totalFirstYearBenefit(rec.waterfall);
   const cumulativeTaxBenefit = annualTaxBenefit * years;
   const fvTax =
     annual > 0

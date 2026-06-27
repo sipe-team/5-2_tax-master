@@ -14,6 +14,7 @@ export { projectGap } from "./gap";
 export type { GapProjection } from "./gap";
 export {
   splitWaterfallAndStrategyActions,
+  totalAnnualAmount,
   totalFirstYearBenefit,
   totalMaxBenefitWon,
   totalMonthlyAmount,

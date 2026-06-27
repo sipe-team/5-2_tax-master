@@ -38,6 +38,11 @@ export function totalMonthlyAmount(waterfall: Allocation[]): number {
   return waterfall.reduce((s, a) => s + a.monthlyAmount, 0);
 }
 
+/** 워터폴 전체 그릇의 연 적립 금액 합계 (원). */
+export function totalAnnualAmount(waterfall: Allocation[]): number {
+  return waterfall.reduce((s, a) => s + a.annualAmount, 0);
+}
+
 /** 워터폴 전체 그릇의 첫 해 절세 합계 (원). */
 export function totalFirstYearBenefit(waterfall: Allocation[]): number {
   return waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
