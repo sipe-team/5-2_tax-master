@@ -4,81 +4,13 @@ import { useFunnel } from "@use-funnel/react-router";
 import { CheckRow } from "./components/CheckRow";
 import { Collapse } from "./components/Collapse";
 import { NumberField } from "./components/NumberField";
-import { SegmentedControl } from "./components/SegmentedControl";
 import { StepShell } from "./components/StepShell";
-import {
-  FunnelDataSchema,
-  INCOME_TYPE_LABEL,
-  type FunnelData,
-  type IncomeTypeUI,
-  toProfile,
-} from "../rules/profile";
+import { StepBasic } from "./steps/StepBasic";
+import { FunnelDataSchema, type FunnelData, toProfile } from "../rules/profile";
 
 type Ctx = Partial<FunnelData>;
 
 const STEPS = ["basic", "accounts", "invest", "income"] as const;
-
-// ── 1단계: 기본정보 ─────────────────────────────────────
-function StepBasic({
-  value,
-  onNext,
-}: {
-  value: Ctx;
-  onNext: (p: Ctx) => void;
-}) {
-  const [age, setAge] = useState(value.age ?? 30);
-  const [incomeTypeUI, setIncomeTypeUI] = useState<IncomeTypeUI>(value.incomeTypeUI ?? "employee");
-  const [incomeMan, setIncomeMan] = useState(value.incomeMan ?? 7000);
-  const [monthlyMan, setMonthlyMan] = useState(value.monthlyMan ?? 50);
-  const [horizonYears, setHorizonYears] = useState(value.horizonYears ?? 3);
-  const noIncome = incomeTypeUI === "none";
-  const valid = age > 0 && monthlyMan > 0 && horizonYears > 0 && (noIncome || incomeMan > 0);
-
-  return (
-    <StepShell
-      step={1}
-      totalSteps={STEPS.length}
-      title="기본 정보"
-      subtitle="몇 가지만 입력하면 돼요."
-      primaryLabel="다음"
-      primaryDisabled={!valid}
-      onPrimary={() => onNext({ age, incomeTypeUI, incomeMan, monthlyMan, horizonYears })}
-    >
-      <NumberField label="나이" value={age} onChange={setAge} suffix="세" />
-      <div className="flex flex-col gap-2">
-        <span className="text-[14px] font-semibold text-gray800">소득 유형</span>
-        <SegmentedControl
-          value={incomeTypeUI}
-          onChange={setIncomeTypeUI}
-          options={(Object.keys(INCOME_TYPE_LABEL) as IncomeTypeUI[]).map((t) => ({
-            value: t,
-            label: INCOME_TYPE_LABEL[t],
-          }))}
-        />
-      </div>
-      <Collapse open={!noIncome}>
-        <NumberField
-          label={incomeTypeUI === "employee" ? "연소득 (총급여)" : "연소득 (종합소득)"}
-          value={incomeMan}
-          onChange={setIncomeMan}
-          suffix="만원"
-        />
-      </Collapse>
-      <NumberField
-        label="월 투자가능액"
-        value={monthlyMan}
-        onChange={setMonthlyMan}
-        suffix="만원"
-      />
-      <NumberField
-        label="언제 쓸 돈인가요?"
-        value={horizonYears}
-        onChange={setHorizonYears}
-        suffix="년 뒤"
-      />
-    </StepShell>
-  );
-}
 
 // ── 2단계: 보유 절세계좌 ────────────────────────────────
 function StepAccounts({
@@ -278,6 +210,7 @@ export default function FunnelPage() {
       basic={({ context, history }) => (
         <StepBasic
           value={context}
+          totalSteps={STEPS.length}
           onNext={(p) => history.push("accounts", { ...context, ...p })}
         />
       )}
