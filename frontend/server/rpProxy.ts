@@ -120,7 +120,11 @@ export async function rpProxy(
 
   const hit = cache.get(cacheKey);
   if (hit && Date.now() - hit.at < CACHE_TTL_MS) {
-    return { status: hit.status, body: hit.body, headers: { ...JSON_HEADERS, "x-rp-cache": "HIT" } };
+    return {
+      status: hit.status,
+      body: hit.body,
+      headers: { ...JSON_HEADERS, "x-rp-cache": "HIT" },
+    };
   }
 
   let upstream: Response;

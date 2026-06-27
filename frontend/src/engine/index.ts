@@ -51,16 +51,23 @@ export function recommend(rawUser: UserProfile, rules: RuleSet): Recommendation 
   }
 
   // 3) 액션 트랙 = 마감 임박(긴급) + 상황별 전략, 점수순. (PRD Decision B)
-  const actions: ActionCard[] = [...buildUrgentActions(resolved, user), ...buildStrategyActions(user)].sort(
-    (a, b) => b.score - a.score,
-  );
+  const actions: ActionCard[] = [
+    ...buildUrgentActions(resolved, user),
+    ...buildStrategyActions(user),
+  ].sort((a, b) => b.score - a.score);
 
   // 4) 워터폴(그릇 적립 배분).
-  const { allocations, leftoverMonthly, excluded } = buildWaterfall(resolved, user, rules, suppressed);
+  const { allocations, leftoverMonthly, excluded } = buildWaterfall(
+    resolved,
+    user,
+    rules,
+    suppressed,
+  );
 
   // 5) 가정/제외를 정보 배지로 모음.
   const assumptions: Badge[] = dedupeBadges(allocations.flatMap((a) => a.badges));
-  for (const ex of excluded) assumptions.push({ kind: "info", text: `${ex.name} 제외: ${ex.reason}` });
+  for (const ex of excluded)
+    assumptions.push({ kind: "info", text: `${ex.name} 제외: ${ex.reason}` });
 
   return {
     asOf: user.asOf,

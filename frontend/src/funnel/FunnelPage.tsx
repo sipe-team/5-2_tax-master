@@ -222,14 +222,32 @@ function StepBasic({ value, onNext }: { value: Ctx; onNext: (p: Ctx) => void }) 
           suffix="만원"
         />
       )}
-      <NumberField label="월 투자가능액" value={monthlyMan} onChange={setMonthlyMan} suffix="만원" />
-      <NumberField label="이 돈, 언제 쓸 건가요" value={horizonYears} onChange={setHorizonYears} suffix="년 뒤" />
+      <NumberField
+        label="월 투자가능액"
+        value={monthlyMan}
+        onChange={setMonthlyMan}
+        suffix="만원"
+      />
+      <NumberField
+        label="이 돈, 언제 쓸 건가요"
+        value={horizonYears}
+        onChange={setHorizonYears}
+        suffix="년 뒤"
+      />
     </StepShell>
   );
 }
 
 // ── 2단계: 보유 절세계좌 ────────────────────────────────
-function StepAccounts({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) => void; onSkip: () => void }) {
+function StepAccounts({
+  value,
+  onNext,
+  onSkip,
+}: {
+  value: Ctx;
+  onNext: (p: Ctx) => void;
+  onSkip: () => void;
+}) {
   const [hasPension, setHasPension] = useState(value.hasPension ?? false);
   const [pensionContributionMan, setPension] = useState(value.pensionContributionMan ?? 0);
   const [hasIrp, setHasIrp] = useState(value.hasIrp ?? false);
@@ -243,7 +261,9 @@ function StepAccounts({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) 
       subtitle="잔여 한도와 전환 전략을 더 정확히 계산해요."
       primaryLabel="다음"
       onSkip={onSkip}
-      onPrimary={() => onNext({ hasPension, pensionContributionMan, hasIrp, irpContributionMan, hasIsa })}
+      onPrimary={() =>
+        onNext({ hasPension, pensionContributionMan, hasIrp, irpContributionMan, hasIsa })
+      }
     >
       <div>
         <CheckRow
@@ -256,7 +276,12 @@ function StepAccounts({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) 
         />
         {hasPension && (
           <div className="ml-6 mt-2">
-            <NumberField label="올해 납입액 (한도 600)" value={pensionContributionMan} onChange={setPension} suffix="만원" />
+            <NumberField
+              label="올해 납입액 (한도 600)"
+              value={pensionContributionMan}
+              onChange={setPension}
+              suffix="만원"
+            />
           </div>
         )}
       </div>
@@ -271,7 +296,12 @@ function StepAccounts({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) 
         />
         {hasIrp && (
           <div className="ml-6 mt-2">
-            <NumberField label="올해 납입액 (합산 900)" value={irpContributionMan} onChange={setIrp} suffix="만원" />
+            <NumberField
+              label="올해 납입액 (합산 900)"
+              value={irpContributionMan}
+              onChange={setIrp}
+              suffix="만원"
+            />
           </div>
         )}
       </div>
@@ -281,7 +311,15 @@ function StepAccounts({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) 
 }
 
 // ── 3단계: 투자 현황 ────────────────────────────────────
-function StepInvest({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) => void; onSkip: () => void }) {
+function StepInvest({
+  value,
+  onNext,
+  onSkip,
+}: {
+  value: Ctx;
+  onNext: (p: Ctx) => void;
+  onSkip: () => void;
+}) {
   const [hasOverseas, setHasOverseas] = useState(value.hasOverseas ?? false);
   const [overseasValueMan, setOverseasValue] = useState(value.overseasValueMan ?? 0);
   const [overseasCostMan, setOverseasCost] = useState(value.overseasCostMan ?? 0);
@@ -298,8 +336,18 @@ function StepInvest({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) =>
       <CheckRow label="해외주식 보유 중" checked={hasOverseas} onChange={setHasOverseas} />
       {hasOverseas && (
         <div className="ml-6 flex flex-col gap-4">
-          <NumberField label="평가액" value={overseasValueMan} onChange={setOverseasValue} suffix="만원" />
-          <NumberField label="취득가" value={overseasCostMan} onChange={setOverseasCost} suffix="만원" />
+          <NumberField
+            label="평가액"
+            value={overseasValueMan}
+            onChange={setOverseasValue}
+            suffix="만원"
+          />
+          <NumberField
+            label="취득가"
+            value={overseasCostMan}
+            onChange={setOverseasCost}
+            suffix="만원"
+          />
         </div>
       )}
     </StepShell>
@@ -341,8 +389,20 @@ function StepIncome({
       onSkip={onSkip}
       onPrimary={() => onSubmit(patch)}
     >
-      <NumberField label="연 금융소득 (이자+배당)" value={financialIncomeMan} onChange={setFin} suffix="만원" placeholder="0" />
-      <NumberField label="연 배당소득" value={dividendIncomeMan} onChange={setDiv} suffix="만원" placeholder="0" />
+      <NumberField
+        label="연 금융소득 (이자+배당)"
+        value={financialIncomeMan}
+        onChange={setFin}
+        suffix="만원"
+        placeholder="0"
+      />
+      <NumberField
+        label="연 배당소득"
+        value={dividendIncomeMan}
+        onChange={setDiv}
+        suffix="만원"
+        placeholder="0"
+      />
       <CheckRow label="고배당주 보유" checked={holdsHighDividend} onChange={setHigh} />
       <CheckRow label="배우자 있음" checked={hasSpouse} onChange={setSpouse} />
       <CheckRow label="자녀 있음" checked={hasChildren} onChange={setChildren} />
@@ -388,7 +448,11 @@ export default function FunnelPage() {
         />
       )}
       income={({ context }) => (
-        <StepIncome value={context} onSubmit={(p) => finish({ ...context, ...p })} onSkip={() => finish(context)} />
+        <StepIncome
+          value={context}
+          onSubmit={(p) => finish({ ...context, ...p })}
+          onSkip={() => finish(context)}
+        />
       )}
     />
   );

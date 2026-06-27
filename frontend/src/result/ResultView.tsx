@@ -24,7 +24,10 @@ function Badges({ items }: { items: Badge[] }) {
   return (
     <div className="mt-2 flex flex-wrap gap-1.5">
       {items.map((b, i) => (
-        <span key={i} className={`rounded-full border px-2 py-0.5 text-[11px] leading-tight ${BADGE_STYLE[b.kind]}`}>
+        <span
+          key={i}
+          className={`rounded-full border px-2 py-0.5 text-[11px] leading-tight ${BADGE_STYLE[b.kind]}`}
+        >
           <span className="font-600">{BADGE_LABEL[b.kind]}</span> {b.text}
         </span>
       ))}
@@ -39,7 +42,9 @@ function ActionItem({ a }: { a: ActionCard }) {
       <div className="flex items-baseline justify-between gap-3">
         <strong className="text-[15px]">{a.name}</strong>
         {a.dDay != null ? (
-          <span className={`font-display tnum text-sm font-700 ${a.dDay <= 14 ? "text-clay" : "text-muted"}`}>
+          <span
+            className={`font-display tnum text-sm font-700 ${a.dDay <= 14 ? "text-clay" : "text-muted"}`}
+          >
             D-{a.dDay}
           </span>
         ) : (
@@ -53,7 +58,8 @@ function ActionItem({ a }: { a: ActionCard }) {
       </p>
       {a.estimatedBenefit != null && (
         <p className="mt-1 text-[13px]">
-          예상 절감 <span className="font-display tnum font-600 text-gold">{won(a.estimatedBenefit)}원</span>
+          예상 절감{" "}
+          <span className="font-display tnum font-600 text-gold">{won(a.estimatedBenefit)}원</span>
         </p>
       )}
       {a.warning && <p className="mt-1 text-[12px] text-clay">⚠ {a.warning}</p>}
@@ -64,7 +70,8 @@ function ActionItem({ a }: { a: ActionCard }) {
 }
 
 function Vessel({ a, rank }: { a: Allocation; rank: number }) {
-  const ratio = a.annualCap > 0 && isFinite(a.annualCap) ? Math.min(1, a.annualAmount / a.annualCap) : 1;
+  const ratio =
+    a.annualCap > 0 && isFinite(a.annualCap) ? Math.min(1, a.annualAmount / a.annualCap) : 1;
   return (
     <li className="relative grid grid-cols-[2rem_1fr] gap-4 pb-7 last:pb-0">
       <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-surface font-display text-sm font-600 text-gold tnum ring-1 ring-gold/40">
@@ -86,7 +93,8 @@ function Vessel({ a, rank }: { a: Allocation; rank: number }) {
         </div>
         <div className="mt-1 flex justify-between text-[11px] text-muted tnum">
           <span>
-            효율 <span className="font-display text-gold">{pct(a.efficiency)}</span> · 첫 해 절세 {won(a.firstYearBenefit)}원
+            효율 <span className="font-display text-gold">{pct(a.efficiency)}</span> · 첫 해 절세{" "}
+            {won(a.firstYearBenefit)}원
           </span>
           <span>한도 {won(a.annualCap)}/년</span>
         </div>
@@ -134,7 +142,10 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
         ) : (
           <>
             <ol className="relative">
-              <div className="absolute bottom-3 left-4 top-3 w-px -translate-x-1/2 bg-line" aria-hidden />
+              <div
+                className="absolute bottom-3 left-4 top-3 w-px -translate-x-1/2 bg-line"
+                aria-hidden
+              />
               {shown.map((a, i) => (
                 <Vessel key={a.productId} a={a} rank={i + 1} />
               ))}
@@ -151,7 +162,8 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
         )}
         {rec.leftoverMonthly > 0 && (
           <p className="mt-4 text-[13px] text-muted">
-            남는 <span className="font-display tnum">{won(rec.leftoverMonthly)}원</span>/월은 일반계좌로.
+            남는 <span className="font-display tnum">{won(rec.leftoverMonthly)}원</span>/월은
+            일반계좌로.
           </p>
         )}
       </section>

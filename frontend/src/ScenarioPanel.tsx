@@ -74,9 +74,7 @@ export default function ScenarioPanel({
   profile: UserProfile;
   rules: RuleSet;
 }) {
-  const [scenarioMan, setScenarioMan] = useState(() =>
-    Math.round(profile.income / 10_000) + 1000,
-  );
+  const [scenarioMan, setScenarioMan] = useState(() => Math.round(profile.income / 10_000) + 1000);
   const [scenarioIncomeType, setScenarioIncomeType] = useState<IncomeType>(profile.incomeType);
   const [incomeTypeInferred, setIncomeTypeInferred] = useState(false);
 
@@ -159,207 +157,216 @@ export default function ScenarioPanel({
       </h2>
 
       <div className="mt-5">
-          {/* 공고 (추천 + 검색) */}
-          <div className="mb-5 border-b border-line pb-5">
-            {/* 추천 공고 — 초기 노출 + 로켓펀치 출처 */}
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-[11px] tracking-wide text-muted">추천 공고 · 로켓펀치 인기</span>
-              <a
-                href="https://www.rocketpunch.com/jobs"
-                target="_blank"
-                rel="noreferrer noopener"
-                className="text-[11px] text-gold outline-none hover:underline"
-              >
-                로켓펀치에서 더 보기 ↗
-              </a>
-            </div>
-            {recError && <p className="mb-2 text-[11px] text-locked">{recError}</p>}
-            {recommended === null && !recError && (
-              <p className="mb-2 text-[11px] text-locked">추천 공고 불러오는 중…</p>
-            )}
-            {recommended && recommended.length > 0 && (
-              <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {recommended.map((j) => (
-                  <JobResultChip key={`rec-${j.jobId}`} job={j} onPick={pickJob} />
-                ))}
-              </div>
-            )}
-
-            {/* 직접 검색 */}
-            <div className="flex items-end gap-2">
-              <label className="flex flex-1 flex-col gap-1">
-                <span className="text-[11px] tracking-wide text-muted">또는 직접 검색</span>
-                <input
-                  className="w-full rounded-lg border border-line bg-surface px-3 py-2 text-[15px] text-gray800 outline-none transition-colors focus:border-gold placeholder:text-locked"
-                  value={keyword}
-                  placeholder="회사명·직무 키워드"
-                  onChange={(e) => setKeyword(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && runSearch()}
-                />
-              </label>
-              <button
-                type="button"
-                onClick={runSearch}
-                disabled={searching}
-                className="rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none hover:bg-gold/10 disabled:opacity-50"
-              >
-                {searching ? "검색중…" : "검색"}
-              </button>
-            </div>
-
-            {searchError && <p className="mt-2 text-[12px] text-clay">{searchError}</p>}
-
-            {results && results.length > 0 && (
-              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {results.map((j) => (
-                  <JobResultChip key={j.jobId} job={j} onPick={pickJob} />
-                ))}
-              </div>
-            )}
-
-            {picked && (
-              <div className="mt-3 rounded-xl border border-line bg-surface px-3 py-2 text-[12px]">
-                선택: <strong className="text-ink">{picked.companyName}</strong> · {picked.title}
-                <span className="ml-2 rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">
-                  {companySizeLabel(picked.companySize)}
-                </span>
-                {picked.webUrl && (
-                  <a
-                    href={picked.webUrl}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="ml-2 text-[11px] text-gold outline-none hover:underline"
-                  >
-                    로켓펀치 ↗
-                  </a>
-                )}
-              </div>
-            )}
-
-            <p className="mt-2 text-[11px] leading-relaxed text-locked">※ {SALARY_GUIDE_NOTE}</p>
-          </div>
-
-          {/* 목표 연봉 입력 */}
-          <label className="flex flex-col gap-1">
-            <span className="text-[11px] tracking-wide text-muted">가정 연소득 (이직 후)</span>
-            <span className="flex items-baseline gap-1.5">
-              <input
-                type="text"
-                inputMode="numeric"
-                className="w-28 rounded-lg border border-line bg-surface px-3 py-1.5 text-base font-medium tracking-[-0.3px] tnum text-gray800 outline-none transition-colors focus:border-gold"
-                value={scenarioMan ? String(scenarioMan) : ""}
-                onFocus={(e) => e.currentTarget.select()}
-                onChange={(e) => {
-                  const cleaned = e.target.value.replace(/[^\d]/g, "").replace(/^0+(?=\d)/, "");
-                  setScenarioMan(cleaned === "" ? 0 : Number(cleaned));
-                  setSalaryHint(null);
-                }}
-              />
-              <span className="text-xs text-muted">만원</span>
-              <span className="ml-2 text-[12px] text-muted tnum">
-                현재 {Math.round(profile.income / 10_000).toLocaleString()}만 → 가정 {scenarioMan.toLocaleString()}만
-              </span>
-            </span>
-          </label>
-          {salaryHint && <p className="mt-1.5 text-[11px] text-gold">{salaryHint}</p>}
-
-          {/* 소득 유형(고용형태 기반) */}
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
-            <span className="text-muted">소득 유형</span>
-            <select
-              className="rounded-lg border border-line bg-surface px-3 py-1.5 text-[14px] text-gray800 outline-none transition-colors focus:border-gold"
-              value={scenarioIncomeType}
-              onChange={(e) => {
-                setScenarioIncomeType(e.target.value as IncomeType);
-                setIncomeTypeInferred(false);
-              }}
+        {/* 공고 (추천 + 검색) */}
+        <div className="mb-5 border-b border-line pb-5">
+          {/* 추천 공고 — 초기 노출 + 로켓펀치 출처 */}
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[11px] tracking-wide text-muted">추천 공고 · 로켓펀치 인기</span>
+            <a
+              href="https://www.rocketpunch.com/jobs"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="text-[11px] text-gold outline-none hover:underline"
             >
-              <option value="earned">직장인(총급여)</option>
-              <option value="comprehensive">사업·기타(종합소득)</option>
-            </select>
-            {incomeTypeInferred && (
-              <span className="rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">
-                <span className="font-600">가정</span> 공고 고용형태로 추정
+              로켓펀치에서 더 보기 ↗
+            </a>
+          </div>
+          {recError && <p className="mb-2 text-[11px] text-locked">{recError}</p>}
+          {recommended === null && !recError && (
+            <p className="mb-2 text-[11px] text-locked">추천 공고 불러오는 중…</p>
+          )}
+          {recommended && recommended.length > 0 && (
+            <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {recommended.map((j) => (
+                <JobResultChip key={`rec-${j.jobId}`} job={j} onPick={pickJob} />
+              ))}
+            </div>
+          )}
+
+          {/* 직접 검색 */}
+          <div className="flex items-end gap-2">
+            <label className="flex flex-1 flex-col gap-1">
+              <span className="text-[11px] tracking-wide text-muted">또는 직접 검색</span>
+              <input
+                className="w-full rounded-lg border border-line bg-surface px-3 py-2 text-[15px] text-gray800 outline-none transition-colors focus:border-gold placeholder:text-locked"
+                value={keyword}
+                placeholder="회사명·직무 키워드"
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && runSearch()}
+              />
+            </label>
+            <button
+              type="button"
+              onClick={runSearch}
+              disabled={searching}
+              className="rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none hover:bg-gold/10 disabled:opacity-50"
+            >
+              {searching ? "검색중…" : "검색"}
+            </button>
+          </div>
+
+          {searchError && <p className="mt-2 text-[12px] text-clay">{searchError}</p>}
+
+          {results && results.length > 0 && (
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {results.map((j) => (
+                <JobResultChip key={j.jobId} job={j} onPick={pickJob} />
+              ))}
+            </div>
+          )}
+
+          {picked && (
+            <div className="mt-3 rounded-xl border border-line bg-surface px-3 py-2 text-[12px]">
+              선택: <strong className="text-ink">{picked.companyName}</strong> · {picked.title}
+              <span className="ml-2 rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">
+                {companySizeLabel(picked.companySize)}
               </span>
-            )}
-            {delta.incomeTypeChanged && (
-              <span className="text-[11px] text-gold">현재와 소득유형이 달라요 → 공제율·상한 재적용됨</span>
-            )}
-          </div>
-
-          {/* 2열 핵심 비교 */}
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-line bg-surface p-3">
-              <div className="text-[11px] text-muted">한계세율</div>
-              <div className="mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg">
-                {pct(delta.marginalRateChange.from)}{" "}
-                <DeltaArrow from={delta.marginalRateChange.from} to={delta.marginalRateChange.to} />{" "}
-                <span className="text-gold">{pct(delta.marginalRateChange.to)}</span>
-              </div>
-            </div>
-            <div className="rounded-xl border border-line bg-surface p-3">
-              <div className="text-[11px] text-muted">첫 해 절세(워터폴)</div>
-              <div className="mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg">
-                {won(delta.baseFirstYearBenefit)}{" "}
-                <DeltaArrow from={delta.baseFirstYearBenefit} to={delta.scenarioFirstYearBenefit} />{" "}
-                <span className="text-gold">{won(delta.scenarioFirstYearBenefit)}</span>
-                <span className="text-xs text-muted">원</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 한계세율 설명 */}
-          <p className="mt-2 text-[11px] leading-relaxed text-locked">
-            ※ <span className="text-muted">한계세율</span>은 소득이 1원 더 늘 때 그 추가분에 붙는 세율(지방소득세 포함)이에요.
-            연봉이 오르면 세율 구간이 올라가 <span className="text-muted">연금·ISA 소득공제로 돌려받는 금액(효율)은 커지지만</span>,
-            청년상품의 소득상한을 넘으면 <span className="text-muted">자격 자체를 잃을 수</span> 있어요.
-          </p>
-
-          {/* 자격 상실 — 가장 강한 후크 */}
-          {delta.lost.length > 0 && (
-            <div className="mt-4 rounded-xl border-l-2 border-clay bg-clay/5 p-3">
-              <div className="text-[12px] font-600 text-clay">⚠ 이직하면 자격을 잃어요</div>
-              <ul className="mt-1.5">
-                {delta.lost.map((id) => (
-                  <li key={id} className="text-[13px] text-ink">
-                    {shiftById.get(id)?.name ?? id}
-                    <span className="ml-1 text-[12px] text-muted">— 지금 가입 안 하면 이직 후 가입 불가</span>
-                  </li>
-                ))}
-              </ul>
+              {picked.webUrl && (
+                <a
+                  href={picked.webUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="ml-2 text-[11px] text-gold outline-none hover:underline"
+                >
+                  로켓펀치 ↗
+                </a>
+              )}
             </div>
           )}
 
-          {/* 새 자격 */}
-          {delta.gained.length > 0 && (
-            <div className="mt-3 rounded-xl border-l-2 border-gold bg-gold/5 p-3">
-              <div className="text-[12px] font-600 text-gold">+ 새로 가능해지는 그릇</div>
-              <ul className="mt-1.5">
-                {delta.gained.map((id) => (
-                  <li key={id} className="text-[13px] text-ink">
-                    {shiftById.get(id)?.name ?? id}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <p className="mt-2 text-[11px] leading-relaxed text-locked">※ {SALARY_GUIDE_NOTE}</p>
+        </div>
 
-          {/* 효율/등급 변화 */}
-          {changed.length > 0 && (
-            <div className="mt-3 border-t border-line pt-3">
-              <div className="mb-1 text-[12px] text-muted">효율·등급 변화</div>
-              <ul>
-                {changed.map((s) => (
-                  <ChangedRow key={s.productId} s={s} />
-                ))}
-              </ul>
-            </div>
-          )}
+        {/* 목표 연봉 입력 */}
+        <label className="flex flex-col gap-1">
+          <span className="text-[11px] tracking-wide text-muted">가정 연소득 (이직 후)</span>
+          <span className="flex items-baseline gap-1.5">
+            <input
+              type="text"
+              inputMode="numeric"
+              className="w-28 rounded-lg border border-line bg-surface px-3 py-1.5 text-base font-medium tracking-[-0.3px] tnum text-gray800 outline-none transition-colors focus:border-gold"
+              value={scenarioMan ? String(scenarioMan) : ""}
+              onFocus={(e) => e.currentTarget.select()}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/[^\d]/g, "").replace(/^0+(?=\d)/, "");
+                setScenarioMan(cleaned === "" ? 0 : Number(cleaned));
+                setSalaryHint(null);
+              }}
+            />
+            <span className="text-xs text-muted">만원</span>
+            <span className="ml-2 text-[12px] text-muted tnum">
+              현재 {Math.round(profile.income / 10_000).toLocaleString()}만 → 가정{" "}
+              {scenarioMan.toLocaleString()}만
+            </span>
+          </span>
+        </label>
+        {salaryHint && <p className="mt-1.5 text-[11px] text-gold">{salaryHint}</p>}
 
-          {delta.lost.length === 0 && delta.gained.length === 0 && changed.length === 0 && (
-            <p className="mt-4 text-[13px] text-muted">이 연봉 변화로는 자격·효율이 크게 달라지지 않아요.</p>
+        {/* 소득 유형(고용형태 기반) */}
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
+          <span className="text-muted">소득 유형</span>
+          <select
+            className="rounded-lg border border-line bg-surface px-3 py-1.5 text-[14px] text-gray800 outline-none transition-colors focus:border-gold"
+            value={scenarioIncomeType}
+            onChange={(e) => {
+              setScenarioIncomeType(e.target.value as IncomeType);
+              setIncomeTypeInferred(false);
+            }}
+          >
+            <option value="earned">직장인(총급여)</option>
+            <option value="comprehensive">사업·기타(종합소득)</option>
+          </select>
+          {incomeTypeInferred && (
+            <span className="rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">
+              <span className="font-600">가정</span> 공고 고용형태로 추정
+            </span>
+          )}
+          {delta.incomeTypeChanged && (
+            <span className="text-[11px] text-gold">
+              현재와 소득유형이 달라요 → 공제율·상한 재적용됨
+            </span>
           )}
         </div>
+
+        {/* 2열 핵심 비교 */}
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="rounded-xl border border-line bg-surface p-3">
+            <div className="text-[11px] text-muted">한계세율</div>
+            <div className="mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg">
+              {pct(delta.marginalRateChange.from)}{" "}
+              <DeltaArrow from={delta.marginalRateChange.from} to={delta.marginalRateChange.to} />{" "}
+              <span className="text-gold">{pct(delta.marginalRateChange.to)}</span>
+            </div>
+          </div>
+          <div className="rounded-xl border border-line bg-surface p-3">
+            <div className="text-[11px] text-muted">첫 해 절세(워터폴)</div>
+            <div className="mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg">
+              {won(delta.baseFirstYearBenefit)}{" "}
+              <DeltaArrow from={delta.baseFirstYearBenefit} to={delta.scenarioFirstYearBenefit} />{" "}
+              <span className="text-gold">{won(delta.scenarioFirstYearBenefit)}</span>
+              <span className="text-xs text-muted">원</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 한계세율 설명 */}
+        <p className="mt-2 text-[11px] leading-relaxed text-locked">
+          ※ <span className="text-muted">한계세율</span>은 소득이 1원 더 늘 때 그 추가분에 붙는
+          세율(지방소득세 포함)이에요. 연봉이 오르면 세율 구간이 올라가{" "}
+          <span className="text-muted">연금·ISA 소득공제로 돌려받는 금액(효율)은 커지지만</span>,
+          청년상품의 소득상한을 넘으면 <span className="text-muted">자격 자체를 잃을 수</span>{" "}
+          있어요.
+        </p>
+
+        {/* 자격 상실 — 가장 강한 후크 */}
+        {delta.lost.length > 0 && (
+          <div className="mt-4 rounded-xl border-l-2 border-clay bg-clay/5 p-3">
+            <div className="text-[12px] font-600 text-clay">⚠ 이직하면 자격을 잃어요</div>
+            <ul className="mt-1.5">
+              {delta.lost.map((id) => (
+                <li key={id} className="text-[13px] text-ink">
+                  {shiftById.get(id)?.name ?? id}
+                  <span className="ml-1 text-[12px] text-muted">
+                    — 지금 가입 안 하면 이직 후 가입 불가
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 새 자격 */}
+        {delta.gained.length > 0 && (
+          <div className="mt-3 rounded-xl border-l-2 border-gold bg-gold/5 p-3">
+            <div className="text-[12px] font-600 text-gold">+ 새로 가능해지는 그릇</div>
+            <ul className="mt-1.5">
+              {delta.gained.map((id) => (
+                <li key={id} className="text-[13px] text-ink">
+                  {shiftById.get(id)?.name ?? id}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 효율/등급 변화 */}
+        {changed.length > 0 && (
+          <div className="mt-3 border-t border-line pt-3">
+            <div className="mb-1 text-[12px] text-muted">효율·등급 변화</div>
+            <ul>
+              {changed.map((s) => (
+                <ChangedRow key={s.productId} s={s} />
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {delta.lost.length === 0 && delta.gained.length === 0 && changed.length === 0 && (
+          <p className="mt-4 text-[13px] text-muted">
+            이 연봉 변화로는 자격·효율이 크게 달라지지 않아요.
+          </p>
+        )}
+      </div>
     </section>
   );
 }

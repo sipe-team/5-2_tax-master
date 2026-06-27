@@ -17,7 +17,9 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
   return (
     <div className="rounded-xl border border-line bg-surface p-3">
       <div className="text-[11px] text-muted">{label}</div>
-      <div className={`mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg ${accent ? "text-gold" : "text-ink"}`}>
+      <div
+        className={`mt-1 font-sans font-semibold tracking-[-0.3px] tnum text-lg ${accent ? "text-gold" : "text-ink"}`}
+      >
         {value}
         <span className="text-xs text-muted">원</span>
       </div>
@@ -52,7 +54,9 @@ export default function ProjectionPanel({
 
   return (
     <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
-      <h2 className="text-[13px] font-600 tracking-wide text-muted">이대로 모으면 — 자산 시뮬레이션</h2>
+      <h2 className="text-[13px] font-600 tracking-wide text-muted">
+        이대로 모으면 — 자산 시뮬레이션
+      </h2>
 
       <p className="mt-3 text-[14px]">
         <span className="text-muted">{proj.horizonYears}년 뒤 예상 자산</span>{" "}
@@ -88,10 +92,15 @@ export default function ProjectionPanel({
 
       {proj.annualTaxBenefit > 0 && (
         <div className="mt-3 rounded-xl border-l-2 border-gold bg-gold/5 p-3 text-[13px]">
-          절세 환급(연 <span className="font-display tnum text-gold">{won(proj.annualTaxBenefit)}원</span>)을
-          다시 모으면 매달 <span className="font-display tnum text-gold">+{won(proj.monthlyTaxBenefit)}원</span>{" "}
-          저축 여력이 생겨요. 절세분까지 재투자하면 {proj.horizonYears}년 뒤{" "}
-          <span className="font-display tnum text-gold">{won(proj.balanceWithReinvestedTaxBenefit)}원</span>.
+          절세 환급(연{" "}
+          <span className="font-display tnum text-gold">{won(proj.annualTaxBenefit)}원</span>)을
+          다시 모으면 매달{" "}
+          <span className="font-display tnum text-gold">+{won(proj.monthlyTaxBenefit)}원</span> 저축
+          여력이 생겨요. 절세분까지 재투자하면 {proj.horizonYears}년 뒤{" "}
+          <span className="font-display tnum text-gold">
+            {won(proj.balanceWithReinvestedTaxBenefit)}원
+          </span>
+          .
         </div>
       )}
 
@@ -130,8 +139,9 @@ export default function ProjectionPanel({
       </div>
 
       <p className="mt-3 text-[11px] leading-relaxed text-locked">
-        ※ 연 {rateLabel}% 수익률·매달 적립 가정의 명목 추정치예요. 세전·수수료·물가는
-        반영하지 않았고, 절세액은 매년 동일하게 반복된다고 단순 가정했습니다. 실제 수익률은 시장에 따라 다릅니다.
+        ※ 연 {rateLabel}% 수익률·매달 적립 가정의 명목 추정치예요. 세전·수수료·물가는 반영하지
+        않았고, 절세액은 매년 동일하게 반복된다고 단순 가정했습니다. 실제 수익률은 시장에 따라
+        다릅니다.
       </p>
     </section>
   );

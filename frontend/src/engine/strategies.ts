@@ -23,12 +23,16 @@ function scoreOf(urgency: ActionUrgency, benefit: number | null): number {
   return Math.round(manwon * URGENCY_WEIGHT[urgency] * 10) / 10;
 }
 
-function card(c: Omit<ActionCard, "score" | "badges"> & { badges?: ActionCard["badges"] }): ActionCard {
+function card(
+  c: Omit<ActionCard, "score" | "badges"> & { badges?: ActionCard["badges"] },
+): ActionCard {
   return { ...c, score: scoreOf(c.urgency, c.estimatedBenefit), badges: c.badges ?? [] };
 }
 
 const holdsForeign = (u: UserProfile) =>
-  !!u.investTypes?.includes("foreign_stock") || (u.overseasUnrealizedProfit ?? 0) > 0 || !!u.overseasHoldings;
+  !!u.investTypes?.includes("foreign_stock") ||
+  (u.overseasUnrealizedProfit ?? 0) > 0 ||
+  !!u.overseasHoldings;
 
 /** 전략 액션 산출. RIA·청년적금 마감(immediate)은 urgent.ts가 담당. */
 export function buildStrategyActions(user: UserProfile): ActionCard[] {
@@ -84,9 +88,11 @@ export function buildStrategyActions(user: UserProfile): ActionCard[] {
         category: "해외주식 전략",
         urgency: "structural",
         estimatedBenefit: benefit,
-        reason: "미실현 수익이 큰 주식을 가족에게 증여하면 취득가가 재설정돼 양도세 부담이 크게 줄어요.",
+        reason:
+          "미실현 수익이 큰 주식을 가족에게 증여하면 취득가가 재설정돼 양도세 부담이 크게 줄어요.",
         action: `${user.hasSpouse ? "배우자" : "자녀"}에게 증여 후 매도 (10년 합산 비과세 한도 내)`,
-        warning: "증여 후 단기 매도 시 이월과세로 효과 소멸 — 안전상 10년 보유 권장. 매도대금 반환 시 부당행위계산 부인.",
+        warning:
+          "증여 후 단기 매도 시 이월과세로 효과 소멸 — 안전상 10년 보유 권장. 매도대금 반환 시 부당행위계산 부인.",
       }),
     );
   }
@@ -100,7 +106,8 @@ export function buildStrategyActions(user: UserProfile): ActionCard[] {
         category: "배당",
         urgency: "partial",
         estimatedBenefit: null, // 요건·통과안 수치 재확인 필요(v2 §9 flag)
-        reason: "2026~2028 한시로 요건 충족 고배당주 배당은 종합과세 대신 14~30% 분리과세가 가능해요.",
+        reason:
+          "2026~2028 한시로 요건 충족 고배당주 배당은 종합과세 대신 14~30% 분리과세가 가능해요.",
         action: "분리과세 신청 (개별 종목만 — ETF·리츠 제외)",
         warning: "2028년 말 일몰. 요건·세율은 국세청 공식 자료 재확인 필요.",
         deadline: "2028-12-31",
@@ -147,7 +154,8 @@ export function buildStrategyActions(user: UserProfile): ActionCard[] {
         category: "연금 연계",
         urgency: "structural",
         estimatedBenefit: 300_000, // 전환액 10%(최대 300만) × 공제 → 최대 약 30만 추가 환급
-        reason: "ISA 만기 자금을 60일 내 연금저축/IRP로 옮기면 전환액 10%(최대 300만) 추가 세액공제.",
+        reason:
+          "ISA 만기 자금을 60일 내 연금저축/IRP로 옮기면 전환액 10%(최대 300만) 추가 세액공제.",
         action: "만기 시 60일 이내 연금계좌로 이체",
         warning: null,
       }),

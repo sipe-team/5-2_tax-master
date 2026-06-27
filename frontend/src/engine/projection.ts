@@ -53,8 +53,7 @@ export function projectWealth(
   returnRateOverride?: number,
 ): WealthProjection {
   const monthly = user.monthlyInvestable;
-  const annual =
-    returnRateOverride ?? confirmed(rules.constants.assumedReturnRate) ?? 0.06;
+  const annual = returnRateOverride ?? confirmed(rules.constants.assumedReturnRate) ?? 0.06;
   const r = Math.pow(1 + annual, 1 / 12) - 1;
   const years = Math.max(0, user.horizonYears);
   const months = Math.round(years * 12);
@@ -99,11 +98,7 @@ export function projectWealth(
  * 목표 금액 도달까지 걸리는 개월 수(적립식, 가정 수익률).
  * 도달 불가(월적립 0 등)면 Infinity.
  */
-export function monthsToReach(
-  target: number,
-  monthly: number,
-  annualReturnRate: number,
-): number {
+export function monthsToReach(target: number, monthly: number, annualReturnRate: number): number {
   if (target <= 0) return 0;
   if (monthly <= 0) return Infinity;
   const r = Math.pow(1 + annualReturnRate, 1 / 12) - 1;

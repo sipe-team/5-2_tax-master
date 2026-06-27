@@ -46,7 +46,8 @@ describe("락업 하드 제약 (Q14)", () => {
   });
 });
 
-const action = (rec: ReturnType<typeof recommend>, id: string) => rec.actions.find((a) => a.id === id);
+const action = (rec: ReturnType<typeof recommend>, id: string) =>
+  rec.actions.find((a) => a.id === id);
 
 describe("긴급 액션 (Q9)", () => {
   it("청년미래적금 신청 마감 D-day", () => {
@@ -128,7 +129,13 @@ describe("등급/업셀 (Q16)", () => {
 describe("잔여 한도 (PRD 병합)", () => {
   it("연금저축 600만 이미 납입 → 잔여 0이라 워터폴에서 빠지고, IRP에 합산 잔여 300만", () => {
     const rec = recommend(
-      { ...base, horizonYears: 30, monthlyInvestable: 3_000_000, hasPension: true, pensionContribution: 6_000_000 },
+      {
+        ...base,
+        horizonYears: 30,
+        monthlyInvestable: 3_000_000,
+        hasPension: true,
+        pensionContribution: 6_000_000,
+      },
       ruleSet,
     );
     expect(find(rec, "pension-fund")).toBeUndefined(); // 600 - 600 = 0

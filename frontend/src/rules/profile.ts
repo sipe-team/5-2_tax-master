@@ -79,7 +79,9 @@ export function toProfile(d: FunnelData): UserProfile {
     hasIsa: d.hasIsa,
     investTypes: d.investTypes as InvestType[],
     overseasHoldings: overseas,
-    overseasUnrealizedProfit: overseas ? Math.max(0, overseas.marketValue - overseas.costBasis) : undefined,
+    overseasUnrealizedProfit: overseas
+      ? Math.max(0, overseas.marketValue - overseas.costBasis)
+      : undefined,
     financialIncome: d.financialIncomeMan * MAN,
     dividendIncome: d.dividendIncomeMan * MAN,
     holdsHighDividend: d.holdsHighDividend,
