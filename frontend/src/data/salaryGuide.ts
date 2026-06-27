@@ -34,9 +34,6 @@ export const SALARY_GUIDE_MAN: Record<Seniority, SalaryRangeMan> = {
   EXECUTIVE: { min: 12000, max: 25000, mid: 16000 },
 };
 
-export const SALARY_GUIDE_NOTE =
-  "로켓펀치 API는 연봉을 제공하지 않아요. 아래 값은 2025년 IT/개발 연차별 평균연봉 통계를 토대로 한 추정 범위로, 직군·회사규모에 따라 편차가 커요. 목표 연봉은 직접 확정하세요.";
-
 /** 숙련도 → 가이드 레인지(없으면 undefined). */
 export function salaryGuideFor(seniority?: Seniority): SalaryRangeMan | undefined {
   return seniority ? SALARY_GUIDE_MAN[seniority] : undefined;
