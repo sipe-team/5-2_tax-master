@@ -22,7 +22,7 @@ export function AssumptionsSection({
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          className="flex cursor-pointer items-center gap-1 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800 outline-none transition-colors hover:text-gold focus-visible:text-gold"
+          className="flex cursor-pointer items-center gap-1 heading-md outline-none transition-colors hover:text-gold focus-visible:text-gold"
         >
           가정 · 제외 <span className="text-locked tnum">{items.length}</span>
           <svg

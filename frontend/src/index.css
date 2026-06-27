@@ -53,6 +53,15 @@ textarea {
   font-feature-settings: "tnum";
 }
 
+/* 섹션/카드 헤딩 토큰 (Toss 16px Bold) — 반복 제거용 */
+.heading-md {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.75rem;
+  letter-spacing: -0.3px;
+  color: var(--color-gray800);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;

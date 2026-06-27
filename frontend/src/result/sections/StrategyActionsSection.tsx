@@ -8,7 +8,7 @@ export function StrategyActionsSection({ actions }: { actions: ActionCard[] }) {
   return (
     <Reveal>
       <section className="mb-7">
-        <h2 className="mb-3 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+        <h2 className="mb-3 heading-md">
           지금 할 일 · 전략
         </h2>
         <div className="flex flex-col gap-3">

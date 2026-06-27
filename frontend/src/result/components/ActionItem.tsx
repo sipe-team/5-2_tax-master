@@ -14,7 +14,7 @@ export function ActionItem({ a }: { a: ActionCard }) {
       }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <strong className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+        <strong className="heading-md">
           {a.name}
         </strong>
         {a.dDay != null ? (
@@ -39,7 +39,7 @@ export function ActionItem({ a }: { a: ActionCard }) {
       </p>
       {a.estimatedBenefit != null && (
         <div className="mt-4 flex items-center justify-between rounded-lg bg-primary-light px-3 py-2.5">
-          <span className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+          <span className="heading-md">
             예상 절감
           </span>
           <span className="tnum text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gold">

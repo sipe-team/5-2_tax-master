@@ -38,7 +38,7 @@ export function Vessel({
       <div>
         <div className="flex items-baseline justify-between gap-3">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-            <strong className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+            <strong className="heading-md">
               {a.name}
             </strong>
             {action?.dDay != null && (
@@ -48,7 +48,7 @@ export function Vessel({
             )}
           </div>
           <div className="text-right">
-            <span className="tnum text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+            <span className="tnum heading-md">
               {won(a.monthlyAmount)}
             </span>
             <span className="text-[12px] font-medium tracking-[-0.3px] text-muted"> 원/월</span>

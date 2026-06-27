@@ -39,7 +39,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
 
         <Reveal>
           <header className="mb-8">
-            <h1 className="text-[16px] font-semibold leading-7 text-gray800">
+            <h1 className="heading-md">
               투자 절세 효율이 높은 <span className="text-gold">순서</span>예요.
             </h1>
           </header>

@@ -49,7 +49,7 @@ export function StepShell({
             );
           })}
         </div>
-        <h1 className="text-[16px] font-semibold leading-7 text-gray800">{title}</h1>
+        <h1 className="heading-md">{title}</h1>
         {subtitle && (
           <p className="mt-2 text-[14px] font-medium leading-5 text-muted">{subtitle}</p>
         )}

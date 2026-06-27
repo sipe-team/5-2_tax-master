@@ -36,7 +36,7 @@ export function WaterfallSection({
   return (
     <Reveal>
       <section className="mb-7">
-        <h2 className="mb-3 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+        <h2 className="mb-3 heading-md">
           매달 적립 우선순위
         </h2>
         {waterfall.length === 0 ? (

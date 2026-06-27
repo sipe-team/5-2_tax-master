@@ -6,7 +6,7 @@ import { GapChartView } from "../components/GapChartView";
 export function GapSection({ proj }: { proj: GapProjection }) {
   return (
     <section className="rounded-2xl bg-surface p-5 ring-1 ring-line">
-      <h2 className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+      <h2 className="heading-md">
         {proj.horizonYears}년 후, <span className="text-gold">{won(proj.finalGap)}원</span> 차이가
         납니다
       </h2>
