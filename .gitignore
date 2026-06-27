@@ -8,3 +8,6 @@ dist
 # 환경 변수 / 시크릿 (커밋 금지)
 *.local
 .env.local
+
+# 로컬 작업용 참고 문서 (커밋 금지)
+abstraction_principles.md
