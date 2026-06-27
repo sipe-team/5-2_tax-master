@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import type { IncomeType, RuleSet, UserProfile } from "../../rules/schema";
+import type { IncomeType, UserProfile } from "../../rules/schema";
+import { ruleSet } from "../../rules/products";
 import { diffScenarios } from "../../engine";
 import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "../../data/jobs";
 import { salaryGuideFor } from "../../data/salaryGuide";
@@ -44,13 +45,7 @@ function JobResultChip({ job, onPick }: { job: JobChip; onPick: (j: JobChip) => 
   );
 }
 
-export default function ScenarioPanel({
-  profile,
-  rules,
-}: {
-  profile: UserProfile;
-  rules: RuleSet;
-}) {
+export default function ScenarioPanel({ profile }: { profile: UserProfile }) {
   const [scenarioMan, setScenarioMan] = useState(() => Math.round(profile.income / 10_000) + 1000);
   // 시나리오 소득 유형은 직장인(총급여)으로 고정.
   const scenarioIncomeType: IncomeType = "earned";
@@ -76,8 +71,8 @@ export default function ScenarioPanel({
   }, []);
 
   const delta = useMemo(
-    () => diffScenarios(profile, scenarioMan * 10_000, rules, scenarioIncomeType),
-    [profile, scenarioMan, scenarioIncomeType, rules],
+    () => diffScenarios(profile, scenarioMan * 10_000, ruleSet, scenarioIncomeType),
+    [profile, scenarioMan, scenarioIncomeType],
   );
 
   function pickJob(job: JobChip) {

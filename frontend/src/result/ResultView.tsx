@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { Recommendation } from "../engine";
 import { splitWaterfallAndStrategyActions, totalMaxBenefitWon } from "../engine";
 import type { UserProfile } from "../rules/schema";
-import { ruleSet } from "../rules/products";
 import ScenarioPanel from "./sections/ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
 import { Reveal } from "./components/Reveal";
@@ -58,7 +57,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
 
         {/* 이직 시나리오 (연봉 변화 시뮬레이터) — 인터랙티브라 PDF에서는 제외 */}
         <Reveal className="no-print">
-          <ScenarioPanel profile={profile} rules={ruleSet} />
+          <ScenarioPanel profile={profile} />
         </Reveal>
 
         <AssumptionsSection
