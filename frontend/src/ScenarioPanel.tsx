@@ -86,23 +86,6 @@ export default function ScenarioPanel({
     [profile, scenarioMan, scenarioIncomeType, rules],
   );
 
-  async function runSearch() {
-    const kw = keyword.trim();
-    if (!kw) return;
-    setSearching(true);
-    setSearchError(null);
-    try {
-      const page = await searchJobs({ keyword: kw, pageSize: 8, sort: "RELEVANCE_DESC" });
-      setResults(page.items);
-      if (page.items.length === 0) setSearchError("검색 결과가 없어요.");
-    } catch (e) {
-      setResults(null);
-      setSearchError(e instanceof ProxyError ? e.message : "검색 중 오류가 발생했어요.");
-    } finally {
-      setSearching(false);
-    }
-  }
-
   function pickJob(job: JobChip) {
     setPicked(job);
     const guide = salaryGuideFor(job.seniority);
@@ -161,28 +144,6 @@ export default function ScenarioPanel({
             </div>
           )}
 
-          {/* 직접 검색 */}
-          <div className="flex items-end gap-2">
-            <label className="flex flex-1 flex-col gap-1">
-              <span className="text-[11px] tracking-wide text-muted">또는 직접 검색</span>
-              <input
-                className="w-full rounded-lg border border-line bg-surface px-3 py-2 text-[15px] text-gray800 outline-none transition-colors focus:border-gold placeholder:text-locked"
-                value={keyword}
-                placeholder="회사명·직무 키워드"
-                onChange={(e) => setKeyword(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && runSearch()}
-              />
-            </label>
-            <button
-              type="button"
-              onClick={runSearch}
-              disabled={searching}
-              className="rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none hover:bg-gold/10 disabled:opacity-50"
-            >
-              {searching ? "검색중…" : "검색"}
-            </button>
-          </div>
-
           {searchError && <p className="mt-2 text-[12px] text-clay">{searchError}</p>}
 
           {results && results.length > 0 && (
@@ -211,8 +172,6 @@ export default function ScenarioPanel({
               )}
             </div>
           )}
-
-          <p className="mt-2 text-[11px] leading-relaxed text-locked">※ {SALARY_GUIDE_NOTE}</p>
         </div>
 
         {/* 목표 연봉 입력 */}
