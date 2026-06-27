@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
-import { googleCalendarUrl } from "../engine";
+import { googleCalendarUrl, buildCliffChart, projectGap } from "../engine";
 import { won, pct } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ScenarioPanel from "../ScenarioPanel";
 import EventsPanel from "../EventsPanel";
 import { BackHeader } from "../components/BackHeader";
+import { CliffChartView } from "../CliffChartView";
+import { GapChartView } from "../GapChartView";
 
 // 스크롤로 뷰포트에 진입할 때 한 번 부드럽게 등장
 function Reveal({
@@ -162,6 +164,15 @@ const TOP_N = 5;
 
 export function ResultView({ rec, profile }: { rec: Recommendation; profile: UserProfile }) {
   const [expanded, setExpanded] = useState(false);
+
+  // 연봉 절벽 (와우모먼트): 룰에서 산출, 소득유형별.
+  const cliff = useMemo(() => buildCliffChart(ruleSet, profile.incomeType), [profile.incomeType]);
+
+  // N년 후 격차 (와우모먼트): 절세계좌 vs 일반계좌 누적 시뮬레이션.
+  const gapProj = useMemo(
+    () => projectGap(rec, profile.monthlyInvestable, profile.horizonYears, ruleSet),
+    [rec, profile.monthlyInvestable, profile.horizonYears],
+  );
   const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
   const hidden = rec.waterfall.length - shown.length;
 
@@ -284,6 +295,61 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       <Reveal>
         <ScenarioPanel profile={profile} rules={ruleSet} />
       </Reveal>
+
+      {/* 연봉 절벽 (와우모먼트): 룰에 박힌 숨은 절벽 */}
+      {cliff && cliff.markers.length > 0 && (
+        <Reveal>
+          <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
+            <h2 className="text-[18px] font-700 leading-tight">
+              연봉이 이 선을 넘으면, <span className="text-clay">절세액이 떨어집니다</span>
+            </h2>
+            <p className="mt-1 text-[12px] text-muted">
+              아무도 안 알려주는 '숨은 절벽' — 연봉 한 끗 차이로 혜택이 끊깁니다
+              <span className="text-locked"> ({won(cliff.assumedContribution)}원 납입 기준)</span>
+            </p>
+            <div className="mt-4">
+              <CliffChartView chart={cliff} currentIncome={profile.income} />
+            </div>
+            <div className="mt-4 flex flex-col gap-2.5">
+              {cliff.markers.map((m) => (
+                <div
+                  key={`${m.income}-${m.label}`}
+                  className={`rounded-xl border-l-2 bg-surface/60 py-2 pl-3 pr-3 ${m.delta < 0 ? "border-clay" : "border-gold"}`}
+                >
+                  <div className="text-[13px] font-600">📍 {m.label}</div>
+                  <div className="mt-0.5 text-[12px] leading-relaxed text-muted">{m.detail}</div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-[11px] text-locked">
+              ※ 그래프는 {ruleSet.asOfLabel} 법령 경계를 그대로 표시합니다. 정보 제공 목적이며 자문이 아닙니다.
+            </p>
+          </section>
+        </Reveal>
+      )}
+
+      {/* N년 후 격차 (와우모먼트): 절세계좌 vs 일반계좌 */}
+      {gapProj.finalGap > 0 && (
+        <Reveal>
+          <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
+            <h2 className="text-[18px] font-700 leading-tight">
+              {gapProj.horizonYears}년 후,{" "}
+              <span className="text-gold">{won(gapProj.finalGap)}원</span> 차이가 납니다
+            </h2>
+            <p className="mt-1 text-[12px] text-muted">
+              같은 돈을 일반계좌에 둘 때 vs 절세 그릇에 담을 때 — 시간이 갈수록 벌어집니다
+              <span className="text-locked"> (연 {pct(gapProj.returnRate)} 수익 가정, 양쪽 동일)</span>
+            </p>
+            <div className="mt-4">
+              <GapChartView proj={gapProj} />
+            </div>
+            <p className="mt-3 text-[11px] leading-relaxed text-locked">
+              ※ 차이는 오직 '세금'에서만 발생하도록 계산했습니다(수익률 우위 가정 없음). 운용 단계 누적의 근사치이며
+              연금 수령 시 과세·중도해지 페널티는 미반영입니다. 정보 제공 목적이며 자문이 아닙니다.
+            </p>
+          </section>
+        </Reveal>
+      )}
 
       {/* 재테크/비즈니스 이벤트 (마감 임박순) */}
       <Reveal>
