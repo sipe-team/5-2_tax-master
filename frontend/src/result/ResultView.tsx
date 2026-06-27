@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, type Variants } from "framer-motion";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
 import { buildCalendar, calendarActions, downloadCalendar } from "../engine";
 import { won, pct } from "../lib/format";
@@ -7,6 +8,43 @@ import { ruleSet } from "../rules/products";
 import ProjectionPanel from "../ProjectionPanel";
 import ScenarioPanel from "../ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
+
+// 스크롤로 뷰포트에 진입할 때 한 번 부드럽게 등장
+function Reveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// 워터폴 1, 2, 3 ... 순차 등장 (스크롤 무관, 마운트 시 cascade)
+const waterfallContainer: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
+};
+const vesselItem: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
 const BADGE_STYLE: Record<Badge["kind"], string> = {
   assumed: "border-line text-muted",
@@ -75,7 +113,10 @@ function Vessel({ a, rank }: { a: Allocation; rank: number }) {
   const ratio =
     a.annualCap > 0 && isFinite(a.annualCap) ? Math.min(1, a.annualAmount / a.annualCap) : 1;
   return (
-    <li className="relative grid grid-cols-[2rem_1fr] gap-4 pb-7 last:pb-0">
+    <motion.li
+      variants={vesselItem}
+      className="relative grid grid-cols-[2rem_1fr] gap-4 pb-7 last:pb-0"
+    >
       <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-surface font-display text-sm font-600 text-gold tnum ring-1 ring-gold/40">
         {rank}
       </div>
@@ -103,7 +144,7 @@ function Vessel({ a, rank }: { a: Allocation; rank: number }) {
         <p className="mt-1.5 text-[13px] text-muted">{a.rationale}</p>
         <Badges items={a.badges} />
       </div>
-    </li>
+    </motion.li>
   );
 }
 
@@ -122,45 +163,55 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
     <>
       <BackHeader />
       <div className="mx-auto max-w-[640px] px-5 pb-10 pt-6">
-      <header className="mb-8">
-        <div className="mb-3 flex items-center gap-2 text-[11px] tracking-[0.18em] text-muted">
-          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          나의 절세 추천
-        </div>
-        <h1 className="text-[16px] font-semibold leading-7 text-gray800">
-          투자 절세 효율이 높은 <span className="text-gold">순서</span>예요.
-        </h1>
-      </header>
+      <Reveal>
+        <header className="mb-8">
+          <div className="mb-3 flex items-center gap-2 text-[11px] tracking-[0.18em] text-muted">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+            나의 절세 추천
+          </div>
+          <h1 className="text-[16px] font-semibold leading-7 text-gray800">
+            투자 절세 효율이 높은 <span className="text-gold">순서</span>예요.
+          </h1>
+        </header>
+      </Reveal>
 
       {rec.actions.length > 0 && (
-        <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-clay/30">
-          <h2 className="mb-4 text-[13px] font-600 tracking-wide text-clay">지금 할 일 · 전략</h2>
-          <div className="flex flex-col gap-4">
-            {rec.actions.map((a) => (
-              <ActionItem key={a.id} a={a} />
-            ))}
-          </div>
+        <Reveal>
+          <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-clay/30">
+            <h2 className="mb-4 text-[13px] font-600 tracking-wide text-clay">지금 할 일 · 전략</h2>
+            <div className="flex flex-col gap-4">
+              {rec.actions.map((a) => (
+                <ActionItem key={a.id} a={a} />
+              ))}
+            </div>
 
-          {deadlineActions.length > 0 && (
-            <button
-              type="button"
-              onClick={onDownloadCalendar}
-              title="마감일을 캘린더(.ics)로 내보내 D-7 알림을 받으세요 (iOS·Android 지원)"
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
-            >
-              📅 마감일 캘린더에 추가 ({deadlineActions.length})
-            </button>
-          )}
-        </section>
+            {deadlineActions.length > 0 && (
+              <button
+                type="button"
+                onClick={onDownloadCalendar}
+                title="마감일을 캘린더(.ics)로 내보내 D-7 알림을 받으세요 (iOS·Android 지원)"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+              >
+                📅 마감일 캘린더에 추가 ({deadlineActions.length})
+              </button>
+            )}
+          </section>
+        </Reveal>
       )}
 
+      <Reveal>
       <section className="mb-7">
         <h2 className="mb-5 text-[13px] font-600 tracking-wide text-muted">매달 적립 우선순위</h2>
         {rec.waterfall.length === 0 ? (
           <p className="text-[14px] text-muted">조건에 맞는 절세 그릇이 없어요.</p>
         ) : (
           <>
-            <ol className="relative">
+            <motion.ol
+              className="relative"
+              variants={waterfallContainer}
+              initial="hidden"
+              animate="show"
+            >
               <div
                 className="absolute bottom-3 left-4 top-3 w-px -translate-x-1/2 bg-line"
                 aria-hidden
@@ -168,7 +219,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
               {shown.map((a, i) => (
                 <Vessel key={a.productId} a={a} rank={i + 1} />
               ))}
-            </ol>
+            </motion.ol>
             {hidden > 0 && (
               <button
                 className="mt-2 text-[13px] text-gold outline-none hover:underline focus-visible:underline"
@@ -186,25 +237,34 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
           </p>
         )}
       </section>
+      </Reveal>
 
       {rec.assumptions.length > 0 && (
-        <section className="mb-7 rounded-2xl bg-surface/60 p-5 ring-1 ring-line">
-          <h3 className="mb-2 text-[12px] tracking-wide text-muted">가정 · 제외</h3>
-          <Badges items={rec.assumptions} />
-        </section>
+        <Reveal>
+          <section className="mb-7 rounded-2xl bg-surface/60 p-5 ring-1 ring-line">
+            <h3 className="mb-2 text-[12px] tracking-wide text-muted">가정 · 제외</h3>
+            <Badges items={rec.assumptions} />
+          </section>
+        </Reveal>
       )}
 
       {/* 자산 형성 시뮬레이션 (이대로 모으면 얼마) */}
-      <ProjectionPanel profile={profile} rec={rec} rules={ruleSet} />
+      <Reveal>
+        <ProjectionPanel profile={profile} rec={rec} rules={ruleSet} />
+      </Reveal>
 
       {/* 이직 시나리오 (연봉 변화 시뮬레이터) */}
-      <ScenarioPanel profile={profile} rules={ruleSet} />
+      <Reveal>
+        <ScenarioPanel profile={profile} rules={ruleSet} />
+      </Reveal>
 
-      <footer className="border-t border-line pt-5 text-[12px] leading-relaxed text-muted">
-        {rec.disclaimers.map((d, i) => (
-          <p key={i}>※ {d}</p>
-        ))}
-      </footer>
+      <Reveal>
+        <footer className="border-t border-line pt-5 text-[12px] leading-relaxed text-muted">
+          {rec.disclaimers.map((d, i) => (
+            <p key={i}>※ {d}</p>
+          ))}
+        </footer>
+      </Reveal>
       </div>
     </>
   );

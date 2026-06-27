@@ -1,9 +1,30 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useFunnel } from "@use-funnel/react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import checkedIcon from "../assets/checked.svg";
 import defaultCheckIcon from "../assets/default-check.svg";
 import { BackHeader } from "../components/BackHeader";
+
+// 체크박스/토글에 따라 펼쳐지는 영역을 부드럽게 height + opacity 트랜지션
+function Collapse({ open, children }: { open: boolean; children: React.ReactNode }) {
+  return (
+    <AnimatePresence initial={false}>
+      {open && (
+        <motion.div
+          key="collapse"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          style={{ overflow: "hidden" }}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 import {
   FunnelDataSchema,
   INCOME_TYPE_LABEL,
@@ -158,10 +179,28 @@ function StepShell({
     <>
       <BackHeader />
       <div className="mx-auto flex min-h-[calc(100svh-54px)] max-w-[640px] flex-col px-5 pb-28 pt-6">
-        <div className="mb-6 flex items-center gap-2 text-[11px] tracking-[0.18em] text-muted">
-        <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-        {step} / {STEPS.length}
-      </div>
+        <div
+          className="mb-6 flex gap-1.5"
+          role="progressbar"
+          aria-valuenow={step}
+          aria-valuemin={1}
+          aria-valuemax={STEPS.length}
+        >
+          {Array.from({ length: STEPS.length }, (_, i) => {
+            const filled = i < step;
+            const isNewlyFilled = i === step - 1;
+            return (
+              <span key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-line">
+                <motion.span
+                  className="block h-full origin-left rounded-full bg-gold"
+                  initial={{ scaleX: isNewlyFilled ? 0 : filled ? 1 : 0 }}
+                  animate={{ scaleX: filled ? 1 : 0 }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                />
+              </span>
+            );
+          })}
+        </div>
       <h1 className="text-[16px] font-semibold leading-7 text-gray800">{title}</h1>
       {subtitle && <p className="mt-2 text-[14px] font-medium leading-5 text-muted">{subtitle}</p>}
       <div className="mt-8 flex flex-col gap-6">{children}</div>
@@ -218,14 +257,14 @@ function StepBasic({ value, onNext }: { value: Ctx; onNext: (p: Ctx) => void }) 
           }))}
         />
       </div>
-      {!noIncome && (
+      <Collapse open={!noIncome}>
         <NumberField
           label={incomeTypeUI === "employee" ? "연소득 (총급여)" : "연소득 (종합소득)"}
           value={incomeMan}
           onChange={setIncomeMan}
           suffix="만원"
         />
-      )}
+      </Collapse>
       <NumberField
         label="월 투자가능액"
         value={monthlyMan}
@@ -278,7 +317,7 @@ function StepAccounts({
             if (v && pensionContributionMan === 0) setPension(600); // 세액공제 한도 기본 prefill
           }}
         />
-        {hasPension && (
+        <Collapse open={hasPension}>
           <div className="ml-6 mt-2">
             <NumberField
               label="올해 납입액 (한도 600)"
@@ -287,7 +326,7 @@ function StepAccounts({
               suffix="만원"
             />
           </div>
-        )}
+        </Collapse>
       </div>
       <div>
         <CheckRow
@@ -298,7 +337,7 @@ function StepAccounts({
             if (v && irpContributionMan === 0) setIrp(300); // 연금 합산 900 한도 내 기본 prefill
           }}
         />
-        {hasIrp && (
+        <Collapse open={hasIrp}>
           <div className="ml-6 mt-2">
             <NumberField
               label="올해 납입액 (합산 900)"
@@ -307,7 +346,7 @@ function StepAccounts({
               suffix="만원"
             />
           </div>
-        )}
+        </Collapse>
       </div>
       <CheckRow label="ISA 보유" checked={hasIsa} onChange={setHasIsa} />
     </StepShell>
@@ -338,7 +377,7 @@ function StepInvest({
       onPrimary={() => onNext({ hasOverseas, overseasValueMan, overseasCostMan })}
     >
       <CheckRow label="해외주식 보유 중" checked={hasOverseas} onChange={setHasOverseas} />
-      {hasOverseas && (
+      <Collapse open={hasOverseas}>
         <div className="ml-6 flex flex-col gap-4">
           <NumberField
             label="평가액"
@@ -353,7 +392,7 @@ function StepInvest({
             suffix="만원"
           />
         </div>
-      )}
+      </Collapse>
     </StepShell>
   );
 }
@@ -410,11 +449,11 @@ function StepIncome({
       <CheckRow label="고배당주 보유" checked={holdsHighDividend} onChange={setHigh} />
       <CheckRow label="배우자 있음" checked={hasSpouse} onChange={setSpouse} />
       <CheckRow label="자녀 있음" checked={hasChildren} onChange={setChildren} />
-      {hasChildren && (
+      <Collapse open={hasChildren}>
         <div className="ml-6">
           <CheckRow label="미성년 자녀 포함" checked={hasMinorChildren} onChange={setMinor} />
         </div>
-      )}
+      </Collapse>
     </StepShell>
   );
 }
