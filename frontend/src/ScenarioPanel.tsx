@@ -188,7 +188,9 @@ export default function ScenarioPanel({
         <div className="mt-5 border-t border-line pt-5">
           {/* 추천 공고 — 초기 노출 + 로켓펀치 출처 */}
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] tracking-wide text-muted">이 회사로 옮기면 절세는? 눌러서 시뮬</span>
+            <span className="text-[11px] tracking-wide text-muted">
+              목표 연봉을 달성하기 위해 아래 공고를 살펴보세요
+            </span>
             <a
               href="https://www.rocketpunch.com/jobs"
               target="_blank"
