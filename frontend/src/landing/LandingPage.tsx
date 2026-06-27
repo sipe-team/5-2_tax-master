@@ -6,6 +6,7 @@ import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import { CliffSection } from "../result/CliffSection";
 import { GapSection } from "../result/GapSection";
+import EventsPanel from "../EventsPanel";
 
 // 랜딩 티저용 대표 샘플 — 실제 추천이 아닌 '예시' 수치 (직장인 연봉 5,000만)
 const SAMPLE: UserProfile = {
@@ -112,13 +113,14 @@ export default function LandingPage() {
           </section>
         )}
 
-        {/* 3면: N년 후 격차 */}
-        {gapProj.finalGap > 0 && (
-          <section className="mx-auto flex min-h-svh max-w-[640px] snap-start flex-col justify-center px-5 pb-28 pt-10">
-            <TeaserCaption />
-            <GapSection proj={gapProj} />
-          </section>
-        )}
+        {/* 3면: N년 후 격차 + 재테크/비즈니스 이벤트 (한 스크롤 영역) */}
+        <section className="mx-auto flex min-h-svh max-w-[640px] snap-start flex-col justify-center px-5 pb-28 pt-10">
+          <TeaserCaption />
+          <div className="flex flex-col gap-4">
+            {gapProj.finalGap > 0 && <GapSection proj={gapProj} />}
+            <EventsPanel asOf={SAMPLE.asOf} />
+          </div>
+        </section>
       </div>
 
       {/* 플로팅 CTA — 모든 면 위에 고정 */}

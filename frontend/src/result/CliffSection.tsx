@@ -30,7 +30,7 @@ export function CliffSection({
             key={`${m.income}-${m.label}`}
             className={`rounded-xl border-l-2 bg-surface/60 py-2 pl-3 pr-3 ${m.delta < 0 ? "border-clay" : "border-gold"}`}
           >
-            <div className="text-[13px] font-600">📍 {m.label}</div>
+            <div className="text-[13px] font-600">{m.label}</div>
             <div className="mt-0.5 text-[12px] leading-relaxed text-muted">{m.detail}</div>
           </div>
         ))}
