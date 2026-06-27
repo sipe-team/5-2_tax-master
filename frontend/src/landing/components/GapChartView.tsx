@@ -1,4 +1,4 @@
-import type { GapProjection } from "./engine/gap";
+import type { GapProjection } from "../../engine";
 
 /**
  * N년 후 격차 차트 (와우모먼트): 같은 돈을 절세계좌 vs 일반계좌에 넣었을 때

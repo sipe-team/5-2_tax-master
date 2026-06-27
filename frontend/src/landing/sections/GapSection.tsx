@@ -1,6 +1,6 @@
-import { won, pct } from "../lib/format";
-import type { GapProjection } from "../engine";
-import { GapChartView } from "../GapChartView";
+import { won, pct } from "../../lib/format";
+import type { GapProjection } from "../../engine";
+import { GapChartView } from "../components/GapChartView";
 
 // N년 후 격차 (와우모먼트): 절세계좌 vs 일반계좌
 export function GapSection({ proj }: { proj: GapProjection }) {
