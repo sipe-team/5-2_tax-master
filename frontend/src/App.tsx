@@ -49,6 +49,31 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+type NumberInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "type"> & {
+  value: number;
+  onChange: (n: number) => void;
+};
+
+function NumberInput({ value, onChange, ...rest }: NumberInputProps) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const shown = draft ?? (value ? String(value) : "");
+  return (
+    <input
+      {...rest}
+      type="text"
+      inputMode="numeric"
+      value={shown}
+      onFocus={(e) => e.currentTarget.select()}
+      onChange={(e) => {
+        const cleaned = e.target.value.replace(/[^\d]/g, "").replace(/^0+(?=\d)/, "");
+        setDraft(cleaned);
+        onChange(cleaned === "" ? 0 : Number(cleaned));
+      }}
+      onBlur={() => setDraft(null)}
+    />
+  );
+}
+
 function UrgentCard({ u }: { u: UrgentAction }) {
   return (
     <div className="border-l-2 border-clay pl-4">
@@ -164,7 +189,7 @@ export default function App() {
       <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
         <div className="flex flex-wrap gap-x-5 gap-y-4">
           <Field label="나이">
-            <input type="number" className={inputCls} value={age} min={15} max={100} onChange={(e) => setAge(+e.target.value)} />
+            <NumberInput className={inputCls} value={age} onChange={setAge} />
             <span className="text-xs text-muted">세</span>
           </Field>
           <Field label="연소득">
@@ -172,17 +197,17 @@ export default function App() {
               <option value="earned">직장인</option>
               <option value="comprehensive">사업·기타</option>
             </select>
-            <input type="number" className={`${inputCls} max-w-[6rem]`} value={incomeMan} min={0} step={100} onChange={(e) => setIncomeMan(+e.target.value)} />
+            <NumberInput className={`${inputCls} max-w-[6rem]`} value={incomeMan} onChange={setIncomeMan} />
             <span className="text-xs text-muted">만원</span>
           </Field>
         </div>
         <div className="mt-4 flex flex-wrap gap-x-5 gap-y-4">
           <Field label="월 투자가능액">
-            <input type="number" className={inputCls} value={monthlyMan} min={0} step={10} onChange={(e) => setMonthlyMan(+e.target.value)} />
+            <NumberInput className={inputCls} value={monthlyMan} onChange={setMonthlyMan} />
             <span className="text-xs text-muted">만원</span>
           </Field>
           <Field label="언제 쓸 돈인가요">
-            <input type="number" className={inputCls} value={horizonYears} min={1} max={40} onChange={(e) => setHorizonYears(+e.target.value)} />
+            <NumberInput className={inputCls} value={horizonYears} onChange={setHorizonYears} />
             <span className="text-xs text-muted">년 뒤</span>
           </Field>
         </div>
@@ -198,7 +223,12 @@ export default function App() {
           <div className="mt-4 border-t border-line pt-4">
             <div className="flex flex-wrap gap-x-5 gap-y-4">
               <Field label="가구중위소득">
-                <input type="number" className={inputCls} value={householdMedianPct} placeholder="모름" onChange={(e) => setHouseholdMedianPct(e.target.value === "" ? "" : +e.target.value)} />
+                <NumberInput
+                  className={inputCls}
+                  placeholder="모름"
+                  value={householdMedianPct === "" ? 0 : householdMedianPct}
+                  onChange={(n) => setHouseholdMedianPct(n === 0 ? "" : n)}
+                />
                 <span className="text-xs text-muted">%</span>
               </Field>
               <Field label="금융소득종합과세 대상">
@@ -216,11 +246,11 @@ export default function App() {
             {hasOverseas && (
               <div className="mt-3 flex flex-wrap gap-x-5 gap-y-4">
                 <Field label="평가액">
-                  <input type="number" className={inputCls} value={overseasValueMan} step={100} onChange={(e) => setOverseasValueMan(+e.target.value)} />
+                  <NumberInput className={inputCls} value={overseasValueMan} onChange={setOverseasValueMan} />
                   <span className="text-xs text-muted">만원</span>
                 </Field>
                 <Field label="취득가">
-                  <input type="number" className={inputCls} value={overseasCostMan} step={100} onChange={(e) => setOverseasCostMan(+e.target.value)} />
+                  <NumberInput className={inputCls} value={overseasCostMan} onChange={setOverseasCostMan} />
                   <span className="text-xs text-muted">만원</span>
                 </Field>
               </div>
