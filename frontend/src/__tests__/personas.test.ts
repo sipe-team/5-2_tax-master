@@ -2,22 +2,12 @@ import { describe, expect, it } from "vitest";
 import { ruleSet } from "../rules/products";
 import { recommend } from "../engine";
 import type { UserProfile } from "../rules/schema";
-import { PERSONAS } from "../personas";
+import { PERSONAS, personaToProfile } from "../personas";
 
-/** personas.ts의 평면 프리셋을 엔진 UserProfile로 (FunnelPage.applyPersona와 동일 매핑). */
+/** 칩이 실제로 쓰는 personaToProfile()을 그대로 검증. asOf만 데모 안정화를 위해 고정. */
 function toProfile(id: string, asOf: string): UserProfile {
   const p = PERSONAS.find((x) => x.id === id)!;
-  return {
-    age: p.age,
-    incomeType: p.incomeType,
-    income: p.incomeMan * 10_000,
-    monthlyInvestable: p.monthlyMan * 10_000,
-    horizonYears: p.horizonYears,
-    asOf,
-    overseasHoldings: p.overseas
-      ? { marketValue: p.overseas.valueMan * 10_000, costBasis: p.overseas.costMan * 10_000 }
-      : undefined,
-  };
+  return { ...personaToProfile(p), asOf };
 }
 
 // 청년적금 신청창(~2026-07-03) 안의 날짜로 고정해 데모/테스트 안정화.
