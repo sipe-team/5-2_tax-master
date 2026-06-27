@@ -1,24 +1,16 @@
 import { useState } from "react";
-import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import type { ActionCard, Recommendation } from "../engine";
-import { won } from "../lib/format";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ScenarioPanel from "../ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
 import { Badges } from "./components/Badges";
 import { Reveal } from "./components/Reveal";
-import { Vessel } from "./components/Vessel";
 import { HeroSummary } from "./sections/HeroSummary";
 import { PdfSaveButton } from "./sections/PdfSaveButton";
 import { StrategyActionsSection } from "./sections/StrategyActionsSection";
-
-// 워터폴 1, 2, 3 ... 순차 등장 (스크롤 무관, 마운트 시 cascade)
-const waterfallContainer: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
-};
-const TOP_N = 5;
+import { WaterfallSection } from "./sections/WaterfallSection";
 
 export function ResultView({ rec, profile }: { rec: Recommendation; profile: UserProfile }) {
   const [expanded, setExpanded] = useState(false);
@@ -33,9 +25,6 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
     window.setTimeout(() => window.print(), 350);
   };
 
-  const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
-  const hidden = rec.waterfall.length - shown.length;
-
   // 상품에 묶인 긴급 액션(urgent-<productId>)은 워터폴 그릇 행으로 합쳐 인라인 표시.
   // 그릇이 없는 순수 전략(증여·매도 등)과 RIA(워터폴 제외)는 전략 섹션에 남긴다.
   const waterfallIds = new Set(rec.waterfall.map((w) => w.productId));
@@ -48,11 +37,6 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
     }
     return true;
   });
-
-  // 워터폴 요약: 총 예산 중 절세 그릇에 담는 금액 → 첫 해 절세 합계 (흐름 가시화).
-  const allocatedMonthly = rec.waterfall.reduce((s, a) => s + a.monthlyAmount, 0);
-  const budgetMonthly = allocatedMonthly + rec.leftoverMonthly;
-  const totalFirstYear = rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
 
   // 최대 환급액 = 워터폴 첫 해 절세 + 액션 전략별 추정 절감액 (null 제외)
   const maxBenefitWon =
@@ -79,75 +63,13 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
 
         <StrategyActionsSection actions={strategyActions} />
 
-        <Reveal>
-          <section className="mb-7">
-            <h2 className="mb-3 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
-              매달 적립 우선순위
-            </h2>
-            {rec.waterfall.length === 0 ? (
-              <p className="text-[16px] font-medium leading-7 tracking-[-0.3px] text-muted">
-                조건에 맞는 절세 계좌가 없어요.
-              </p>
-            ) : (
-              <>
-                <div className="mb-5 rounded-xl bg-surface/60 p-4 ring-1 ring-line">
-                  <p className="text-[16px] font-medium leading-7 tracking-[-0.3px] text-gray800">
-                    매달 모을 수 있는{" "}
-                    <span className="tnum font-semibold">{won(budgetMonthly)}원</span> 중{" "}
-                    <span className="tnum font-semibold">{won(allocatedMonthly)}원</span>을 아래
-                    순서대로 절세 계좌에 나눠 담아요.
-                  </p>
-                  {totalFirstYear > 0 && (
-                    <p className="mt-1.5 text-[16px] font-medium leading-7 tracking-[-0.3px] text-gray800">
-                      이대로 채우면 첫 해에 약{" "}
-                      <span className="tnum font-semibold text-gold">
-                        {won(totalFirstYear)}원
-                      </span>
-                      을 아낄 수 있어요.
-                    </p>
-                  )}
-                  <p className="mt-2 text-[12px] font-medium leading-relaxed tracking-[-0.3px] text-muted">
-                    각 계좌의 <span className="text-gold">첫 해 절세</span> 금액을 더한 값이에요.
-                    1번부터 채우는 게 가장 효율이 높아요.
-                  </p>
-                </div>
-                <motion.ol
-                  className="relative"
-                  variants={waterfallContainer}
-                  initial="hidden"
-                  animate="show"
-                >
-                  <div
-                    className="absolute bottom-3 left-4 top-3 w-px -translate-x-1/2 bg-line"
-                    aria-hidden
-                  />
-                  {shown.map((a, i) => (
-                    <Vessel
-                      key={a.productId}
-                      a={a}
-                      rank={i + 1}
-                      action={actionByProduct.get(a.productId)}
-                    />
-                  ))}
-                </motion.ol>
-                {hidden > 0 && (
-                  <button
-                    className="no-print mt-2 text-[16px] font-medium leading-7 tracking-[-0.3px] text-gold outline-none hover:underline focus-visible:underline"
-                    onClick={() => setExpanded(true)}
-                  >
-                    + {hidden}개 더보기
-                  </button>
-                )}
-              </>
-            )}
-            {rec.leftoverMonthly > 0 && (
-              <p className="mt-4 text-[16px] font-medium leading-7 tracking-[-0.3px] text-muted">
-                남는 <span className="tnum font-semibold">{won(rec.leftoverMonthly)}원</span>/월은
-                일반계좌로 모으세요.
-              </p>
-            )}
-          </section>
-        </Reveal>
+        <WaterfallSection
+          waterfall={rec.waterfall}
+          actionByProduct={actionByProduct}
+          leftoverMonthly={rec.leftoverMonthly}
+          expanded={expanded}
+          onExpand={() => setExpanded(true)}
+        />
 
         {/* 이직 시나리오 (연봉 변화 시뮬레이터) — 인터랙티브라 PDF에서는 제외 */}
         <Reveal className="no-print">
