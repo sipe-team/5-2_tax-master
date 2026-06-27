@@ -1,12 +1,11 @@
 import type { CliffChart } from "../../engine";
+import { won } from "../../lib/format";
 
 /**
  * 연봉 절벽 차트 (와우모먼트): "연봉이 이 선을 넘으면 절세액이 떨어진다."
  * 룰에서 산출한 계단 곡선 + 경계 마커를 의존성 없는 SVG로 그린다.
  * 사용자의 현재 연소득을 세로 점선으로 겹쳐 "당신은 여기" 위치를 표시.
  */
-
-const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
 
 const W = 560;
 const H = 240;

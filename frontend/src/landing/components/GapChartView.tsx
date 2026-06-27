@@ -1,12 +1,11 @@
 import type { GapProjection } from "../../engine";
+import { won } from "../../lib/format";
 
 /**
  * N년 후 격차 차트 (와우모먼트): 같은 돈을 절세계좌 vs 일반계좌에 넣었을 때
  * 누적 자산이 시간이 갈수록 벌어지는 모습을 면적으로 보여준다.
  * 의존성 없는 SVG. 두 선 사이 격차를 음영으로 채워 "차이"를 강조.
  */
-
-const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
 
 const W = 560;
 const H = 220;

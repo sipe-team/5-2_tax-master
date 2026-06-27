@@ -4,9 +4,7 @@ import { ruleSet } from "../../rules/products";
 import { diffScenarios } from "../../engine";
 import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "../../data/jobs";
 import { salaryGuideFor } from "../../data/salaryGuide";
-
-const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
-const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
+import { pct, won } from "../../lib/format";
 
 function DeltaArrow({ from, to }: { from: number; to: number }) {
   if (Math.abs(to - from) < 1e-9) return <span className="text-muted">→</span>;
