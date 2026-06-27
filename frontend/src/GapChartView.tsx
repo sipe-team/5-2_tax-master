@@ -65,7 +65,7 @@ export function GapChartView({ proj }: { proj: GapProjection }) {
       <text x={x(last.year) - 4} y={y(last.sheltered) - 6} textAnchor="end" className="fill-gold" fontSize={10} fontWeight={700}>
         절세 {won(last.sheltered)}
       </text>
-      <text x={x(last.year) - 4} y={y(last.taxed) + 14} textAnchor="end" className="fill-muted" fontSize={10}>
+      <text x={x(last.year) - 4} y={y(last.taxed) + 28} textAnchor="end" className="fill-muted" fontSize={10}>
         일반 {won(last.taxed)}
       </text>
     </svg>
