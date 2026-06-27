@@ -33,6 +33,9 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.02em;
+  /* 한국어 단어 깨짐 방지: 어절 단위(공백 기준)로만 줄바꿈, 긴 영문/URL은 강제 줄바꿈 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* 폼 요소는 폰트를 자동 상속하지 않으므로 Pretendard를 명시적으로 물려받게 한다. */
