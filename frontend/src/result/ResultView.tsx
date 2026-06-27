@@ -104,7 +104,7 @@ function ActionItem({ a }: { a: ActionCard }) {
           <span className="font-display tnum font-600 text-gold">{won(a.estimatedBenefit)}원</span>
         </p>
       )}
-      {a.warning && <p className="mt-1 text-[12px] text-clay">⚠ {a.warning}</p>}
+      {a.warning && <p className="mt-1 text-[12px] text-clay">{a.warning}</p>}
       {a.deadline && <p className="mt-1 text-[11px] text-locked tnum">마감 {a.deadline}</p>}
       {googleCalendarUrl(a) && (
         <a
@@ -113,7 +113,7 @@ function ActionItem({ a }: { a: ActionCard }) {
           rel="noopener noreferrer"
           className="mt-2 inline-flex items-center gap-1 rounded-md border border-gold/50 px-2.5 py-1 text-[12px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
         >
-          📅 캘린더에 추가
+          캘린더에 추가
         </a>
       )}
       <Badges items={a.badges} />
@@ -277,7 +277,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
         {rec.leftoverMonthly > 0 && (
           <p className="mt-4 text-[13px] text-muted">
             남는 <span className="font-display tnum">{won(rec.leftoverMonthly)}원</span>/월은
-            일반계좌로.
+            일반계좌로 모으세요.
           </p>
         )}
       </section>

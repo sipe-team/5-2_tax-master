@@ -109,10 +109,10 @@ export default function ScenarioPanel({
     if (guide) {
       setScenarioMan(guide.mid);
       setSalaryHint(
-        `추정 레인지 ${guide.min.toLocaleString()}~${guide.max.toLocaleString()}만 (${job.seniority}) — 직접 조정하세요.`,
+        `추정 범위 ${guide.min.toLocaleString()}~${guide.max.toLocaleString()}만 (${job.seniority}). 직접 조정하세요.`,
       );
     } else {
-      setSalaryHint("이 공고엔 숙련도 정보가 없어 가이드 레인지를 제안할 수 없어요.");
+      setSalaryHint("이 공고는 숙련도 정보가 없어 추정 범위를 제안할 수 없어요.");
     }
   }
 
@@ -299,13 +299,13 @@ export default function ScenarioPanel({
         {/* 자격 상실 — 가장 강한 후크 */}
         {delta.lost.length > 0 && (
           <div className="mt-4 rounded-xl border-l-2 border-clay bg-clay/5 p-3">
-            <div className="text-[12px] font-600 text-clay">⚠ 이직하면 자격을 잃어요</div>
+            <div className="text-[12px] font-600 text-clay">이직하면 자격을 잃어요</div>
             <ul className="mt-1.5">
               {delta.lost.map((id) => (
                 <li key={id} className="text-[13px] text-ink">
                   {shiftById.get(id)?.name ?? id}
                   <span className="ml-1 text-[12px] text-muted">
-                    — 지금 가입 안 하면 이직 후 가입 불가
+                    지금 가입하지 않으면 이직 후엔 가입할 수 없어요
                   </span>
                 </li>
               ))}
@@ -316,7 +316,7 @@ export default function ScenarioPanel({
         {/* 새 자격 */}
         {delta.gained.length > 0 && (
           <div className="mt-3 rounded-xl border-l-2 border-gold bg-gold/5 p-3">
-            <div className="text-[12px] font-600 text-gold">+ 새로 가능해지는 그릇</div>
+            <div className="text-[12px] font-600 text-gold">새로 가능해지는 그릇</div>
             <ul className="mt-1.5">
               {delta.gained.map((id) => (
                 <li key={id} className="text-[13px] text-ink">

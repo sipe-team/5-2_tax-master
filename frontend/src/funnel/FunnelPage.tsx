@@ -252,7 +252,7 @@ function StepBasic({ value, onNext }: { value: Ctx; onNext: (p: Ctx) => void }) 
   return (
     <StepShell
       step={1}
-      title="기본 정보를 알려주세요"
+      title="기본 정보"
       subtitle="몇 가지만 입력하면 돼요."
       primaryLabel="다음"
       primaryDisabled={!valid}
@@ -384,7 +384,7 @@ function StepInvest({
     <StepShell
       step={3}
       title="해외주식을 보유하고 있나요?"
-      subtitle="보유 중이면 RIA 감면·분산매도·증여 전략을 검토해드려요."
+      subtitle="보유 중이면 RIA 감면·분산매도·증여 전략을 검토해요."
       primaryLabel="다음"
       onSkip={onSkip}
       onPrimary={() => onNext({ hasOverseas, overseasValueMan, overseasCostMan })}
@@ -439,8 +439,8 @@ function StepIncome({
   return (
     <StepShell
       step={4}
-      title="소득과 가족 상황은요?"
-      subtitle="금융소득 과세·증여·고배당 전략에 쓰여요."
+      title="소득과 가족 상황"
+      subtitle="금융소득 과세·증여·고배당 전략에 반영해요."
       primaryLabel="결과 보기"
       onSkip={onSkip}
       onPrimary={() => onSubmit(patch)}

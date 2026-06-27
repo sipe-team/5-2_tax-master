@@ -55,7 +55,7 @@ export default function ProjectionPanel({
   return (
     <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
       <h2 className="text-[13px] font-600 tracking-wide text-muted">
-        이대로 모으면 — 자산 시뮬레이션
+        이대로 모으면 · 자산 시뮬레이션
       </h2>
 
       <p className="mt-3 text-[14px]">
