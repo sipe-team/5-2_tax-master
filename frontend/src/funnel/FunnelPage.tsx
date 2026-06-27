@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useFunnel } from "@use-funnel/react-router";
 import checkedIcon from "../assets/checked.svg";
 import defaultCheckIcon from "../assets/default-check.svg";
+import { BackHeader } from "../components/BackHeader";
 import {
   FunnelDataSchema,
   INCOME_TYPE_LABEL,
@@ -68,7 +69,7 @@ function NumberField({
   const shown = draft ?? (value ? String(value) : "");
   return (
     <label className="flex w-full flex-col gap-1.5">
-      <span className="text-[12px] text-muted">{label}</span>
+      <span className="text-[14px] font-semibold text-gray800">{label}</span>
       <span
         className={`flex w-full items-center gap-3.5 rounded-lg border bg-surface p-5 transition-colors ${
           error ? "border-error" : "border-line focus-within:border-gold"
@@ -77,7 +78,7 @@ function NumberField({
         <input
           type="text"
           inputMode="numeric"
-          className="min-w-0 flex-1 bg-transparent font-sans text-base font-medium leading-none tracking-[-0.3px] tnum text-gray800 outline-none placeholder:text-locked"
+          className="min-w-0 flex-1 bg-transparent font-sans text-base font-medium leading-none tracking-[-0.3px] tnum text-gray900 outline-none placeholder:text-locked"
           value={shown}
           placeholder={placeholder}
           onFocus={(e) => e.currentTarget.select()}
@@ -107,12 +108,12 @@ function CheckRow({
 }) {
   return (
     <label
-      className={`flex w-full cursor-pointer items-center gap-3.5 rounded-lg p-5 transition-colors ${
+      className={`flex w-full cursor-pointer items-center gap-3.5 rounded-lg p-5 text-[18px] font-semibold leading-5 tracking-[-0.54px] text-gray800 transition-colors ${
         checked
-          ? "bg-primary-light text-[18px] font-semibold leading-5 tracking-[-0.54px] text-gray800 backdrop-blur-[50px]"
+          ? "bg-primary-light backdrop-blur-[50px]"
           : error
-            ? "border border-error bg-surface text-[15px]"
-            : "border border-line bg-surface text-[15px]"
+            ? "border border-error bg-surface"
+            : "border border-line bg-surface"
       }`}
     >
       <input
@@ -154,13 +155,15 @@ function StepShell({
   onSkip?: () => void;
 }) {
   return (
-    <div className="mx-auto flex min-h-svh max-w-[640px] flex-col px-5 pb-28 pt-10">
-      <div className="mb-6 flex items-center gap-2 text-[11px] tracking-[0.18em] text-muted">
+    <>
+      <BackHeader />
+      <div className="mx-auto flex min-h-[calc(100svh-54px)] max-w-[640px] flex-col px-5 pb-28 pt-6">
+        <div className="mb-6 flex items-center gap-2 text-[11px] tracking-[0.18em] text-muted">
         <span className="h-1.5 w-1.5 rounded-full bg-gold" />
         {step} / {STEPS.length}
       </div>
-      <h1 className="text-[24px] font-700 leading-tight tracking-tight">{title}</h1>
-      {subtitle && <p className="mt-2 text-[14px] text-muted">{subtitle}</p>}
+      <h1 className="text-[16px] font-semibold leading-7 text-gray800">{title}</h1>
+      {subtitle && <p className="mt-2 text-[14px] font-medium leading-5 text-muted">{subtitle}</p>}
       <div className="mt-8 flex flex-col gap-6">{children}</div>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-line bg-paper/95 backdrop-blur">
@@ -179,7 +182,8 @@ function StepShell({
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -204,7 +208,7 @@ function StepBasic({ value, onNext }: { value: Ctx; onNext: (p: Ctx) => void }) 
     >
       <NumberField label="나이" value={age} onChange={setAge} suffix="세" />
       <div className="flex flex-col gap-2">
-        <span className="text-[12px] text-muted">소득 유형</span>
+        <span className="text-[14px] font-semibold text-gray800">소득 유형</span>
         <SegmentedControl
           value={incomeTypeUI}
           onChange={setIncomeTypeUI}

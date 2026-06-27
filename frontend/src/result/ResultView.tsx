@@ -5,6 +5,7 @@ import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ProjectionPanel from "../ProjectionPanel";
 import ScenarioPanel from "../ScenarioPanel";
+import { BackHeader } from "../components/BackHeader";
 
 const BADGE_STYLE: Record<Badge["kind"], string> = {
   assumed: "border-line text-muted",
@@ -113,13 +114,15 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   const hidden = rec.waterfall.length - shown.length;
 
   return (
-    <div className="mx-auto max-w-[640px] px-5 py-10">
+    <>
+      <BackHeader />
+      <div className="mx-auto max-w-[640px] px-5 pb-10 pt-6">
       <header className="mb-8">
         <div className="mb-3 flex items-center gap-2 text-[11px] tracking-[0.18em] text-muted">
           <span className="h-1.5 w-1.5 rounded-full bg-gold" />
           나의 절세 추천
         </div>
-        <h1 className="text-[26px] font-700 leading-tight tracking-tight">
+        <h1 className="text-[16px] font-semibold leading-7 text-gray800">
           투자 절세 효율이 높은 <span className="text-gold">순서</span>예요.
         </h1>
       </header>
@@ -186,6 +189,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
           <p key={i}>※ {d}</p>
         ))}
       </footer>
-    </div>
+      </div>
+    </>
   );
 }
