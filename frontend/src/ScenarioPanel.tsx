@@ -112,52 +112,6 @@ export default function ScenarioPanel({
       </h2>
 
       <div className="mt-5">
-        {/* 공고 (추천 + 검색) */}
-        <div className="mb-5 border-b border-line pb-5">
-          {/* 추천 공고 — 초기 노출 + 로켓펀치 출처 */}
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] tracking-wide text-muted">추천 공고 · 로켓펀치 인기</span>
-            <a
-              href="https://www.rocketpunch.com/jobs"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="text-[11px] text-gold outline-none hover:underline"
-            >
-              로켓펀치에서 더 보기 ↗
-            </a>
-          </div>
-          {recError && <p className="mb-2 text-[11px] text-locked">{recError}</p>}
-          {recommended === null && !recError && (
-            <p className="mb-2 text-[11px] text-locked">추천 공고 불러오는 중…</p>
-          )}
-          {recommended && recommended.length > 0 && (
-            <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {recommended.map((j) => (
-                <JobResultChip key={`rec-${j.jobId}`} job={j} onPick={pickJob} />
-              ))}
-            </div>
-          )}
-
-          {picked && (
-            <div className="mt-3 rounded-xl border border-line bg-surface px-3 py-2 text-[12px]">
-              선택: <strong className="text-ink">{picked.companyName}</strong> · {picked.title}
-              <span className="ml-2 rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">
-                {companySizeLabel(picked.companySize)}
-              </span>
-              {picked.webUrl && (
-                <a
-                  href={picked.webUrl}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="ml-2 text-[11px] text-gold outline-none hover:underline"
-                >
-                  로켓펀치 ↗
-                </a>
-              )}
-            </div>
-          )}
-        </div>
-
         {/* 목표 연봉 입력 */}
         <label className="flex flex-col gap-1">
           <span className="text-[11px] tracking-wide text-muted">가정 연소득 (이직 후)</span>
@@ -230,14 +184,51 @@ export default function ScenarioPanel({
           </p>
         </div>
 
-        {/* 한계세율 설명 */}
-        <p className="mt-2 text-[11px] leading-relaxed text-locked">
-          ※ <span className="text-muted">한계세율</span>은 소득이 1원 더 늘 때 그 추가분에 붙는
-          세율(지방소득세 포함)이에요. 연봉이 오르면 세율 구간이 올라가{" "}
-          <span className="text-muted">연금·ISA 소득공제로 돌려받는 금액(효율)은 커지지만</span>,
-          청년상품의 소득상한을 넘으면 <span className="text-muted">자격 자체를 잃을 수</span>{" "}
-          있어요.
-        </p>
+        {/* 공고 (추천 + 검색) */}
+        <div className="mt-5 border-t border-line pt-5">
+          {/* 추천 공고 — 초기 노출 + 로켓펀치 출처 */}
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[11px] tracking-wide text-muted">추천 공고 · 로켓펀치 인기</span>
+            <a
+              href="https://www.rocketpunch.com/jobs"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="text-[11px] text-gold outline-none hover:underline"
+            >
+              로켓펀치에서 더 보기 ↗
+            </a>
+          </div>
+          {recError && <p className="mb-2 text-[11px] text-locked">{recError}</p>}
+          {recommended === null && !recError && (
+            <p className="mb-2 text-[11px] text-locked">추천 공고 불러오는 중…</p>
+          )}
+          {recommended && recommended.length > 0 && (
+            <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {recommended.map((j) => (
+                <JobResultChip key={`rec-${j.jobId}`} job={j} onPick={pickJob} />
+              ))}
+            </div>
+          )}
+
+          {picked && (
+            <div className="mt-3 rounded-xl border border-line bg-surface px-3 py-2 text-[12px]">
+              선택: <strong className="text-ink">{picked.companyName}</strong> · {picked.title}
+              <span className="ml-2 rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">
+                {companySizeLabel(picked.companySize)}
+              </span>
+              {picked.webUrl && (
+                <a
+                  href={picked.webUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="ml-2 text-[11px] text-gold outline-none hover:underline"
+                >
+                  로켓펀치 ↗
+                </a>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* 자격 상실 — 가장 강한 후크 */}
         {delta.lost.length > 0 && (
