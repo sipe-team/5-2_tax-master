@@ -169,16 +169,27 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   const budgetMonthly = allocatedMonthly + rec.leftoverMonthly;
   const totalFirstYear = rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0);
 
+  // 최대 환급액 = 워터폴 첫 해 절세 + 액션 전략별 추정 절감액 (null 제외)
+  const maxBenefitWon =
+    rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0) +
+    rec.actions.reduce((s, a) => s + (a.estimatedBenefit ?? 0), 0);
+  const maxBenefitMan = Math.round(maxBenefitWon / 10_000);
+
   return (
     <>
       <BackHeader />
       <div className="mx-auto max-w-[640px] px-5 pb-10 pt-6">
       <Reveal>
+        <p className="mb-6 text-[22px] font-bold leading-tight tracking-tight text-gray900">
+          당신은 최대
+          <br />
+          <span className="tnum text-gold">{maxBenefitMan.toLocaleString()}만원</span> 환급받을 수
+          있어요
+        </p>
+      </Reveal>
+
+      <Reveal>
         <header className="mb-8">
-          <div className="mb-3 flex items-center gap-2 text-[11px] tracking-[0.18em] text-muted">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-            나의 절세 추천
-          </div>
           <h1 className="text-[16px] font-semibold leading-7 text-gray800">
             투자 절세 효율이 높은 <span className="text-gold">순서</span>예요.
           </h1>

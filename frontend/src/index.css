@@ -8,6 +8,7 @@
   --color-ink: #202632; /* Toss Gray — primary text */
   --color-gray900: #191f28; /* Toss gray-900 — input value text */
   --color-gray800: #333d4b; /* Toss gray-800 — input label text */
+  --color-gray100: #f2f4f6; /* Toss gray-100 — segmented control track bg */
   --color-muted: #6b7684; /* secondary text (Toss gray-600) */
   --color-line: #e5e8eb; /* border (Toss gray-200) */
   --color-gold: #0064ff; /* Toss Blue — primary accent */

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useNavigate } from "react-router";
 import { useFunnel } from "@use-funnel/react-router";
 import { AnimatePresence, motion } from "framer-motion";
@@ -7,16 +7,21 @@ import defaultCheckIcon from "../assets/default-check.svg";
 import { BackHeader } from "../components/BackHeader";
 
 // 체크박스/토글에 따라 펼쳐지는 영역을 부드럽게 height + opacity 트랜지션
+// 부모가 flex gap-6 (24px) 이므로 exit/initial 시 marginTop: -24 로 gap을 함께 접어 snap 제거
 function Collapse({ open, children }: { open: boolean; children: React.ReactNode }) {
   return (
     <AnimatePresence initial={false}>
       {open && (
         <motion.div
           key="collapse"
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ height: 0, opacity: 0, marginTop: -24 }}
+          animate={{ height: "auto", opacity: 1, marginTop: 0 }}
+          exit={{ height: 0, opacity: 0, marginTop: -24 }}
+          transition={{
+            height: { type: "spring", stiffness: 220, damping: 30, mass: 0.8 },
+            marginTop: { type: "spring", stiffness: 220, damping: 30, mass: 0.8 },
+            opacity: { duration: 0.18, ease: "easeInOut" },
+          }}
           style={{ overflow: "hidden" }}
         >
           {children}
@@ -42,8 +47,9 @@ function SegmentedControl<T extends string>({
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
 }) {
+  const layoutId = `segmented-${useId()}`;
   return (
-    <div className="inline-flex w-full rounded-xl bg-paper p-1">
+    <div className="flex w-full items-start gap-2 self-stretch rounded-xl bg-gray100 p-1">
       {options.map((opt) => {
         const active = opt.value === value;
         return (
@@ -51,11 +57,18 @@ function SegmentedControl<T extends string>({
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`flex-1 rounded-lg py-2 text-[14px] font-600 transition-colors ${
-              active ? "bg-surface text-ink shadow-sm" : "text-muted"
+            className={`relative flex flex-1 items-center justify-center gap-2.5 rounded-lg px-3 py-2 text-center text-[14px] leading-5 tracking-[-0.35px] transition-colors ${
+              active ? "font-semibold text-gray900" : "font-medium text-locked"
             }`}
           >
-            {opt.label}
+            {active && (
+              <motion.span
+                layoutId={layoutId}
+                className="absolute inset-0 rounded-lg bg-surface shadow-[0_1px_6px_0_rgba(0,0,0,0.08)]"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+              />
+            )}
+            <span className="relative z-10">{opt.label}</span>
           </button>
         );
       })}
