@@ -6,6 +6,7 @@ import ScenarioPanel from "../ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
 import { Reveal } from "./components/Reveal";
 import { AssumptionsSection } from "./sections/AssumptionsSection";
+import { DisclaimerFooter } from "./sections/DisclaimerFooter";
 import { HeroSummary } from "./sections/HeroSummary";
 import { PdfSaveButton } from "./sections/PdfSaveButton";
 import { StrategyActionsSection } from "./sections/StrategyActionsSection";
@@ -81,13 +82,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
           onToggle={() => setAssumptionsOpen((v) => !v)}
         />
 
-        <Reveal>
-          <footer className="border-t border-line pt-5 text-[12px] leading-relaxed text-muted">
-            {rec.disclaimers.map((d, i) => (
-              <p key={i}>※ {d}</p>
-            ))}
-          </footer>
-        </Reveal>
+        <DisclaimerFooter items={rec.disclaimers} />
       </div>
     </>
   );
