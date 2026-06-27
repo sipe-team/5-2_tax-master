@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { ActionCard, Recommendation } from "../engine";
+import type { Recommendation } from "../engine";
+import { splitWaterfallAndStrategyActions, totalMaxBenefitWon } from "../engine";
 import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ScenarioPanel from "../ScenarioPanel";
@@ -25,24 +26,8 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
     window.setTimeout(() => window.print(), 350);
   };
 
-  // 상품에 묶인 긴급 액션(urgent-<productId>)은 워터폴 그릇 행으로 합쳐 인라인 표시.
-  // 그릇이 없는 순수 전략(증여·매도 등)과 RIA(워터폴 제외)는 전략 섹션에 남긴다.
-  const waterfallIds = new Set(rec.waterfall.map((w) => w.productId));
-  const actionByProduct = new Map<string, ActionCard>();
-  const strategyActions = rec.actions.filter((a) => {
-    const pid = a.id.startsWith("urgent-") ? a.id.slice("urgent-".length) : null;
-    if (pid && waterfallIds.has(pid)) {
-      actionByProduct.set(pid, a);
-      return false;
-    }
-    return true;
-  });
-
-  // 최대 환급액 = 워터폴 첫 해 절세 + 액션 전략별 추정 절감액 (null 제외)
-  const maxBenefitWon =
-    rec.waterfall.reduce((s, a) => s + a.firstYearBenefit, 0) +
-    rec.actions.reduce((s, a) => s + (a.estimatedBenefit ?? 0), 0);
-  const maxBenefitMan = Math.round(maxBenefitWon / 10_000);
+  const { strategyActions, actionByProduct } = splitWaterfallAndStrategyActions(rec);
+  const maxBenefitMan = Math.round(totalMaxBenefitWon(rec) / 10_000);
 
   return (
     <>

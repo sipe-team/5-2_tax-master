@@ -15,6 +15,7 @@ export { buildCliffChart } from "./cliff";
 export type { CliffChart, CliffPoint, CliffMarker } from "./cliff";
 export { projectGap } from "./gap";
 export type { GapProjection, GapPoint } from "./gap";
+export { splitWaterfallAndStrategyActions, totalMaxBenefitWon } from "./recommendation-summary";
 
 const FINANCE_TOP_THRESHOLD = 20_000_000; // §10 금소세 2,000만
 
