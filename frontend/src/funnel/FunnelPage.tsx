@@ -240,7 +240,7 @@ function StepBasic({ value, onNext }: { value: Ctx; onNext: (p: Ctx) => void }) 
     <StepShell
       step={1}
       title="기본 정보를 알려주세요"
-      subtitle="딱 필요한 것만 — 나머지는 다음에 더 정확하게."
+      subtitle="몇 가지만 입력하면 돼요."
       primaryLabel="다음"
       primaryDisabled={!valid}
       onPrimary={() => onNext({ age, incomeTypeUI, incomeMan, monthlyMan, horizonYears })}
@@ -272,7 +272,7 @@ function StepBasic({ value, onNext }: { value: Ctx; onNext: (p: Ctx) => void }) 
         suffix="만원"
       />
       <NumberField
-        label="이 돈, 언제 쓸 건가요"
+        label="언제 쓸 돈인가요?"
         value={horizonYears}
         onChange={setHorizonYears}
         suffix="년 뒤"
