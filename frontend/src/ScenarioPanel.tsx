@@ -153,7 +153,7 @@ export default function ScenarioPanel({
   return (
     <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-line">
       <h2 className="flex items-center gap-2 text-[13px] font-600 tracking-wide text-gold">
-        이직 시나리오 — 연봉이 바뀌면 전략은?
+        연봉이 바뀌면, 절세 전략도 바뀌어요
       </h2>
 
       <div className="mt-5">
