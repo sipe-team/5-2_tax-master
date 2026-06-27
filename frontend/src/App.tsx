@@ -3,6 +3,8 @@ import { ruleSet } from "./rules/products";
 import type { IncomeType, UserProfile } from "./rules/schema";
 import { recommend } from "./engine";
 import type { Allocation, Badge, UrgentAction } from "./engine";
+import ScenarioPanel from "./ScenarioPanel";
+import ProjectionPanel from "./ProjectionPanel";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
@@ -350,6 +352,12 @@ export default function App() {
           </div>
         )}
       </section>
+
+      {/* 자산 형성 시뮬레이션 (이대로 모으면 얼마) */}
+      <ProjectionPanel profile={profile} rec={rec} rules={ruleSet} />
+
+      {/* 이직 시나리오 (연봉 변화 시뮬레이터) */}
+      <ScenarioPanel profile={profile} rules={ruleSet} />
 
       {/* 가정·제외 */}
       {rec.assumptions.length > 0 && (
