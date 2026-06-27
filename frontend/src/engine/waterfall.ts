@@ -48,7 +48,10 @@ export function buildWaterfall(
   for (const r of resolved) {
     if (r.product.oneTimeOnExistingAssets) continue;
     if (suppressed.has(r.product.id)) {
-      excluded.push({ name: r.product.name, reason: "RIA 감면과 충돌해 제외(신규 해외주식 매수 억제)" });
+      excluded.push({
+        name: r.product.name,
+        reason: "RIA 감면과 충돌해 제외(신규 해외주식 매수 억제)",
+      });
       continue;
     }
     const lock = lockupExceedsHorizon(r.product.lockup, user);
@@ -68,7 +71,8 @@ export function buildWaterfall(
 
   // 그릇별 연 한도(전체 트랜치 합) — 채움 비율 표시용.
   const capByProduct = new Map<string, number>();
-  for (const t of tranches) capByProduct.set(t.productId, (capByProduct.get(t.productId) ?? 0) + t.annualCap);
+  for (const t of tranches)
+    capByProduct.set(t.productId, (capByProduct.get(t.productId) ?? 0) + t.annualCap);
 
   // 그리디 채우기.
   let budget = user.monthlyInvestable * 12;
@@ -78,7 +82,10 @@ export function buildWaterfall(
     if (cap !== undefined) poolRemaining.set(pool.id, cap);
   }
 
-  const byProduct = new Map<string, { r: ResolvedProduct; annual: number; benefit: number; tranches: Tranche[] }>();
+  const byProduct = new Map<
+    string,
+    { r: ResolvedProduct; annual: number; benefit: number; tranches: Tranche[] }
+  >();
 
   for (const t of tranches) {
     if (budget <= 0) break;

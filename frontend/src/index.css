@@ -17,7 +17,9 @@
   --font-display: "Space Grotesk", "Pretendard Variable", sans-serif;
 }
 
-html { color-scheme: light; }
+html {
+  color-scheme: light;
+}
 
 body {
   margin: 0;
@@ -29,8 +31,14 @@ body {
 }
 
 /* tabular numerals for money figures */
-.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
 }
