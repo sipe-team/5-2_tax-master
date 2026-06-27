@@ -60,6 +60,47 @@ textarea {
   }
 }
 
+/* PDF 저장(브라우저 인쇄) — 결과 화면을 깔끔한 한 장으로 떨군다.
+   사용자가 헤드라인 아래 'PDF로 저장' 버튼을 누르면 window.print()가 호출된다. */
+@media print {
+  /* 인쇄에 불필요·인터랙티브한 요소는 숨긴다 (헤더/버튼/시나리오 패널 등). */
+  .no-print {
+    display: none !important;
+  }
+
+  /* framer-motion의 whileInView/initial로 인해 스크롤되지 않은 영역이
+     opacity:0 · translateY 상태로 남아 인쇄에서 사라지는 것을 막는다. */
+  [style*="opacity"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* 배경색·강조색(파랑/빨강)을 인쇄에 그대로 보존한다. */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  /* 섹션이 페이지 경계에서 잘리지 않게 한다. */
+  section {
+    break-inside: avoid;
+  }
+
+  /* sticky 헤더 잔여 여백 제거 후 본문을 위에서부터 시작. */
+  .pdf-page {
+    padding-top: 0 !important;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}
+
 /* 결과 로딩 화면 (스플래시와 동일한 톤) */
 .result-loading {
   position: fixed;

@@ -190,6 +190,15 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   const [expanded, setExpanded] = useState(false);
   const [assumptionsOpen, setAssumptionsOpen] = useState(false);
 
+  // PDF로 저장: 인쇄 전에 접힌 영역(워터폴 더보기·가정/제외)을 모두 펼쳐
+  // 한 장에 전체 내용이 담기게 한 뒤 브라우저 인쇄(대상: PDF로 저장)를 띄운다.
+  const handleSavePdf = () => {
+    setExpanded(true);
+    setAssumptionsOpen(true);
+    // 가정·제외 펼침 애니메이션(0.25s)이 끝난 뒤 인쇄해야 내용이 잘리지 않는다.
+    window.setTimeout(() => window.print(), 350);
+  };
+
   const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
   const hidden = rec.waterfall.length - shown.length;
 
@@ -219,16 +228,37 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
 
   return (
     <>
-      <BackHeader />
-      <div className="mx-auto max-w-[640px] px-5 pb-10 pt-6">
+      <div className="no-print">
+        <BackHeader />
+      </div>
+      <div className="pdf-page mx-auto max-w-[640px] px-5 pb-10 pt-6">
       <Reveal>
-        <p className="mb-6 text-[22px] font-bold leading-tight tracking-tight text-gray900">
+        <p className="mb-3 text-[22px] font-bold leading-tight tracking-tight text-gray900">
           매년 최대
           <br />
           <span className="tnum text-gold">{maxBenefitMan.toLocaleString()}만원</span> 절약할 수
           있어요
         </p>
       </Reveal>
+
+      <div className="no-print mb-6">
+        <button
+          type="button"
+          onClick={handleSavePdf}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-gold/50 px-3 py-1.5 text-[13px] font-600 text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden>
+            <path
+              d="M10 3v9m0 0 3-3m-3 3-3-3M4 14v2a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-2"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          PDF로 저장
+        </button>
+      </div>
 
       <Reveal>
         <header className="mb-8">
@@ -300,7 +330,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
             </motion.ol>
             {hidden > 0 && (
               <button
-                className="mt-2 text-[13px] text-gold outline-none hover:underline focus-visible:underline"
+                className="no-print mt-2 text-[13px] text-gold outline-none hover:underline focus-visible:underline"
                 onClick={() => setExpanded(true)}
               >
                 + {hidden}개 더보기
@@ -317,13 +347,13 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       </section>
       </Reveal>
 
-      {/* 이직 시나리오 (연봉 변화 시뮬레이터) */}
-      <Reveal>
+      {/* 이직 시나리오 (연봉 변화 시뮬레이터) — 인터랙티브라 PDF에서는 제외 */}
+      <Reveal className="no-print">
         <ScenarioPanel profile={profile} rules={ruleSet} />
       </Reveal>
 
-      {/* 재테크/비즈니스 이벤트 (마감 임박순) */}
-      <Reveal>
+      {/* 재테크/비즈니스 이벤트 (마감 임박순) — 외부 데이터·링크라 PDF에서는 제외 */}
+      <Reveal className="no-print">
         <EventsPanel asOf={profile.asOf} />
       </Reveal>
 
