@@ -76,39 +76,63 @@ function Badges({ items }: { items: Badge[] }) {
 
 function ActionItem({ a }: { a: ActionCard }) {
   const isImmediate = a.urgency === "immediate";
+  const calUrl = googleCalendarUrl(a);
   return (
-    <div className={`border-l-2 pl-4 ${isImmediate ? "border-clay" : "border-line"}`}>
-      <div className="flex items-baseline justify-between gap-3">
-        <strong className="text-[15px]">{a.name}</strong>
+    <div
+      className={`rounded-lg border bg-surface p-5 ${
+        isImmediate ? "border-clay/40" : "border-line"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <strong className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+          {a.name}
+        </strong>
         {a.dDay != null ? (
           <span
-            className={`font-display tnum text-sm font-700 ${a.dDay <= 14 ? "text-clay" : "text-muted"}`}
+            className={`shrink-0 rounded-md px-2 py-1 text-[12px] font-semibold tnum tracking-[-0.3px] ${
+              a.dDay <= 14 ? "bg-clay/10 text-clay" : "bg-gray100 text-muted"
+            }`}
           >
             D-{a.dDay}
           </span>
         ) : (
-          <span className="text-[11px] text-muted">{a.category}</span>
+          <span className="shrink-0 text-[16px] font-medium leading-7 tracking-[-0.3px] text-muted">
+            {a.category}
+          </span>
         )}
       </div>
-      <p className="mt-1 text-[13px] text-muted">{a.reason}</p>
-      <p className="mt-1 text-[13px]">
-        <span className="text-muted">→ </span>
+      <p className="mt-3 text-[16px] font-medium leading-7 tracking-[-0.3px] text-muted">
+        {a.reason}
+      </p>
+      <p className="mt-1 text-[16px] font-medium leading-7 tracking-[-0.3px] text-gray800">
         {a.action}
       </p>
       {a.estimatedBenefit != null && (
-        <p className="mt-1 text-[13px]">
-          예상 절감{" "}
-          <span className="font-display tnum font-600 text-gold">{won(a.estimatedBenefit)}원</span>
+        <div className="mt-4 flex items-center justify-between rounded-lg bg-primary-light px-3 py-2.5">
+          <span className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+            예상 절감
+          </span>
+          <span className="tnum text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gold">
+            {won(a.estimatedBenefit)}원
+          </span>
+        </div>
+      )}
+      {a.warning && (
+        <p className="mt-2 rounded-md bg-clay/5 px-3 py-2 text-[16px] font-medium leading-7 tracking-[-0.3px] text-clay">
+          ⚠ {a.warning}
         </p>
       )}
-      {a.warning && <p className="mt-1 text-[12px] text-clay">{a.warning}</p>}
-      {a.deadline && <p className="mt-1 text-[11px] text-locked tnum">마감 {a.deadline}</p>}
-      {googleCalendarUrl(a) && (
+      {a.deadline && (
+        <p className="mt-2 text-[12px] font-medium tracking-[-0.3px] tnum text-locked">
+          마감 {a.deadline}
+        </p>
+      )}
+      {calUrl && (
         <a
-          href={googleCalendarUrl(a)!}
+          href={calUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 inline-flex items-center gap-1 rounded-md border border-gold/50 px-2.5 py-1 text-[12px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+          className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary-light px-3 py-2.5 text-[13px] font-semibold text-gold outline-none transition-colors hover:brightness-95 focus-visible:brightness-95"
         >
           캘린더에 추가
         </a>
@@ -133,7 +157,9 @@ function Vessel({ a, rank, action }: { a: Allocation; rank: number; action?: Act
       <div>
         <div className="flex items-baseline justify-between gap-3">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-            <strong className="text-[15px]">{a.name}</strong>
+            <strong className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+              {a.name}
+            </strong>
             {action?.dDay != null && (
               <span className="rounded-full border border-clay/50 px-2 py-0.5 text-[11px] font-600 leading-tight text-clay tnum">
                 신청 마감 D-{action.dDay}
@@ -141,8 +167,10 @@ function Vessel({ a, rank, action }: { a: Allocation; rank: number; action?: Act
             )}
           </div>
           <div className="text-right">
-            <span className="font-display tnum text-lg font-600">{won(a.monthlyAmount)}</span>
-            <span className="text-xs text-muted">원/월</span>
+            <span className="tnum text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
+              {won(a.monthlyAmount)}
+            </span>
+            <span className="text-[12px] font-medium tracking-[-0.3px] text-muted"> 원/월</span>
           </div>
         </div>
         <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-line/50">
@@ -158,12 +186,20 @@ function Vessel({ a, rank, action }: { a: Allocation; rank: number; action?: Act
           </span>
           <span>한도 {won(a.annualCap)}/년</span>
         </div>
-        <p className="mt-1.5 text-[13px] text-muted">{a.rationale}</p>
+        <p className="mt-2 text-[16px] font-medium leading-7 tracking-[-0.3px] text-muted">
+          {a.rationale}
+        </p>
         {action && (
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-[12px]">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
             <div className="min-w-0 flex-1">
-              <p className="leading-relaxed text-gray800">{action.reason}</p>
-              {action.warning && <p className="mt-1 text-clay">⚠ {action.warning}</p>}
+              <p className="text-[14px] font-medium leading-5 tracking-[-0.3px] text-gray800">
+                {action.reason}
+              </p>
+              {action.warning && (
+                <p className="mt-1 text-[14px] font-medium tracking-[-0.3px] text-clay">
+                  ⚠ {action.warning}
+                </p>
+              )}
             </div>
             {calUrl && (
               <a
@@ -269,11 +305,11 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
 
         {strategyActions.length > 0 && (
           <Reveal>
-            <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-clay/30">
-              <h2 className="mb-4 text-[13px] font-600 tracking-wide text-clay">
+            <section className="mb-7">
+              <h2 className="mb-3 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
                 지금 할 일 · 전략
               </h2>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
                 {strategyActions.map((a) => (
                   <ActionItem key={a.id} a={a} />
                 ))}
@@ -284,30 +320,32 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
 
         <Reveal>
           <section className="mb-7">
-            <h2 className="mb-3 text-[13px] font-600 tracking-wide text-muted">
+            <h2 className="mb-3 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
               매달 적립 우선순위
             </h2>
             {rec.waterfall.length === 0 ? (
-              <p className="text-[14px] text-muted">조건에 맞는 절세 계좌가 없어요.</p>
+              <p className="text-[16px] font-medium leading-7 tracking-[-0.3px] text-muted">
+                조건에 맞는 절세 계좌가 없어요.
+              </p>
             ) : (
               <>
                 <div className="mb-5 rounded-xl bg-surface/60 p-4 ring-1 ring-line">
-                  <p className="text-[13px] leading-relaxed text-gray800">
+                  <p className="text-[16px] font-medium leading-7 tracking-[-0.3px] text-gray800">
                     매달 모을 수 있는{" "}
-                    <span className="font-display tnum font-600">{won(budgetMonthly)}원</span> 중{" "}
-                    <span className="font-display tnum font-600">{won(allocatedMonthly)}원</span>을
-                    아래 순서대로 절세 계좌에 나눠 담아요.
+                    <span className="tnum font-semibold">{won(budgetMonthly)}원</span> 중{" "}
+                    <span className="tnum font-semibold">{won(allocatedMonthly)}원</span>을 아래
+                    순서대로 절세 계좌에 나눠 담아요.
                   </p>
                   {totalFirstYear > 0 && (
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-gray800">
+                    <p className="mt-1.5 text-[16px] font-medium leading-7 tracking-[-0.3px] text-gray800">
                       이대로 채우면 첫 해에 약{" "}
-                      <span className="font-display tnum font-600 text-gold">
+                      <span className="tnum font-semibold text-gold">
                         {won(totalFirstYear)}원
                       </span>
                       을 아낄 수 있어요.
                     </p>
                   )}
-                  <p className="mt-2 text-[11px] leading-relaxed text-muted">
+                  <p className="mt-2 text-[12px] font-medium leading-relaxed tracking-[-0.3px] text-muted">
                     각 계좌의 <span className="text-gold">첫 해 절세</span> 금액을 더한 값이에요.
                     1번부터 채우는 게 가장 효율이 높아요.
                   </p>
@@ -333,7 +371,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
                 </motion.ol>
                 {hidden > 0 && (
                   <button
-                    className="no-print mt-2 text-[13px] text-gold outline-none hover:underline focus-visible:underline"
+                    className="no-print mt-2 text-[16px] font-medium leading-7 tracking-[-0.3px] text-gold outline-none hover:underline focus-visible:underline"
                     onClick={() => setExpanded(true)}
                   >
                     + {hidden}개 더보기
@@ -342,8 +380,8 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
               </>
             )}
             {rec.leftoverMonthly > 0 && (
-              <p className="mt-4 text-[13px] text-muted">
-                남는 <span className="font-display tnum">{won(rec.leftoverMonthly)}원</span>/월은
+              <p className="mt-4 text-[16px] font-medium leading-7 tracking-[-0.3px] text-muted">
+                남는 <span className="tnum font-semibold">{won(rec.leftoverMonthly)}원</span>/월은
                 일반계좌로 모으세요.
               </p>
             )}
@@ -362,7 +400,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
                 type="button"
                 onClick={() => setAssumptionsOpen((v) => !v)}
                 aria-expanded={assumptionsOpen}
-                className="flex cursor-pointer items-center gap-1 text-[12px] tracking-wide text-muted outline-none transition-colors hover:text-gold focus-visible:text-gold"
+                className="flex cursor-pointer items-center gap-1 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800 outline-none transition-colors hover:text-gold focus-visible:text-gold"
               >
                 가정 · 제외 <span className="text-locked tnum">{rec.assumptions.length}</span>
                 <svg
