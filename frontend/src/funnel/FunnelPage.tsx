@@ -5,12 +5,10 @@ import { SegmentedControl } from "@toss/tds-mobile";
 import {
   FunnelDataSchema,
   INCOME_TYPE_LABEL,
-  INVEST_TYPE_LABEL,
   type FunnelData,
   type IncomeTypeUI,
   toProfile,
 } from "../rules/profile";
-import type { InvestType } from "../rules/schema";
 
 type Ctx = Partial<FunnelData>;
 
@@ -187,18 +185,32 @@ function StepAccounts({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) 
       onPrimary={() => onNext({ hasPension, pensionContributionMan, hasIrp, irpContributionMan, hasIsa })}
     >
       <div>
-        <CheckRow label="연금저축 보유" checked={hasPension} onChange={setHasPension} />
+        <CheckRow
+          label="연금저축 보유"
+          checked={hasPension}
+          onChange={(v) => {
+            setHasPension(v);
+            if (v && pensionContributionMan === 0) setPension(600); // 세액공제 한도 기본 prefill
+          }}
+        />
         {hasPension && (
           <div className="ml-6 mt-2">
-            <NumberField label="올해 납입액" value={pensionContributionMan} onChange={setPension} suffix="만원" />
+            <NumberField label="올해 납입액 (한도 600)" value={pensionContributionMan} onChange={setPension} suffix="만원" />
           </div>
         )}
       </div>
       <div>
-        <CheckRow label="IRP 보유" checked={hasIrp} onChange={setHasIrp} />
+        <CheckRow
+          label="IRP 보유"
+          checked={hasIrp}
+          onChange={(v) => {
+            setHasIrp(v);
+            if (v && irpContributionMan === 0) setIrp(300); // 연금 합산 900 한도 내 기본 prefill
+          }}
+        />
         {hasIrp && (
           <div className="ml-6 mt-2">
-            <NumberField label="올해 납입액" value={irpContributionMan} onChange={setIrp} suffix="만원" />
+            <NumberField label="올해 납입액 (합산 900)" value={irpContributionMan} onChange={setIrp} suffix="만원" />
           </div>
         )}
       </div>
@@ -209,42 +221,19 @@ function StepAccounts({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) 
 
 // ── 3단계: 투자 현황 ────────────────────────────────────
 function StepInvest({ value, onNext, onSkip }: { value: Ctx; onNext: (p: Ctx) => void; onSkip: () => void }) {
-  const [investTypes, setInvestTypes] = useState<string[]>(value.investTypes ?? []);
   const [hasOverseas, setHasOverseas] = useState(value.hasOverseas ?? false);
   const [overseasValueMan, setOverseasValue] = useState(value.overseasValueMan ?? 0);
   const [overseasCostMan, setOverseasCost] = useState(value.overseasCostMan ?? 0);
 
-  const toggle = (t: string) =>
-    setInvestTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
-
   return (
     <StepShell
       step={3}
-      title="어떤 자산에 투자하고 있나요?"
-      subtitle="해당하는 전략을 골라드려요."
+      title="해외주식을 보유하고 있나요?"
+      subtitle="보유 중이면 RIA 감면·분산매도·증여 전략을 검토해드려요."
       primaryLabel="다음"
       onSkip={onSkip}
-      onPrimary={() => onNext({ investTypes, hasOverseas, overseasValueMan, overseasCostMan })}
+      onPrimary={() => onNext({ hasOverseas, overseasValueMan, overseasCostMan })}
     >
-      <div className="flex flex-col gap-2">
-        <span className="text-[12px] text-muted">보유 투자 유형</span>
-        <div className="flex flex-wrap gap-2">
-          {(Object.keys(INVEST_TYPE_LABEL) as InvestType[]).map((t) => {
-            const on = investTypes.includes(t);
-            return (
-              <button
-                key={t}
-                onClick={() => toggle(t)}
-                className={`rounded-full border px-3 py-1.5 text-[13px] transition ${
-                  on ? "border-gold bg-gold/10 text-ink" : "border-line text-muted"
-                }`}
-              >
-                {INVEST_TYPE_LABEL[t]}
-              </button>
-            );
-          })}
-        </div>
-      </div>
       <CheckRow label="해외주식 보유 중" checked={hasOverseas} onChange={setHasOverseas} />
       {hasOverseas && (
         <div className="ml-6 flex flex-col gap-4">

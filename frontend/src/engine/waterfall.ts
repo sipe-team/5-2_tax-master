@@ -22,6 +22,14 @@ export function lockupExceedsHorizon(lockup: Lockup | undefined, user: UserProfi
   return null;
 }
 
+/** 기존 납입액(연금/IRP) → productId별 차감액. 잔여 한도 = 한도 − 기존 납입. */
+function existingContributions(user: UserProfile): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (user.hasPension && user.pensionContribution) out["pension-fund"] = user.pensionContribution;
+  if (user.hasIrp && user.irpContribution) out["irp"] = user.irpContribution;
+  return out;
+}
+
 function poolFillIndex(rules: RuleSet): Map<string, number> {
   const idx = new Map<string, number>();
   for (const pool of rules.pools) pool.fillOrder.forEach((pid, i) => idx.set(pid, i));
@@ -69,7 +77,14 @@ export function buildWaterfall(
     return (fillIdx.get(a.productId) ?? 99) - (fillIdx.get(b.productId) ?? 99);
   });
 
-  // 그릇별 연 한도(전체 트랜치 합) — 채움 비율 표시용.
+  // 기존 납입액만큼 잔여 한도 차감 (연금/IRP). (PRD: 잔여 한도 반영)
+  const existing = existingContributions(user);
+  for (const t of tranches) {
+    const ex = existing[t.productId];
+    if (ex) t.annualCap = Math.max(0, t.annualCap - ex);
+  }
+
+  // 그릇별 연 한도(차감 후 = 남은 한도) — 채움 비율 표시용.
   const capByProduct = new Map<string, number>();
   for (const t of tranches)
     capByProduct.set(t.productId, (capByProduct.get(t.productId) ?? 0) + t.annualCap);
@@ -79,7 +94,9 @@ export function buildWaterfall(
   const poolRemaining = new Map<string, number>();
   for (const pool of rules.pools) {
     const cap = confirmed(pool.annualCreditCap);
-    if (cap !== undefined) poolRemaining.set(pool.id, cap);
+    if (cap === undefined) continue;
+    const used = pool.members.reduce((s, m) => s + (existing[m] ?? 0), 0);
+    poolRemaining.set(pool.id, Math.max(0, cap - used));
   }
 
   const byProduct = new Map<

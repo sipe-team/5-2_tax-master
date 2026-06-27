@@ -125,6 +125,17 @@ describe("등급/업셀 (Q16)", () => {
   });
 });
 
+describe("잔여 한도 (PRD 병합)", () => {
+  it("연금저축 600만 이미 납입 → 잔여 0이라 워터폴에서 빠지고, IRP에 합산 잔여 300만", () => {
+    const rec = recommend(
+      { ...base, horizonYears: 30, monthlyInvestable: 3_000_000, hasPension: true, pensionContribution: 6_000_000 },
+      ruleSet,
+    );
+    expect(find(rec, "pension-fund")).toBeUndefined(); // 600 - 600 = 0
+    expect(find(rec, "irp")!.annualAmount).toBe(3_000_000); // 합산 900 - 600 = 300만
+  });
+});
+
 describe("그리디 최적성 — 완전탐색 검증 (Q8)", () => {
   // 락업으로 연금/IRP 제외 → 풀 없는 독립 트랜치 → 순수 순서 문제
   const user: UserProfile = { ...base, age: 30, horizonYears: 3, monthlyInvestable: 500_000 };
