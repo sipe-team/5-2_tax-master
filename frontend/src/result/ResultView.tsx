@@ -121,9 +121,10 @@ function ActionItem({ a }: { a: ActionCard }) {
   );
 }
 
-function Vessel({ a, rank }: { a: Allocation; rank: number }) {
+function Vessel({ a, rank, action }: { a: Allocation; rank: number; action?: ActionCard }) {
   const ratio =
     a.annualCap > 0 && isFinite(a.annualCap) ? Math.min(1, a.annualAmount / a.annualCap) : 1;
+  const calUrl = action ? googleCalendarUrl(action) : null;
   return (
     <motion.li
       variants={vesselItem}
@@ -134,7 +135,14 @@ function Vessel({ a, rank }: { a: Allocation; rank: number }) {
       </div>
       <div>
         <div className="flex items-baseline justify-between gap-3">
-          <strong className="text-[15px]">{a.name}</strong>
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <strong className="text-[15px]">{a.name}</strong>
+            {action?.dDay != null && (
+              <span className="rounded-full border border-clay/50 px-2 py-0.5 text-[11px] font-600 leading-tight text-clay tnum">
+                신청 마감 D-{action.dDay}
+              </span>
+            )}
+          </div>
           <div className="text-right">
             <span className="font-display tnum text-lg font-600">{won(a.monthlyAmount)}</span>
             <span className="text-xs text-muted">원/월</span>
@@ -154,6 +162,24 @@ function Vessel({ a, rank }: { a: Allocation; rank: number }) {
           <span>한도 {won(a.annualCap)}/년</span>
         </div>
         <p className="mt-1.5 text-[13px] text-muted">{a.rationale}</p>
+        {action && (
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-[12px]">
+            <div className="min-w-0 flex-1">
+              <p className="leading-relaxed text-gray800">{action.reason}</p>
+              {action.warning && <p className="mt-1 text-clay">⚠ {action.warning}</p>}
+            </div>
+            {calUrl && (
+              <a
+                href={calUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center gap-1 rounded-md border border-gold/50 px-2.5 py-1 text-[12px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+              >
+                캘린더에 추가
+              </a>
+            )}
+          </div>
+        )}
         <Badges items={a.badges} />
       </div>
     </motion.li>
@@ -176,6 +202,19 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   );
   const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
   const hidden = rec.waterfall.length - shown.length;
+
+  // 상품에 묶인 긴급 액션(urgent-<productId>)은 워터폴 그릇 행으로 합쳐 인라인 표시.
+  // 그릇이 없는 순수 전략(증여·매도 등)과 RIA(워터폴 제외)는 전략 섹션에 남긴다.
+  const waterfallIds = new Set(rec.waterfall.map((w) => w.productId));
+  const actionByProduct = new Map<string, ActionCard>();
+  const strategyActions = rec.actions.filter((a) => {
+    const pid = a.id.startsWith("urgent-") ? a.id.slice("urgent-".length) : null;
+    if (pid && waterfallIds.has(pid)) {
+      actionByProduct.set(pid, a);
+      return false;
+    }
+    return true;
+  });
 
   // 워터폴 요약: 총 예산 중 절세 그릇에 담는 금액 → 첫 해 절세 합계 (흐름 가시화).
   const allocatedMonthly = rec.waterfall.reduce((s, a) => s + a.monthlyAmount, 0);
@@ -209,12 +248,12 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
         </header>
       </Reveal>
 
-      {rec.actions.length > 0 && (
+      {strategyActions.length > 0 && (
         <Reveal>
           <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-clay/30">
             <h2 className="mb-4 text-[13px] font-600 tracking-wide text-clay">지금 할 일 · 전략</h2>
             <div className="flex flex-col gap-4">
-              {rec.actions.map((a) => (
+              {strategyActions.map((a) => (
                 <ActionItem key={a.id} a={a} />
               ))}
             </div>
@@ -261,7 +300,12 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
                 aria-hidden
               />
               {shown.map((a, i) => (
-                <Vessel key={a.productId} a={a} rank={i + 1} />
+                <Vessel
+                  key={a.productId}
+                  a={a}
+                  rank={i + 1}
+                  action={actionByProduct.get(a.productId)}
+                />
               ))}
             </motion.ol>
             {hidden > 0 && (
