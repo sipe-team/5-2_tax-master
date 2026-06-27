@@ -58,16 +58,20 @@ export default function LandingPage() {
         </motion.p>
       </div>
 
-      <motion.button
-        type="button"
-        onClick={() => navigate("/start")}
-        className="w-full rounded-xl bg-gold py-4 text-[16px] font-600 text-white transition active:scale-[0.99]"
+      <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
       >
-        절세 시작하기
-      </motion.button>
+        <button
+          type="button"
+          onClick={() => navigate("/start")}
+          className="w-full rounded-xl bg-gold py-4 text-[16px] font-600 text-white transition active:scale-[0.99]"
+        >
+          절세 시작하기
+        </button>
+        <p className="mt-3 text-center text-[13px] text-muted">개인정보를 저장하지 않아요</p>
+      </motion.div>
     </div>
   );
 }
