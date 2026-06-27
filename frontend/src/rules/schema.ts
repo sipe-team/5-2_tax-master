@@ -16,7 +16,7 @@
 // ─────────────────────────────────────────────────────────────
 
 /** 확정(입법 완료) | 추진(발표됐으나 미확정). 엔진은 confirmed만 계산. */
-export type RuleStatus = "confirmed" | "proposed";
+type RuleStatus = "confirmed" | "proposed";
 
 export interface Sourced<T> {
   value: T;
@@ -77,10 +77,10 @@ export type InvestType =
   | "bond"
   | "reit";
 
-export type RiskTolerance = "low" | "medium" | "high";
+type RiskTolerance = "low" | "medium" | "high";
 
 /** RIA 계산용 보유 해외주식 (Q13). */
-export interface OverseasHoldings {
+interface OverseasHoldings {
   marketValue: number; // 평가액
   costBasis: number; // 취득가액
 }
@@ -118,7 +118,7 @@ export interface Lockup {
 // 납입 한도
 // ─────────────────────────────────────────────────────────────
 
-export interface ContributionCap {
+interface ContributionCap {
   period: "annual" | "monthly";
   amount: Sourced<number>;
 }
@@ -127,7 +127,7 @@ export interface ContributionCap {
 // 한시 창 (Q9: 긴급 트랙)
 // ─────────────────────────────────────────────────────────────
 
-export interface TimeWindow {
+interface TimeWindow {
   /** 신청 가능 구간 (청년적금). */
   application?: { open: string; close: string };
   /** 적용 기한 (RIA = 2026-12-31). */
@@ -152,14 +152,14 @@ export interface TaxCreditBenefit {
 }
 
 /** 소득공제 — 청년형 강화ISA. 효율 = 공제율 × 한계세율(엔진의 소득세율표 참조). */
-export interface IncomeDeductionBenefit {
+interface IncomeDeductionBenefit {
   kind: "incomeDeduction";
   rate: Sourced<number>;
   deductionCap: Sourced<number>; // 연 최대 공제액(원)
 }
 
 /** 비과세 + 분리과세 — ISA. 효율 = 운용수익 × (일반세율 − 분리세율), 비과세분은 전액. */
-export interface SepTaxBenefit {
+interface SepTaxBenefit {
   kind: "sepTax";
   exemptLimit: Sourced<number>; // 비과세 한도(순이익 기준)
   sepRate: Sourced<number>; // 분리과세율 (0.099)
@@ -167,7 +167,7 @@ export interface SepTaxBenefit {
 }
 
 /** 정부기여금 + 이자비과세 — 청년적금. 효율 = 기여율(+비과세 효과). */
-export interface GovMatchBenefit {
+interface GovMatchBenefit {
   kind: "govMatch";
   matchRate: Sourced<number>; // 납입액 대비 정부기여율
   interestTaxExempt: Sourced<boolean>;
@@ -175,14 +175,14 @@ export interface GovMatchBenefit {
 }
 
 /** 양도세 기본공제 — 해외주식 직투. 효율 = 250만 비과세분 × 22%. */
-export interface CapGainsExemptBenefit {
+interface CapGainsExemptBenefit {
   kind: "capGainsExempt";
   annualExempt: Sourced<number>; // 연 250만
   taxRate: Sourced<number>; // 0.22
 }
 
 /** 양도세 감면(한시) — RIA. 기존 보유분 일회성. 워터폴 아닌 긴급 트랙. */
-export interface CapGainsReductionBenefit {
+interface CapGainsReductionBenefit {
   kind: "capGainsReduction";
   /** 매도(결제) 시기별 감면율. until 이전이면 rate 적용. */
   schedule: Array<{ until: string; rate: Sourced<number> }>;
@@ -204,7 +204,7 @@ export type Benefit =
 // 상품
 // ─────────────────────────────────────────────────────────────
 
-export type ProductCategory =
+type ProductCategory =
   | "pension" // 연금저축/IRP
   | "isa"
   | "overseasStock"

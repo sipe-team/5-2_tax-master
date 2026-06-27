@@ -8,7 +8,7 @@ const MAN = 10_000;
 /** 마감 임박 일회성 액션의 기본 점수 바닥(절세효과 추정 불가 시). */
 const IMMEDIATE_BASE_MANWON = 300;
 
-export function daysBetween(fromISO: string, toISO: string): number {
+function daysBetween(fromISO: string, toISO: string): number {
   return Math.round((Date.parse(toISO) - Date.parse(fromISO)) / 86_400_000);
 }
 

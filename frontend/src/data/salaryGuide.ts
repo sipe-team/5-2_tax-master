@@ -26,7 +26,7 @@ export interface SalaryRangeMan {
  * 미들(4~10년) 5,500~8,500, 시니어(10년+) 7년차 1억 가능 → 8,000~13,000,
  * 임원급은 통계 희박 → 보수적 상향 추정.
  */
-export const SALARY_GUIDE_MAN: Record<Seniority, SalaryRangeMan> = {
+const SALARY_GUIDE_MAN: Record<Seniority, SalaryRangeMan> = {
   BEGINNER: { min: 3000, max: 4500, mid: 3500 },
   JUNIOR: { min: 3800, max: 5500, mid: 4500 },
   MIDLEVEL: { min: 5500, max: 8500, mid: 6800 },

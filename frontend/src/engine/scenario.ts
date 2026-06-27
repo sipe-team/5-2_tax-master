@@ -15,10 +15,10 @@ import { resolveProduct } from "./eligibility";
 import { recommend } from "./index";
 import type { Recommendation } from "./types";
 
-export type ShiftStatus = "gained" | "lost" | "changed" | "same";
+type ShiftStatus = "gained" | "lost" | "changed" | "same";
 
 /** 한 상품의 시나리오 전후 스냅샷 비교. */
-export interface ProductShift {
+interface ProductShift {
   productId: string;
   /** 표시용 이름(시나리오 기준, 잃었으면 현재 기준). */
   name: string;

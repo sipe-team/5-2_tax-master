@@ -5,12 +5,6 @@ import type { Badge } from "./types";
 /** 가구중위소득 미입력 시, 이 임계값 이상은 통과로 간주(포용). 미만은 미통과(보수). (DESIGN Q16) */
 const GENEROUS_HOUSEHOLD_MEDIAN_PCT = 200;
 
-export interface EligibilityResult {
-  eligible: boolean;
-  reason?: string; // 불가 사유 (자격 게이트 실패)
-  badges: Badge[]; // assumed(가정) / upsell(업셀)
-}
-
 /** 자격 게이트(상품 가입 가부) 판정. 금액 등급(variant)은 별도. */
 function checkGate(
   e: Eligibility,

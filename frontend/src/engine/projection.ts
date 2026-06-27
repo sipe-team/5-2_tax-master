@@ -13,7 +13,7 @@ import type { RuleSet, UserProfile } from "../rules/schema";
 import { confirmed } from "./confirmed";
 import type { Recommendation } from "./types";
 
-export interface ProjectionPoint {
+interface ProjectionPoint {
   year: number;
   contributed: number; // 원금 누계
   balance: number; // 평가액(원금+수익)

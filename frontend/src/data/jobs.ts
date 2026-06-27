@@ -1,15 +1,6 @@
-/**
- * 로켓펀치 채용공고 검색 클라이언트 (DESIGN_ROCKETPUNCH §4.3).
- *
- * 브라우저 → **얇은 프록시(/api/rp)** → 로켓펀치. API Key는 프록시에만 있고
- * 브라우저는 모른다. 개인 절세입력(나이·소득 등)은 절대 이 레이어로 가지 않는다.
- */
-
-import type { IncomeType } from "../rules/schema";
-
 export type CompanySize = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE";
 export type Seniority = "BEGINNER" | "JUNIOR" | "MIDLEVEL" | "SENIOR" | "EXECUTIVE";
-export type WorkType = "ONSITE" | "HYBRID" | "REMOTE";
+type WorkType = "ONSITE" | "HYBRID" | "REMOTE";
 
 /** 화면에 붙는 관심 공고 칩(프록시 화이트리스트 필드만). */
 export interface JobChip {
@@ -27,21 +18,6 @@ export interface JobChip {
   jobCategory?: string;
   workType?: WorkType;
   webUrl?: string;
-}
-
-// 고용형태 → 소득유형 추정 (근로 vs 사업·기타).
-const EARNED_EMPLOYMENT = new Set(["FULL_TIME", "FIXED_TERM", "INTERN"]);
-const COMPREHENSIVE_EMPLOYMENT = new Set(["FREELANCER", "SELF_EMPLOYED", "COMMISSIONED"]);
-
-/**
- * 공고 고용형태로 소득유형(직장인 earned / 사업·기타 comprehensive) 추정.
- * 판단 불가하면 undefined(사용자 입력 유지). 둘 다 섞이면 근로 우선.
- */
-export function inferIncomeType(employmentTypes?: string[]): IncomeType | undefined {
-  if (!employmentTypes?.length) return undefined;
-  if (employmentTypes.some((e) => EARNED_EMPLOYMENT.has(e))) return "earned";
-  if (employmentTypes.some((e) => COMPREHENSIVE_EMPLOYMENT.has(e))) return "comprehensive";
-  return undefined;
 }
 
 export interface Page<T> {

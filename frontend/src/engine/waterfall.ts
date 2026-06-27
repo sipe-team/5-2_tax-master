@@ -4,7 +4,7 @@ import type { ResolvedProduct } from "./eligibility";
 import { tranchesFor, type Tranche } from "./benefit";
 import type { Allocation } from "./types";
 
-export interface Excluded {
+interface Excluded {
   name: string;
   reason: string;
 }

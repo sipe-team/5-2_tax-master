@@ -138,16 +138,3 @@ export function googleCalendarUrl(a: ActionCard): string | null {
   });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
-
-/** 생성한 .ics 를 브라우저에서 다운로드. (서버 미전송) */
-export function downloadCalendar(ics: string, filename = "절세-마감.ics"): void {
-  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}

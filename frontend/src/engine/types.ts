@@ -1,6 +1,6 @@
 /** 엔진 출력 타입 (DESIGN Q1·Q9·Q16). */
 
-export type BadgeKind = "assumed" | "upsell" | "warning" | "info";
+type BadgeKind = "assumed" | "upsell" | "warning" | "info";
 
 export interface Badge {
   kind: BadgeKind;

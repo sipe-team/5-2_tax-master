@@ -5,7 +5,7 @@ import { pct, won } from "../../lib/format";
 import { Badges } from "./Badges";
 
 // 워터폴 한 칸의 stagger 모션 — 부모(motion.ol)의 staggerChildren에 맞춰 순차 등장
-export const vesselItem: Variants = {
+const vesselItem: Variants = {
   hidden: { opacity: 0, y: 12 },
   show: {
     opacity: 1,

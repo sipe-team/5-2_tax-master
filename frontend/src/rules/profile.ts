@@ -12,17 +12,6 @@ export const INCOME_TYPE_LABEL: Record<IncomeTypeUI, string> = {
   none: "무소득",
 };
 
-export const INVEST_TYPE_LABEL: Record<InvestType, string> = {
-  domestic_stock: "국내주식",
-  foreign_stock: "해외주식",
-  etf_domestic: "국내주식형 ETF",
-  etf_foreign: "국내상장 해외 ETF",
-  fund: "펀드",
-  deposit: "예·적금",
-  bond: "채권",
-  reit: "리츠",
-};
-
 export const FunnelDataSchema = z.object({
   // 1단계 (필수)
   age: z.number().int().min(15).max(100),

@@ -8,10 +8,3 @@ export function confirmed<T>(s: Sourced<T> | undefined): T | undefined {
   if (!s) return undefined;
   return s.status === "confirmed" ? s.value : undefined;
 }
-
-/** 시행일/종료일이 기준일에 유효한지. */
-export function activeOn(s: Sourced<unknown>, asOf: string): boolean {
-  if (s.effectiveFrom && asOf < s.effectiveFrom) return false;
-  if (s.effectiveTo && asOf > s.effectiveTo) return false;
-  return true;
-}

@@ -18,7 +18,7 @@ import type { Recommendation } from "./types";
  * 연금 수령 시 연금소득세·중도해지 페널티는 미반영 → "운용 단계 누적"의 근사치다.
  */
 
-export interface GapPoint {
+interface GapPoint {
   year: number; // 0..horizon
   taxed: number; // 일반계좌 누적 자산(원)
   sheltered: number; // 절세계좌 누적 자산(원)

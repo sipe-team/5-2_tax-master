@@ -11,12 +11,12 @@ import { confirmed } from "./confirmed";
  * 결정론: Date/랜덤 미사용. 룰만 입력이면 같은 곡선(테스트 가능).
  */
 
-export interface CliffPoint {
+interface CliffPoint {
   income: number; // 연소득(원)
   refund: number; // 해당 연봉에서 고정 납입액 기준 첫 해 환급(원)
 }
 
-export interface CliffMarker {
+interface CliffMarker {
   income: number; // 경계 연봉(원)
   /** 경계 직전→직후 환급 변화(원, 음수=하락). */
   delta: number;
