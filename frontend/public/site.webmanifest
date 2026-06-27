@@ -1,0 +1,29 @@
+{
+  "name": "절세비서",
+  "short_name": "절세비서",
+  "description": "나에게 맞는 절세 우선순위를 1분 만에 찾아드려요.",
+  "lang": "ko-KR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#00c2ff",
+  "theme_color": "#00c2ff",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

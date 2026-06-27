@@ -6,7 +6,16 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Theme & mobile status bar -->
+    <meta name="theme-color" content="#00c2ff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="절세비서" />
+
     <title>절세비서</title>
     <meta
       name="description"
@@ -35,9 +44,47 @@
       content="나에게 맞는 절세 우선순위를 1분 만에 찾아드려요."
     />
     <meta name="twitter:image" content="https://www.save-tax.me/og-image.png" />
+    <style>
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        background: #00c2ff;
+        z-index: 9999;
+      }
+      #app-splash .splash-mascot {
+        width: 140px;
+        height: 140px;
+        animation: splash-bob 1.4s ease-in-out infinite;
+      }
+      #app-splash .splash-spinner {
+        width: 34px;
+        height: 34px;
+        border: 4px solid rgba(255, 255, 255, 0.45);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: splash-spin 0.8s linear infinite;
+      }
+      @keyframes splash-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      @keyframes splash-spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="app-splash">
+        <img class="splash-mascot" src="/mascot.png" alt="절세비서" />
+        <div class="splash-spinner"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
