@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { motion, type Variants } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
 import { googleCalendarUrl, buildCliffChart, projectGap } from "../engine";
 import { won, pct } from "../lib/format";
@@ -164,6 +164,7 @@ const TOP_N = 5;
 
 export function ResultView({ rec, profile }: { rec: Recommendation; profile: UserProfile }) {
   const [expanded, setExpanded] = useState(false);
+  const [assumptionsOpen, setAssumptionsOpen] = useState(false);
 
   // 연봉 절벽 (와우모먼트): 룰에서 산출, 소득유형별.
   const cliff = useMemo(() => buildCliffChart(ruleSet, profile.incomeType), [profile.incomeType]);
@@ -282,15 +283,6 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       </section>
       </Reveal>
 
-      {rec.assumptions.length > 0 && (
-        <Reveal>
-          <section className="mb-7 rounded-2xl bg-surface/60 p-5 ring-1 ring-line">
-            <h3 className="mb-2 text-[12px] tracking-wide text-muted">가정 · 제외</h3>
-            <Badges items={rec.assumptions} />
-          </section>
-        </Reveal>
-      )}
-
       {/* 이직 시나리오 (연봉 변화 시뮬레이터) */}
       <Reveal>
         <ScenarioPanel profile={profile} rules={ruleSet} />
@@ -355,6 +347,48 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       <Reveal>
         <EventsPanel asOf={profile.asOf} />
       </Reveal>
+
+      {rec.assumptions.length > 0 && (
+        <Reveal>
+          <section className="mb-7">
+            <button
+              type="button"
+              onClick={() => setAssumptionsOpen((v) => !v)}
+              aria-expanded={assumptionsOpen}
+              className="flex cursor-pointer items-center gap-1 text-[12px] tracking-wide text-muted outline-none transition-colors hover:text-gold focus-visible:text-gold"
+            >
+              가정 · 제외 <span className="text-locked tnum">{rec.assumptions.length}</span>
+              <svg
+                className={`h-3.5 w-3.5 transition-transform ${assumptionsOpen ? "rotate-180" : ""}`}
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M6 8l4 4 4-4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <AnimatePresence initial={false}>
+              {assumptionsOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden px-1"
+                >
+                  <Badges items={rec.assumptions} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </section>
+        </Reveal>
+      )}
 
       <Reveal>
         <footer className="border-t border-line pt-5 text-[12px] leading-relaxed text-muted">
