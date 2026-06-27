@@ -8,7 +8,7 @@ function dDay(fromISO: string, toISO?: string): number | undefined {
 }
 
 function EventRow({ e, asOf }: { e: EventChip; asOf: string }) {
-  const d = dDay(asOf, e.endAt);
+  const daysLeft = dDay(asOf, e.endAt);
   const meta = [e.eventOpenType === "ONLINE" ? "온라인" : "오프라인", e.region, ...e.eventSubjects]
     .filter(Boolean)
     .join(" · ");
@@ -17,11 +17,11 @@ function EventRow({ e, asOf }: { e: EventChip; asOf: string }) {
       <a href={e.webUrl} target="_blank" rel="noopener noreferrer" className="group">
         <div className="flex items-baseline justify-between gap-3">
           <strong className="text-[15px] group-hover:text-gold">{e.eventName}</strong>
-          {d != null && d >= 0 && (
+          {daysLeft != null && daysLeft >= 0 && (
             <span
-              className={`font-display tnum text-sm font-700 ${d <= 14 ? "text-clay" : "text-muted"}`}
+              className={`font-display tnum text-sm font-700 ${daysLeft <= 14 ? "text-clay" : "text-muted"}`}
             >
-              D-{d}
+              D-{daysLeft}
             </span>
           )}
         </div>

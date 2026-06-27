@@ -36,9 +36,9 @@ export function NumberField({
           placeholder={placeholder}
           onFocus={(e) => e.currentTarget.select()}
           onChange={(e) => {
-            const c = e.target.value.replace(/[^\d]/g, "").replace(/^0+(?=\d)/, "");
-            setDraft(c);
-            onChange(c === "" ? 0 : Number(c));
+            const digitsOnly = e.target.value.replace(/[^\d]/g, "").replace(/^0+(?=\d)/, "");
+            setDraft(digitsOnly);
+            onChange(digitsOnly === "" ? 0 : Number(digitsOnly));
           }}
           onBlur={() => setDraft(null)}
         />
