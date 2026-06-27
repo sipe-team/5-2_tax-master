@@ -6,7 +6,7 @@ import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import { CliffSection } from "../result/CliffSection";
 import { GapSection } from "../result/GapSection";
-import EventsPanel from "../EventsPanel";
+import EventsPanel from "./sections/EventsPanel";
 
 // 랜딩 티저용 대표 샘플 — 실제 추천이 아닌 '예시' 수치 (직장인 연봉 7,000만)
 const SAMPLE: UserProfile = {

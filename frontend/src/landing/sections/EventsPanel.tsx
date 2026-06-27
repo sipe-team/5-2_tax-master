@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { type EventChip, fetchEvents, selectFinanceEvents } from "./data/events";
+import { type EventChip, fetchEvents, selectFinanceEvents } from "../../data/events";
 
 /** 기준일로부터 남은 일수(음수=지남). */
 function dDay(fromISO: string, toISO?: string): number | undefined {
