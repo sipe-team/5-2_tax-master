@@ -194,7 +194,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       <div className="mx-auto max-w-[640px] px-5 pb-10 pt-6">
       <Reveal>
         <p className="mb-6 text-[22px] font-bold leading-tight tracking-tight text-gray900">
-          당신은 매년 최대
+          매년 최대
           <br />
           <span className="tnum text-gold">{maxBenefitMan.toLocaleString()}만원</span> 절약할 수
           있어요
