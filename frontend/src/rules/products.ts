@@ -274,7 +274,7 @@ const marginalRates: MarginalRateBracket[] = [
 ];
 
 export const ruleSet: RuleSet = {
-  asOfLabel: "2026-06 기준 (TAX_SAVING.md v2 대조 완료)",
+  asOfLabel: "2026-06 기준",
   products: [pensionFund, irp, isa, overseasStock, ria, youthSavings, youthEnhancedIsa],
   pools: [pensionPool],
   interactions,
