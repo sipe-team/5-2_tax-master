@@ -17,11 +17,6 @@ export function GapSection({ proj }: { proj: GapProjection }) {
       <div className="mt-4">
         <GapChartView proj={proj} />
       </div>
-      <p className="mt-3 text-[12px] font-medium leading-relaxed tracking-[-0.3px] text-locked">
-        ※ 차이는 오직 '세금'에서만 발생하도록 계산했습니다(수익률 우위 가정 없음). 운용 단계 누적의
-        근사치이며 연금 수령 시 과세·중도해지 페널티는 미반영입니다. 정보 제공 목적이며 자문이
-        아닙니다.
-      </p>
     </section>
   );
 }

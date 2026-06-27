@@ -26,7 +26,9 @@ function EventRow({ e, asOf }: { e: EventChip; asOf: string }) {
           )}
         </div>
         <p className="mt-1 text-[12px] text-muted">{meta}</p>
-        {e.endAt && <p className="mt-1 text-[11px] text-locked tnum">마감 {e.endAt.slice(0, 10)}</p>}
+        {e.endAt && (
+          <p className="mt-1 text-[11px] text-locked tnum">마감 {e.endAt.slice(0, 10)}</p>
+        )}
       </a>
     </li>
   );
@@ -44,7 +46,7 @@ export default function EventsPanel({ asOf }: { asOf: string }) {
   useEffect(() => {
     let alive = true;
     fetchEvents()
-      .then((page) => alive && setEvents(selectFinanceEvents(page.items, asOf)))
+      .then((page) => alive && setEvents(selectFinanceEvents(page.items, asOf, 2)))
       .catch(() => alive && setFailed(true));
     return () => {
       alive = false;
@@ -68,7 +70,14 @@ export default function EventsPanel({ asOf }: { asOf: string }) {
           ))}
         </ul>
       )}
-      <p className="mt-4 text-[11px] text-locked">데이터 제공: 로켓펀치 Open API</p>
+      <a
+        href="https://www.rocketpunch.com/events"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-4 flex w-full items-center justify-center gap-1 rounded-lg border border-gold/50 px-3 py-2 text-[13px] text-gold outline-none transition-colors hover:bg-gold/10 focus-visible:bg-gold/10"
+      >
+        로켓펀치로 이동하기 ↗
+      </a>
     </section>
   );
 }

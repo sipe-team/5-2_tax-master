@@ -24,16 +24,9 @@ export function CliffSection({
       </div>
       <div className="mt-4 flex flex-col gap-3">
         {cliff.markers.map((m) => (
-          <div
-            key={`${m.income}-${m.label}`}
-            className={`rounded-xl border-l-2 bg-surface/60 py-2 pl-3 pr-3 ${m.delta < 0 ? "border-clay" : "border-gold"}`}
-          >
-            <div className="text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
-              {m.label}
-            </div>
-            <div className="mt-0.5 text-[14px] font-medium leading-5 tracking-[-0.3px] text-muted">
-              {m.detail}
-            </div>
+          <div key={`${m.income}-${m.label}`} className="border-l-2 border-gold/50 pl-3">
+            <div className="text-[13px] font-600">{m.label}</div>
+            <div className="mt-0.5 text-[12px] leading-relaxed text-muted">{m.detail}</div>
           </div>
         ))}
       </div>

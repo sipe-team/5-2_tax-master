@@ -109,7 +109,7 @@ export default function LandingPage() {
         {cliff && cliff.markers.length > 0 && (
           <section className="mx-auto flex min-h-svh max-w-[640px] snap-start flex-col justify-center px-5 pb-28 pt-10">
             <TeaserCaption />
-            <CliffSection cliff={cliff} currentIncome={SAMPLE.income} asOfLabel={ruleSet.asOfLabel} />
+            <CliffSection cliff={cliff} currentIncome={SAMPLE.income} />
           </section>
         )}
 
@@ -119,6 +119,7 @@ export default function LandingPage() {
           <div className="flex flex-col gap-4">
             {gapProj.finalGap > 0 && <GapSection proj={gapProj} />}
             <EventsPanel asOf={SAMPLE.asOf} />
+            <p className="mt-1 text-[11px] text-locked">※ 정보 제공 목적이며 자문이 아닙니다.</p>
           </div>
         </section>
       </div>
