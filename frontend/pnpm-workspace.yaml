@@ -1,13 +1,13 @@
 allowBuilds:
-  '@sentry/cli': set this to true or false
-  '@swc/core': set this to true or false
-  esbuild: set this to true or false
-  protobufjs: set this to true or false
+  "@sentry/cli": true
+  "@swc/core": true
+  esbuild: true
+  protobufjs: true
 # pnpm-workspace.yaml
 minimumReleaseAge: 0
 
 overrides:
   react: ^18.3.1
   react-dom: ^18.3.1
-  '@types/react': ^18.3.12
-  '@types/react-dom': ^18.3.1
+  "@types/react": ^18.3.12
+  "@types/react-dom": ^18.3.1
