@@ -10,6 +10,7 @@ import { ActionItem } from "./components/ActionItem";
 import { Badges } from "./components/Badges";
 import { Reveal } from "./components/Reveal";
 import { Vessel } from "./components/Vessel";
+import { HeroSummary } from "./sections/HeroSummary";
 
 // 워터폴 1, 2, 3 ... 순차 등장 (스크롤 무관, 마운트 시 cascade)
 const waterfallContainer: Variants = {
@@ -64,20 +65,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
         <BackHeader />
       </div>
       <div className="pdf-page mx-auto max-w-[640px] px-5 pb-10 pt-6">
-        <Reveal>
-          {maxBenefitMan < 5 ? (
-            <p className="mb-3 text-[22px] font-bold leading-tight tracking-tight text-gray900">
-              절세를 잘하고 <span className="text-gold">계시네요!</span>
-            </p>
-          ) : (
-            <p className="mb-3 text-[22px] font-bold leading-tight tracking-tight text-gray900">
-              매년 최대
-              <br />
-              <span className="tnum text-gold">{maxBenefitMan.toLocaleString()}만원</span> 절약할
-              수 있어요
-            </p>
-          )}
-        </Reveal>
+        <HeroSummary maxBenefitMan={maxBenefitMan} />
 
         <div className="no-print mb-6">
           <button
