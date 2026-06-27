@@ -1,8 +1,14 @@
 import { useMemo, useState } from "react";
 import { ruleSet } from "./rules/products";
-import type { IncomeType, UserProfile } from "./rules/schema";
+import type { IncomeType, ProductCategory, UserProfile } from "./rules/schema";
 import { recommend } from "./engine";
 import type { Allocation, Badge, UrgentAction } from "./engine";
+import { EventsPanel, FreelanceJobsPanel, RelatedJobsPanel } from "./rocketpunch/widgets";
+
+/** productId → 상품 카테고리 (워터폴→채용 매칭용). */
+const CATEGORY_BY_ID: Record<string, ProductCategory> = Object.fromEntries(
+  ruleSet.products.map((p) => [p.id, p.category]),
+);
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
@@ -350,6 +356,19 @@ export default function App() {
           </div>
         )}
       </section>
+
+      {/* ── 로켓펀치 연동 (Read 전용 부가 패널) ── */}
+
+      {/* D: 최상위 추천 그릇과 관련된 회사/채용 */}
+      {rec.waterfall.length > 0 && CATEGORY_BY_ID[rec.waterfall[0].productId] && (
+        <RelatedJobsPanel category={CATEGORY_BY_ID[rec.waterfall[0].productId]} />
+      )}
+
+      {/* C: 사업·기타 소득자에게만 외주/계약 일감 */}
+      {incomeType === "comprehensive" && <FreelanceJobsPanel />}
+
+      {/* B: 재테크/비즈니스 이벤트 (마감 임박순) */}
+      <EventsPanel asOf={profile.asOf} />
 
       {/* 가정·제외 */}
       {rec.assumptions.length > 0 && (
