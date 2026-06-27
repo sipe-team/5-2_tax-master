@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useFunnel } from "@use-funnel/react-router";
 import { motion } from "framer-motion";
-import checkedIcon from "../assets/checked.svg";
-import defaultCheckIcon from "../assets/default-check.svg";
 import { BackHeader } from "../components/BackHeader";
+import { CheckRow } from "./components/CheckRow";
 import { Collapse } from "./components/Collapse";
 import { NumberField } from "./components/NumberField";
 import { SegmentedControl } from "./components/SegmentedControl";
@@ -19,46 +18,6 @@ import {
 type Ctx = Partial<FunnelData>;
 
 const STEPS = ["basic", "accounts", "invest", "income"] as const;
-
-function CheckRow({
-  label,
-  checked,
-  onChange,
-  error,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  error?: boolean;
-}) {
-  return (
-    <label
-      className={`flex w-full cursor-pointer items-center gap-3.5 rounded-lg p-5 text-[18px] font-semibold leading-5 tracking-[-0.54px] text-gray800 transition-colors ${
-        checked
-          ? "bg-primary-light backdrop-blur-[50px]"
-          : error
-            ? "border border-error bg-surface"
-            : "border border-line bg-surface"
-      }`}
-    >
-      <input
-        type="checkbox"
-        className="sr-only"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-      />
-      <img
-        src={checked ? checkedIcon : defaultCheckIcon}
-        alt=""
-        aria-hidden
-        width={24}
-        height={24}
-        className="shrink-0"
-      />
-      {label}
-    </label>
-  );
-}
 
 function StepShell({
   step,
