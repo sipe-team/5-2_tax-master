@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { saveElementAsPdf } from "../lib/pdf";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
 import { googleCalendarUrl } from "../engine";
 import { won, pct } from "../lib/format";
@@ -189,6 +190,32 @@ const TOP_N = 5;
 export function ResultView({ rec, profile }: { rec: Recommendation; profile: UserProfile }) {
   const [expanded, setExpanded] = useState(false);
   const [assumptionsOpen, setAssumptionsOpen] = useState(false);
+  const [savingPdf, setSavingPdf] = useState(false);
+  const captureRef = useRef<HTMLDivElement>(null);
+
+  // 결과 전체를 펼친 상태로 캡처해 실제 PDF 파일로 저장한다.
+  // (window.print 인쇄 다이얼로그가 아니라 .pdf 다운로드)
+  async function handleSavePdf() {
+    const el = captureRef.current;
+    if (!el || savingPdf) return;
+    setSavingPdf(true);
+    // 접힌 섹션(더보기·가정)을 모두 펼치고, 펼침/애니메이션이 DOM에 반영될 시간을 준다.
+    setExpanded(true);
+    setAssumptionsOpen(true);
+    el.classList.add("pdf-capturing");
+    try {
+      // 펼침 리렌더 + framer-motion whileInView 강제 표시가 그려질 때까지 대기
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise((r) => setTimeout(r, 350));
+      await saveElementAsPdf(el, "절세비서-맞춤전략.pdf");
+    } catch (e) {
+      console.error("[PDF] save failed", e);
+      alert("PDF 저장에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      el.classList.remove("pdf-capturing");
+      setSavingPdf(false);
+    }
+  }
 
   const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
   const hidden = rec.waterfall.length - shown.length;
@@ -220,7 +247,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
   return (
     <>
       <BackHeader />
-      <div className="mx-auto max-w-[640px] px-5 pb-10 pt-6">
+      <div ref={captureRef} className="mx-auto max-w-[640px] px-5 pb-10 pt-6">
       <Reveal>
         <p className="mb-6 text-[22px] font-bold leading-tight tracking-tight text-gray900">
           매년 최대
@@ -376,6 +403,18 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
           ))}
         </footer>
       </Reveal>
+
+      {/* PDF로 저장 — 캡처에서 제외(no-print)하고, 결과 전체를 펼쳐 .pdf로 다운로드 */}
+      <div className="no-print mt-8">
+        <button
+          type="button"
+          onClick={handleSavePdf}
+          disabled={savingPdf}
+          className="w-full rounded-xl bg-gold py-4 text-[16px] font-600 text-white transition active:scale-[0.99] disabled:opacity-60"
+        >
+          {savingPdf ? "PDF 만드는 중…" : "PDF로 저장"}
+        </button>
+      </div>
       </div>
     </>
   );

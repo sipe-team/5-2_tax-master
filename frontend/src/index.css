@@ -57,6 +57,17 @@ textarea {
   }
 }
 
+/* PDF 캡처 중에는 framer-motion(whileInView/initial)으로 아직 화면에 들어오지 않아
+   opacity:0 · translateY 상태로 남은 영역까지 모두 펼쳐 보이게 강제한다.
+   (캡처 직전 .pdf-capturing 클래스를 컨테이너에 부여) */
+.pdf-capturing,
+.pdf-capturing * {
+  opacity: 1 !important;
+  transform: none !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
 /* 결과 로딩 화면 (온보딩 로고와 동일한 톤: 흰 배경 + 마스코트 뒤 컬러 원) */
 .result-loading {
   position: fixed;
