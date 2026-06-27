@@ -1,7 +1,7 @@
 /**
  * tax-master 규칙 스키마 (v1)
  *
- * 정답지: ../../TAX_SAVING.md  /  설계 근거: ../../DESIGN.md
+ * 정답지: ../../docs/domain/TAX_SAVING.md  /  설계 근거: ../../docs/design/DESIGN.md
  *
  * 핵심 원칙
  * - 규칙은 "데이터", 계산은 "엔진(순수함수)" — 둘을 분리한다. (DESIGN Q5)

@@ -1,7 +1,7 @@
 # tax-master 가치제안 (Value Proposition v1)
 
 > 6파트 JTBD 템플릿 (Who / Why / What before / How / What after / Alternatives).
-> 출처 정답지: [`TAX_SAVING.md`](./TAX_SAVING.md), 설계 결정: [`DESIGN.md`](./DESIGN.md).
+> 출처 정답지: [`TAX_SAVING.md`](../domain/TAX_SAVING.md), 설계 결정: [`DESIGN.md`](../design/DESIGN.md).
 > 세그먼트별로 다를 수 있어 v1은 **핵심 1개 세그먼트**(절세 입문 직장인)에 집중.
 
 ---

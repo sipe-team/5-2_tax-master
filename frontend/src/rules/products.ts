@@ -1,7 +1,7 @@
 /**
  * tax-master 규칙 데이터 — 그릇 7종.
  *
- * 정답지: ../../TAX_SAVING.md (v2)  /  설계: ../../DESIGN.md  /  병합: ../../PRD.md
+ * 정답지: ../../docs/domain/TAX_SAVING.md (v2)  /  설계: ../../docs/design/DESIGN.md  /  병합: ../../docs/product/PRD.md
  *
  * ✅ 2026-06-27 TAX_SAVING.md v2와 수치 1:1 대조 완료(그릇 7종).
  *    남은 부채: source 문자열은 약식(법조항 정밀 표기는 후속), 농어민형 ISA·국민성장ISA 추진분 제외.

@@ -1,7 +1,7 @@
 # tax-master 설계 합의서 (v1)
 
 > 본 문서는 그릴링 세션(18개 결정)으로 합의된 v1 설계 기준선이다.
-> 규칙 수치의 정답지는 [`TAX_SAVING.md`](./TAX_SAVING.md)이며, 본 문서는 *설계 결정*을 담는다.
+> 규칙 수치의 정답지는 [`TAX_SAVING.md`](../domain/TAX_SAVING.md)이며, 본 문서는 *설계 결정*을 담는다.
 
 ## 한 줄 정의
 
@@ -55,7 +55,7 @@
 
 ## 규칙 데이터 (Q5·Q10·Q11)
 
-- [`TAX_SAVING.md`](./TAX_SAVING.md) = **source of truth**.
+- [`TAX_SAVING.md`](../domain/TAX_SAVING.md) = **source of truth**.
 - 규칙은 JSON 데이터로 분리, 각 항목에 **법령 근거 · 시행일 · `확정/추진` 필드 태그**.
   엔진은 **`확정` 태그 필드로만 계산**, `추진`은 무시 (재사용 가능한 회색지대 처리 메커니즘).
 - 상호작용 (Q10):

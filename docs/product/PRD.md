@@ -1,7 +1,7 @@
 # PRD — tax-master × duty-save-frontend 병합 (절세 추천 단일 서비스)
 
 > 상태: ready-for-agent (이슈 트래커 미설정 — 파일로 발행)
-> 정답지: [TAX_SAVING.md](./TAX_SAVING.md) v2 · 설계 근거: [DESIGN.md](./DESIGN.md)
+> 정답지: [TAX_SAVING.md](../domain/TAX_SAVING.md) v2 · 설계 근거: [DESIGN.md](../design/DESIGN.md)
 > 도메인 용어: 그릇(Product) · 워터폴 · 트랜치 · 효율 · 확정/추진(Sourced) · 자격 게이트 · 긴급/전략 액션 · 점진공개 · 하이브리드 기본값
 
 ## Problem Statement
