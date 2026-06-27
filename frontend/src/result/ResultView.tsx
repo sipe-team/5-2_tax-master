@@ -6,12 +6,12 @@ import type { UserProfile } from "../rules/schema";
 import { ruleSet } from "../rules/products";
 import ScenarioPanel from "../ScenarioPanel";
 import { BackHeader } from "../components/BackHeader";
-import { ActionItem } from "./components/ActionItem";
 import { Badges } from "./components/Badges";
 import { Reveal } from "./components/Reveal";
 import { Vessel } from "./components/Vessel";
 import { HeroSummary } from "./sections/HeroSummary";
 import { PdfSaveButton } from "./sections/PdfSaveButton";
+import { StrategyActionsSection } from "./sections/StrategyActionsSection";
 
 // 워터폴 1, 2, 3 ... 순차 등장 (스크롤 무관, 마운트 시 cascade)
 const waterfallContainer: Variants = {
@@ -77,20 +77,7 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
           </header>
         </Reveal>
 
-        {strategyActions.length > 0 && (
-          <Reveal>
-            <section className="mb-7">
-              <h2 className="mb-3 text-[16px] font-semibold leading-7 tracking-[-0.3px] text-gray800">
-                지금 할 일 · 전략
-              </h2>
-              <div className="flex flex-col gap-3">
-                {strategyActions.map((a) => (
-                  <ActionItem key={a.id} a={a} />
-                ))}
-              </div>
-            </section>
-          </Reveal>
-        )}
+        <StrategyActionsSection actions={strategyActions} />
 
         <Reveal>
           <section className="mb-7">
