@@ -1,2 +1,10 @@
 node_modules
 .omc
+dist
+.DS_Store
+.idea/
+.playwright-mcp/
+
+# 환경 변수 / 시크릿 (커밋 금지)
+*.local
+.env.local

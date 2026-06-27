@@ -11,5 +11,5 @@ export default function ResultPage() {
   const rec = useMemo(() => (profile ? recommend(profile, ruleSet) : null), [profile]);
 
   if (!profile || !rec) return <Navigate to="/" replace />;
-  return <ResultView rec={rec} />;
+  return <ResultView rec={rec} profile={profile} />;
 }

@@ -1,6 +1,10 @@
 import { useState } from "react";
 import type { ActionCard, Allocation, Badge, Recommendation } from "../engine";
 import { won, pct } from "../lib/format";
+import type { UserProfile } from "../rules/schema";
+import { ruleSet } from "../rules/products";
+import ProjectionPanel from "../ProjectionPanel";
+import ScenarioPanel from "../ScenarioPanel";
 
 const BADGE_STYLE: Record<Badge["kind"], string> = {
   assumed: "border-line text-muted",
@@ -95,7 +99,7 @@ function Vessel({ a, rank }: { a: Allocation; rank: number }) {
 
 const TOP_N = 5;
 
-export function ResultView({ rec }: { rec: Recommendation }) {
+export function ResultView({ rec, profile }: { rec: Recommendation; profile: UserProfile }) {
   const [expanded, setExpanded] = useState(false);
   const shown = expanded ? rec.waterfall : rec.waterfall.slice(0, TOP_N);
   const hidden = rec.waterfall.length - shown.length;
@@ -158,6 +162,12 @@ export function ResultView({ rec }: { rec: Recommendation }) {
           <Badges items={rec.assumptions} />
         </section>
       )}
+
+      {/* 자산 형성 시뮬레이션 (이대로 모으면 얼마) */}
+      <ProjectionPanel profile={profile} rec={rec} rules={ruleSet} />
+
+      {/* 이직 시나리오 (연봉 변화 시뮬레이터) */}
+      <ScenarioPanel profile={profile} rules={ruleSet} />
 
       <footer className="border-t border-line pt-5 text-[12px] leading-relaxed text-muted">
         {rec.disclaimers.map((d, i) => (
