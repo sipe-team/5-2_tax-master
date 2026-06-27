@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@use-funnel/react-router": "^0.0.7",

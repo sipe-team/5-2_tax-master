@@ -4,12 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  react: ^18.3.1
-  react-dom: ^18.3.1
-  '@types/react': ^18.3.12
-  '@types/react-dom': ^18.3.1
-
 importers:
 
   .:
@@ -923,7 +917,7 @@ packages:
   '@types/react-dom@18.3.7':
     resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
     peerDependencies:
-      '@types/react': ^18.3.12
+      '@types/react': ^18.0.0
 
   '@types/react@18.3.31':
     resolution: {integrity: sha512-vfEqpXTvwT91yhmwdfouStN2hSKwTvyRs8qpLfADyrq/kxDw0hZM7Wk9Ug1FELj8hIby+S/+kQCSRFF32nv2Qw==}
@@ -990,12 +984,12 @@ packages:
   '@use-funnel/core@0.1.0':
     resolution: {integrity: sha512-KEjBKTbOh5wd6CQZ1jYWhI6KuGrI9Pjn9CkmUgAYzonsyZE0lsiZ2/1RwsaWcxVO5RJBgfwCM8dRpibwm7An9w==}
     peerDependencies:
-      react: ^18.3.1
+      react: '>=16.8'
 
   '@use-funnel/react-router@0.0.7':
     resolution: {integrity: sha512-PTpB3+oeM2TP9EMvU8jgOou0qS5JlPNIW0g8EXZbhF9Y9h9uExQ8uQDW7MAPxMSWmAWbQDnmgZPiqL6NmOdtxw==}
     peerDependencies:
-      react: ^18.3.1
+      react: '>=16.8'
       react-router: '>=7'
 
   '@vitejs/plugin-react@6.0.2':
@@ -1532,8 +1526,8 @@ packages:
     resolution: {integrity: sha512-5EL/fANovVUhRK50NLS8RYfX0BxrimoKsHWUPPy8v5UEl8i6vzF7e4POo3u+AhPItDwccUAJjMfIOmydxBJmQw==}
     engines: {node: '>=22.22.0'}
     peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: '>=19.2.7'
+      react-dom: '>=19.2.7'
     peerDependenciesMeta:
       react-dom:
         optional: true
