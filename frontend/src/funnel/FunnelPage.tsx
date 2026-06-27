@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useFunnel } from "@use-funnel/react-router";
-import { motion } from "framer-motion";
-import { BackHeader } from "../components/BackHeader";
 import { CheckRow } from "./components/CheckRow";
 import { Collapse } from "./components/Collapse";
 import { NumberField } from "./components/NumberField";
 import { SegmentedControl } from "./components/SegmentedControl";
+import { StepShell } from "./components/StepShell";
 import {
   FunnelDataSchema,
   INCOME_TYPE_LABEL,
@@ -18,76 +17,6 @@ import {
 type Ctx = Partial<FunnelData>;
 
 const STEPS = ["basic", "accounts", "invest", "income"] as const;
-
-function StepShell({
-  step,
-  title,
-  subtitle,
-  children,
-  onPrimary,
-  primaryLabel,
-  primaryDisabled,
-  onSkip,
-}: {
-  step: number;
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-  onPrimary: () => void;
-  primaryLabel: string;
-  primaryDisabled?: boolean;
-  onSkip?: () => void;
-}) {
-  return (
-    <>
-      <BackHeader />
-      <div className="mx-auto flex min-h-[calc(100svh-54px)] max-w-[640px] flex-col px-5 pb-28 pt-6">
-        <div
-          className="mb-6 flex gap-1.5"
-          role="progressbar"
-          aria-valuenow={step}
-          aria-valuemin={1}
-          aria-valuemax={STEPS.length}
-        >
-          {Array.from({ length: STEPS.length }, (_, i) => {
-            const filled = i < step;
-            const isNewlyFilled = i === step - 1;
-            return (
-              <span key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-line">
-                <motion.span
-                  className="block h-full origin-left rounded-full bg-gold"
-                  initial={{ scaleX: isNewlyFilled ? 0 : filled ? 1 : 0 }}
-                  animate={{ scaleX: filled ? 1 : 0 }}
-                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </span>
-            );
-          })}
-        </div>
-      <h1 className="text-[16px] font-semibold leading-7 text-gray800">{title}</h1>
-      {subtitle && <p className="mt-2 text-[14px] font-medium leading-5 text-muted">{subtitle}</p>}
-      <div className="mt-8 flex flex-col gap-6">{children}</div>
-
-      <div className="fixed inset-x-0 bottom-0 border-t border-line bg-paper/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[640px] items-center gap-3 px-5 py-4">
-          {onSkip && (
-            <button className="px-3 py-3 text-[14px] text-muted" onClick={onSkip}>
-              건너뛰기
-            </button>
-          )}
-          <button
-            className="flex-1 rounded-xl bg-gold py-3.5 text-[16px] font-600 text-white transition disabled:opacity-40"
-            onClick={onPrimary}
-            disabled={primaryDisabled}
-          >
-            {primaryLabel}
-          </button>
-        </div>
-      </div>
-      </div>
-    </>
-  );
-}
 
 // ── 1단계: 기본정보 ─────────────────────────────────────
 function StepBasic({
@@ -108,6 +37,7 @@ function StepBasic({
   return (
     <StepShell
       step={1}
+      totalSteps={STEPS.length}
       title="기본 정보"
       subtitle="몇 가지만 입력하면 돼요."
       primaryLabel="다음"
@@ -169,6 +99,7 @@ function StepAccounts({
   return (
     <StepShell
       step={2}
+      totalSteps={STEPS.length}
       title="이미 가진 절세계좌가 있나요?"
       subtitle="잔여 한도와 전환 전략을 더 정확히 계산해요."
       primaryLabel="다음"
@@ -239,6 +170,7 @@ function StepInvest({
   return (
     <StepShell
       step={3}
+      totalSteps={STEPS.length}
       title="해외주식을 보유하고 있나요?"
       subtitle="보유 중이면 RIA 감면·분산매도·증여 전략을 검토해요."
       primaryLabel="다음"
@@ -295,6 +227,7 @@ function StepIncome({
   return (
     <StepShell
       step={4}
+      totalSteps={STEPS.length}
       title="소득과 가족 상황"
       subtitle="금융소득 과세·증여·고배당 전략에 반영해요."
       primaryLabel="결과 보기"
