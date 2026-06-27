@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { IncomeType, RuleSet, UserProfile } from "./rules/schema";
 import { diffScenarios } from "./engine";
 import { companySizeLabel, ProxyError, searchJobs, type JobChip } from "./data/jobs";
-import { salaryGuideFor, SALARY_GUIDE_NOTE } from "./data/salaryGuide";
+import { salaryGuideFor } from "./data/salaryGuide";
 
 const won = (n: number) => `${Math.round(n / 10_000).toLocaleString()}만`;
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
@@ -54,12 +54,6 @@ export default function ScenarioPanel({
   const [scenarioMan, setScenarioMan] = useState(() => Math.round(profile.income / 10_000) + 1000);
   // 시나리오 소득 유형은 직장인(총급여)으로 고정.
   const scenarioIncomeType: IncomeType = "earned";
-
-  // 공고 검색(부가 레이어 — 실패해도 수동 입력은 동작).
-  const [keyword, setKeyword] = useState("");
-  const [results, setResults] = useState<JobChip[] | null>(null);
-  const [searching, setSearching] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
   const [picked, setPicked] = useState<JobChip | null>(null);
   const [salaryHint, setSalaryHint] = useState<string | null>(null);
 
@@ -140,16 +134,6 @@ export default function ScenarioPanel({
             <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               {recommended.map((j) => (
                 <JobResultChip key={`rec-${j.jobId}`} job={j} onPick={pickJob} />
-              ))}
-            </div>
-          )}
-
-          {searchError && <p className="mt-2 text-[12px] text-clay">{searchError}</p>}
-
-          {results && results.length > 0 && (
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {results.map((j) => (
-                <JobResultChip key={j.jobId} job={j} onPick={pickJob} />
               ))}
             </div>
           )}
@@ -284,12 +268,6 @@ export default function ScenarioPanel({
               ))}
             </ul>
           </div>
-        )}
-
-        {delta.lost.length === 0 && delta.gained.length === 0 && (
-          <p className="mt-4 text-[13px] text-muted">
-            이 연봉 변화로는 가입 가능한 그릇이 크게 달라지지 않아요.
-          </p>
         )}
       </div>
     </section>
