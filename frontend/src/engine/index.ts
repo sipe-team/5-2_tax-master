@@ -35,11 +35,17 @@ export function recommend(user: UserProfile, rules: RuleSet): Recommendation {
 
   // 3) 긴급 트랙 + 4) 워터폴.
   const urgent = buildUrgent(resolved, user, rules);
-  const { allocations, leftoverMonthly, excluded } = buildWaterfall(resolved, user, rules, suppressed);
+  const { allocations, leftoverMonthly, excluded } = buildWaterfall(
+    resolved,
+    user,
+    rules,
+    suppressed,
+  );
 
   // 5) 가정/제외를 정보 배지로 모음.
   const assumptions: Badge[] = dedupeBadges(allocations.flatMap((a) => a.badges));
-  for (const ex of excluded) assumptions.push({ kind: "info", text: `${ex.name} 제외: ${ex.reason}` });
+  for (const ex of excluded)
+    assumptions.push({ kind: "info", text: `${ex.name} 제외: ${ex.reason}` });
 
   return {
     asOf: user.asOf,

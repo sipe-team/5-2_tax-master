@@ -49,7 +49,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-type NumberInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "type"> & {
+type NumberInputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "onChange" | "type"
+> & {
   value: number;
   onChange: (n: number) => void;
 };
@@ -88,7 +91,8 @@ function UrgentCard({ u }: { u: UrgentAction }) {
       <p className="mt-1 text-[13px] text-muted">{u.description}</p>
       {u.estimatedBenefit != null && (
         <p className="mt-1 text-[13px]">
-          예상 절감 <span className="font-display tnum font-600 text-gold">{won(u.estimatedBenefit)}원</span>
+          예상 절감{" "}
+          <span className="font-display tnum font-600 text-gold">{won(u.estimatedBenefit)}원</span>
         </p>
       )}
       <p className="mt-1 text-[11px] text-locked tnum">마감 {u.deadline}</p>
@@ -98,7 +102,8 @@ function UrgentCard({ u }: { u: UrgentAction }) {
 }
 
 function Vessel({ a, rank }: { a: Allocation; rank: number }) {
-  const ratio = a.annualCap > 0 && isFinite(a.annualCap) ? Math.min(1, a.annualAmount / a.annualCap) : 1;
+  const ratio =
+    a.annualCap > 0 && isFinite(a.annualCap) ? Math.min(1, a.annualAmount / a.annualCap) : 1;
   return (
     <li className="relative grid grid-cols-[2rem_1fr] gap-4 pb-7 last:pb-0">
       <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-surface font-display text-sm font-600 text-gold tnum ring-1 ring-gold/40">
@@ -122,7 +127,8 @@ function Vessel({ a, rank }: { a: Allocation; rank: number }) {
         </div>
         <div className="mt-1 flex justify-between text-[11px] text-muted tnum">
           <span>
-            효율 <span className="font-display text-gold">{pct(a.efficiency)}</span> · 첫 해 절세 {won(a.firstYearBenefit)}원
+            효율 <span className="font-display text-gold">{pct(a.efficiency)}</span> · 첫 해 절세{" "}
+            {won(a.firstYearBenefit)}원
           </span>
           <span>한도 {won(a.annualCap)}/년</span>
         </div>
@@ -162,7 +168,18 @@ export default function App() {
         ? { marketValue: overseasValueMan * 10_000, costBasis: overseasCostMan * 10_000 }
         : undefined,
     }),
-    [age, incomeType, incomeMan, monthlyMan, horizonYears, householdMedianPct, financeTop, hasOverseas, overseasValueMan, overseasCostMan],
+    [
+      age,
+      incomeType,
+      incomeMan,
+      monthlyMan,
+      horizonYears,
+      householdMedianPct,
+      financeTop,
+      hasOverseas,
+      overseasValueMan,
+      overseasCostMan,
+    ],
   );
 
   const rec = useMemo(() => recommend(profile, ruleSet), [profile]);
@@ -193,11 +210,19 @@ export default function App() {
             <span className="text-xs text-muted">세</span>
           </Field>
           <Field label="연소득">
-            <select className={selectCls} value={incomeType} onChange={(e) => setIncomeType(e.target.value as IncomeType)}>
+            <select
+              className={selectCls}
+              value={incomeType}
+              onChange={(e) => setIncomeType(e.target.value as IncomeType)}
+            >
               <option value="earned">직장인</option>
               <option value="comprehensive">사업·기타</option>
             </select>
-            <NumberInput className={`${inputCls} max-w-[6rem]`} value={incomeMan} onChange={setIncomeMan} />
+            <NumberInput
+              className={`${inputCls} max-w-[6rem]`}
+              value={incomeMan}
+              onChange={setIncomeMan}
+            />
             <span className="text-xs text-muted">만원</span>
           </Field>
         </div>
@@ -232,7 +257,11 @@ export default function App() {
                 <span className="text-xs text-muted">%</span>
               </Field>
               <Field label="금융소득종합과세 대상">
-                <select className={selectCls} value={financeTop} onChange={(e) => setFinanceTop(e.target.value as typeof financeTop)}>
+                <select
+                  className={selectCls}
+                  value={financeTop}
+                  onChange={(e) => setFinanceTop(e.target.value as typeof financeTop)}
+                >
                   <option value="unknown">모름</option>
                   <option value="no">아니오</option>
                   <option value="yes">예</option>
@@ -240,17 +269,30 @@ export default function App() {
               </Field>
             </div>
             <label className="mt-4 flex items-center gap-2 text-[14px]">
-              <input type="checkbox" className="accent-gold" checked={hasOverseas} onChange={(e) => setHasOverseas(e.target.checked)} />
+              <input
+                type="checkbox"
+                className="accent-gold"
+                checked={hasOverseas}
+                onChange={(e) => setHasOverseas(e.target.checked)}
+              />
               보유 해외주식 있음 <span className="text-muted">(RIA 감면 검토)</span>
             </label>
             {hasOverseas && (
               <div className="mt-3 flex flex-wrap gap-x-5 gap-y-4">
                 <Field label="평가액">
-                  <NumberInput className={inputCls} value={overseasValueMan} onChange={setOverseasValueMan} />
+                  <NumberInput
+                    className={inputCls}
+                    value={overseasValueMan}
+                    onChange={setOverseasValueMan}
+                  />
                   <span className="text-xs text-muted">만원</span>
                 </Field>
                 <Field label="취득가">
-                  <NumberInput className={inputCls} value={overseasCostMan} onChange={setOverseasCostMan} />
+                  <NumberInput
+                    className={inputCls}
+                    value={overseasCostMan}
+                    onChange={setOverseasCostMan}
+                  />
                   <span className="text-xs text-muted">만원</span>
                 </Field>
               </div>
@@ -277,14 +319,21 @@ export default function App() {
       <section className="mb-7">
         <div className="mb-5 flex items-baseline justify-between">
           <h2 className="text-[13px] font-600 tracking-wide text-muted">매달 적립 흐름</h2>
-          <span className="font-display tnum text-sm text-muted">월 {won(profile.monthlyInvestable)}원</span>
+          <span className="font-display tnum text-sm text-muted">
+            월 {won(profile.monthlyInvestable)}원
+          </span>
         </div>
 
         {rec.waterfall.length === 0 ? (
-          <p className="text-[14px] text-muted">조건에 맞는 절세 그릇이 없어요. 입력을 조정해 보세요.</p>
+          <p className="text-[14px] text-muted">
+            조건에 맞는 절세 그릇이 없어요. 입력을 조정해 보세요.
+          </p>
         ) : (
           <ol className="relative">
-            <div className="absolute bottom-3 left-4 top-3 w-px -translate-x-1/2 bg-line" aria-hidden />
+            <div
+              className="absolute bottom-3 left-4 top-3 w-px -translate-x-1/2 bg-line"
+              aria-hidden
+            />
             {rec.waterfall.map((a, i) => (
               <Vessel key={a.productId} a={a} rank={i + 1} />
             ))}
@@ -295,7 +344,8 @@ export default function App() {
           <div className="mt-1 grid grid-cols-[2rem_1fr] gap-4">
             <div className="flex justify-center text-locked">↓</div>
             <p className="text-[13px] text-muted">
-              남는 <span className="font-display tnum">{won(rec.leftoverMonthly)}원</span>/월은 일반계좌로 — 더 채울 절세 그릇이 없어요.
+              남는 <span className="font-display tnum">{won(rec.leftoverMonthly)}원</span>/월은
+              일반계좌로 — 더 채울 절세 그릇이 없어요.
             </p>
           </div>
         )}

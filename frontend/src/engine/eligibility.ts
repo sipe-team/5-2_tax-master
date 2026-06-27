@@ -1,9 +1,4 @@
-import type {
-  Eligibility,
-  Product,
-  ProductVariant,
-  UserProfile,
-} from "../rules/schema";
+import type { Eligibility, Product, ProductVariant, UserProfile } from "../rules/schema";
 import { confirmed } from "./confirmed";
 import type { Badge } from "./types";
 
@@ -30,10 +25,13 @@ function checkGate(
 
   const cap = confirmed(e.incomeCap?.[user.incomeType]);
   if (cap !== undefined && user.income > cap)
-    return { ok: false, reason: `${user.incomeType === "earned" ? "총급여" : "종합소득"} ${(cap / 10_000).toLocaleString()}만 이하`, badges };
+    return {
+      ok: false,
+      reason: `${user.incomeType === "earned" ? "총급여" : "종합소득"} ${(cap / 10_000).toLocaleString()}만 이하`,
+      badges,
+    };
 
-  if (e.requiresIncome && user.income <= 0)
-    return { ok: false, reason: "소득 있는 자", badges };
+  if (e.requiresIncome && user.income <= 0) return { ok: false, reason: "소득 있는 자", badges };
 
   // 금소세 대상 여부: 미입력이면 비대상 가정(포용) + 배지.
   if (e.excludeFinanceTopTaxpayer) {
@@ -60,10 +58,7 @@ function checkGate(
 }
 
 /** variant(상위 등급)를 적용할지 — 알 수 있는 정보만으로 충족돼야 적용(보수). 못 하면 upsell. */
-function variantQualifies(
-  v: ProductVariant,
-  user: UserProfile,
-): { ok: boolean; badges: Badge[] } {
+function variantQualifies(v: ProductVariant, user: UserProfile): { ok: boolean; badges: Badge[] } {
   const badges: Badge[] = [];
   const e = v.eligibility;
 
@@ -78,7 +73,9 @@ function variantQualifies(
       // 더 좋은 등급의 엄격한 게이트는 가정하지 않음 → 업셀 (Q16)
       return {
         ok: false,
-        badges: [{ kind: "upsell", text: `가구중위소득 ${hcap}% 이하면 '${v.name}' 등급 적용 가능` }],
+        badges: [
+          { kind: "upsell", text: `가구중위소득 ${hcap}% 이하면 '${v.name}' 등급 적용 가능` },
+        ],
       };
     }
   }

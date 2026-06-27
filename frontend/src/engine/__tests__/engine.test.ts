@@ -96,7 +96,9 @@ describe("그리디 최적성 — 완전탐색 검증 (Q8)", () => {
     return ruleSet.products
       .map((p) => resolveProduct(p, user).resolved)
       .filter((r): r is NonNullable<typeof r> => !!r)
-      .filter((r) => !r.product.oneTimeOnExistingAssets && !lockupExceedsHorizon(r.product.lockup, user))
+      .filter(
+        (r) => !r.product.oneTimeOnExistingAssets && !lockupExceedsHorizon(r.product.lockup, user),
+      )
       .flatMap((r) => tranchesFor(r, user, ruleSet));
   }
 

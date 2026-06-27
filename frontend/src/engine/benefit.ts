@@ -1,9 +1,4 @@
-import type {
-  Benefit,
-  MarginalRateBracket,
-  RuleSet,
-  UserProfile,
-} from "../rules/schema";
+import type { Benefit, MarginalRateBracket, RuleSet, UserProfile } from "../rules/schema";
 import { confirmed } from "./confirmed";
 import type { ResolvedProduct } from "./eligibility";
 
@@ -63,7 +58,16 @@ export function tranchesFor(r: ResolvedProduct, user: UserProfile, rules: RuleSe
       const rate = pickTaxCreditRate(b, user);
       const creditCap = confirmed(b.creditCap);
       if (rate === undefined || creditCap === undefined) return [];
-      return [{ productId: id, poolId, label: r.product.name, efficiency: rate, annualCap: creditCap, rationale: `납입액의 ${(rate * 100).toFixed(1)}% 즉시 세액공제` }];
+      return [
+        {
+          productId: id,
+          poolId,
+          label: r.product.name,
+          efficiency: rate,
+          annualCap: creditCap,
+          rationale: `납입액의 ${(rate * 100).toFixed(1)}% 즉시 세액공제`,
+        },
+      ];
     }
 
     case "incomeDeduction": {
@@ -72,7 +76,16 @@ export function tranchesFor(r: ResolvedProduct, user: UserProfile, rules: RuleSe
       if (rate === undefined || dedCap === undefined) return [];
       const mr = marginalRate(user.income, rules.marginalRates);
       const contributionForFullDeduction = dedCap / rate;
-      return [{ productId: id, poolId, label: r.product.name, efficiency: rate * mr, annualCap: Math.min(contributionForFullDeduction, annualCap), rationale: `납입액 ${(rate * 100).toFixed(0)}% 소득공제 × 한계세율 ${(mr * 100).toFixed(1)}%` }];
+      return [
+        {
+          productId: id,
+          poolId,
+          label: r.product.name,
+          efficiency: rate * mr,
+          annualCap: Math.min(contributionForFullDeduction, annualCap),
+          rationale: `납입액 ${(rate * 100).toFixed(0)}% 소득공제 × 한계세율 ${(mr * 100).toFixed(1)}%`,
+        },
+      ];
     }
 
     case "sepTax": {
@@ -80,9 +93,26 @@ export function tranchesFor(r: ResolvedProduct, user: UserProfile, rules: RuleSe
       const sep = confirmed(b.sepRate);
       if (exempt === undefined || sep === undefined) return [];
       const exemptContribution = Math.min(exempt / ret, annualCap);
-      const out: Tranche[] = [{ productId: id, poolId, label: `${r.product.name} (비과세 구간)`, efficiency: ret * b.normalRate, annualCap: exemptContribution, rationale: `운용수익 ${(exempt / 10_000).toLocaleString()}만까지 비과세` }];
+      const out: Tranche[] = [
+        {
+          productId: id,
+          poolId,
+          label: `${r.product.name} (비과세 구간)`,
+          efficiency: ret * b.normalRate,
+          annualCap: exemptContribution,
+          rationale: `운용수익 ${(exempt / 10_000).toLocaleString()}만까지 비과세`,
+        },
+      ];
       const rest = annualCap - exemptContribution;
-      if (rest > 0) out.push({ productId: id, poolId, label: `${r.product.name} (분리과세 구간)`, efficiency: ret * (b.normalRate - sep), annualCap: rest, rationale: `초과분 ${(sep * 100).toFixed(1)}% 분리과세(일반 ${(b.normalRate * 100).toFixed(1)}% 대비)` });
+      if (rest > 0)
+        out.push({
+          productId: id,
+          poolId,
+          label: `${r.product.name} (분리과세 구간)`,
+          efficiency: ret * (b.normalRate - sep),
+          annualCap: rest,
+          rationale: `초과분 ${(sep * 100).toFixed(1)}% 분리과세(일반 ${(b.normalRate * 100).toFixed(1)}% 대비)`,
+        });
       return out;
     }
 
@@ -93,7 +123,16 @@ export function tranchesFor(r: ResolvedProduct, user: UserProfile, rules: RuleSe
       const baseRate = confirmed(b.baseInterestRate) ?? 0;
       const interestBenefit = taxExempt ? baseRate * normal : 0;
       const eff = match + interestBenefit;
-      return [{ productId: id, poolId, label: r.product.name, efficiency: eff, annualCap, rationale: `정부기여금 ${(match * 100).toFixed(0)}%${taxExempt ? " + 이자 비과세" : ""}` }];
+      return [
+        {
+          productId: id,
+          poolId,
+          label: r.product.name,
+          efficiency: eff,
+          annualCap,
+          rationale: `정부기여금 ${(match * 100).toFixed(0)}%${taxExempt ? " + 이자 비과세" : ""}`,
+        },
+      ];
     }
 
     case "capGainsExempt": {
@@ -102,7 +141,16 @@ export function tranchesFor(r: ResolvedProduct, user: UserProfile, rules: RuleSe
       if (exempt === undefined || taxRate === undefined) return [];
       // 비과세 구간(연 250만 차익)만 세제 가치. 초과분은 일반계좌와 동일 → leftover.
       const exemptContribution = exempt / ret;
-      return [{ productId: id, poolId, label: `${r.product.name} (연 ${(exempt / 10_000).toLocaleString()}만 비과세)`, efficiency: ret * taxRate, annualCap: exemptContribution, rationale: `양도차익 ${(exempt / 10_000).toLocaleString()}만까지 ${(taxRate * 100).toFixed(0)}% 비과세` }];
+      return [
+        {
+          productId: id,
+          poolId,
+          label: `${r.product.name} (연 ${(exempt / 10_000).toLocaleString()}만 비과세)`,
+          efficiency: ret * taxRate,
+          annualCap: exemptContribution,
+          rationale: `양도차익 ${(exempt / 10_000).toLocaleString()}만까지 ${(taxRate * 100).toFixed(0)}% 비과세`,
+        },
+      ];
     }
 
     case "capGainsReduction":
