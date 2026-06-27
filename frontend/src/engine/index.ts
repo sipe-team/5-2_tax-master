@@ -5,6 +5,7 @@ import { buildUrgent } from "./urgent";
 import type { Badge, Recommendation } from "./types";
 
 export * from "./types";
+export { buildCalendar, downloadCalendar } from "./calendar";
 
 const DISCLAIMERS = [
   "정보 제공 목적이며 투자·세무 자문이 아닙니다.",
@@ -34,7 +35,7 @@ export function recommend(user: UserProfile, rules: RuleSet): Recommendation {
   }
 
   // 3) 긴급 트랙 + 4) 워터폴.
-  const urgent = buildUrgent(resolved, user, rules);
+  const urgent = buildUrgent(resolved, user);
   const { allocations, leftoverMonthly, excluded } = buildWaterfall(resolved, user, rules, suppressed);
 
   // 5) 가정/제외를 정보 배지로 모음.

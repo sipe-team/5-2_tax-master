@@ -1,4 +1,4 @@
-import type { RuleSet, UserProfile } from "../rules/schema";
+import type { UserProfile } from "../rules/schema";
 import { confirmed } from "./confirmed";
 import { effectiveBenefit } from "./benefit";
 import type { ResolvedProduct } from "./eligibility";
@@ -12,7 +12,6 @@ function daysBetween(fromISO: string, toISO: string): number {
 export function buildUrgent(
   resolved: ResolvedProduct[],
   user: UserProfile,
-  _rules: RuleSet,
 ): UrgentAction[] {
   const out: UrgentAction[] = [];
 

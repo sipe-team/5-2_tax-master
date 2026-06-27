@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ruleSet } from "./rules/products";
 import type { IncomeType, UserProfile } from "./rules/schema";
-import { recommend } from "./engine";
+import { recommend, buildCalendar, downloadCalendar } from "./engine";
 import type { Allocation, Badge, UrgentAction } from "./engine";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -262,9 +262,19 @@ export default function App() {
       {/* 지금 당장 (긴급 트랙) */}
       {rec.urgent.length > 0 && (
         <section className="mb-7 rounded-2xl bg-surface p-5 ring-1 ring-clay/30">
-          <h2 className="mb-4 flex items-center gap-2 text-[13px] font-600 tracking-wide text-clay">
-            지금 흘려보낼 곳 · 마감 임박
-          </h2>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-[13px] font-600 tracking-wide text-clay">
+              지금 흘려보낼 곳 · 마감 임박
+            </h2>
+            <button
+              type="button"
+              onClick={() => downloadCalendar(buildCalendar(rec.urgent, rec.asOf))}
+              className="shrink-0 rounded-full border border-clay/40 px-3 py-1 text-[12px] text-clay outline-none transition-colors hover:bg-clay/10 focus-visible:bg-clay/10"
+              title="마감일을 캘린더(.ics)로 내보내 D-7 알림을 받으세요"
+            >
+              📅 캘린더에 추가
+            </button>
+          </div>
           <div className="flex flex-col gap-4">
             {rec.urgent.map((u) => (
               <UrgentCard key={u.productId} u={u} />
