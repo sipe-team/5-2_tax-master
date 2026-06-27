@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router";
 import { recommend, buildCliffChart, projectGap } from "../engine";
 import type { UserProfile } from "../rules/schema";
@@ -41,9 +41,25 @@ export default function LandingPage() {
     };
   }, []);
 
+  // 스크롤 유도 툴팁: 사용자가 한 번이라도 스크롤하면 사라짐.
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [showScrollHint, setShowScrollHint] = useState(true);
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      if (el.scrollTop > 80) setShowScrollHint(false);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
-      <div className="h-svh snap-y snap-mandatory overflow-y-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div
+        ref={scrollerRef}
+        className="h-svh snap-y snap-mandatory overflow-y-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
         {/* 1면: 히어로 */}
         <section className="mx-auto flex min-h-svh max-w-[640px] snap-start flex-col items-center justify-center px-5 pb-28 text-center">
           <motion.div
@@ -123,6 +139,28 @@ export default function LandingPage() {
           </div>
         </section>
       </div>
+
+      {/* 스크롤 유도 툴팁 — 검정 배경 + 흰 글씨, CTA 위에 떠 있는 bouncing 인디케이터 */}
+      <AnimatePresence>
+        {showScrollHint && (
+          <motion.div
+            key="scroll-hint"
+            className="pointer-events-none fixed inset-x-0 bottom-[124px] z-30 flex justify-center px-5"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <motion.div
+              className="rounded-full bg-ink px-4 py-2 text-[13px] font-semibold tracking-[-0.3px] text-white shadow-lg shadow-black/20"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 1.6, ease: "easeInOut", repeat: Infinity }}
+            >
+              아래로 스크롤해서 더 보기 ↓
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 플로팅 CTA — 모든 면 위에 고정 */}
       <div className="fixed inset-x-0 bottom-0 z-20">

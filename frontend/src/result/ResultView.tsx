@@ -268,12 +268,18 @@ export function ResultView({ rec, profile }: { rec: Recommendation; profile: Use
       </div>
       <div className="pdf-page mx-auto max-w-[640px] px-5 pb-10 pt-6">
         <Reveal>
-          <p className="mb-3 text-[22px] font-bold leading-tight tracking-tight text-gray900">
-            매년 최대
-            <br />
-            <span className="tnum text-gold">{maxBenefitMan.toLocaleString()}만원</span> 절약할 수
-            있어요
-          </p>
+          {maxBenefitMan < 5 ? (
+            <p className="mb-3 text-[22px] font-bold leading-tight tracking-tight text-gray900">
+              절세를 잘하고 <span className="text-gold">계시네요!</span>
+            </p>
+          ) : (
+            <p className="mb-3 text-[22px] font-bold leading-tight tracking-tight text-gray900">
+              매년 최대
+              <br />
+              <span className="tnum text-gold">{maxBenefitMan.toLocaleString()}만원</span> 절약할
+              수 있어요
+            </p>
+          )}
         </Reveal>
 
         <div className="no-print mb-6">
