@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
+/* Pretendard 폰트는 index.html에서 preconnect + <link>로 로드한다(렌더 차단 회피). */
 @import "tailwindcss";
 
 @theme {
@@ -33,6 +33,15 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.02em;
+}
+
+/* 폼 요소는 폰트를 자동 상속하지 않으므로 Pretendard를 명시적으로 물려받게 한다. */
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  letter-spacing: inherit;
 }
 
 /* tabular numerals for money figures */
