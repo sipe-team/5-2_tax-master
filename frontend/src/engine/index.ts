@@ -7,6 +7,7 @@ import type { Badge, Recommendation } from "./types";
 export * from "./types";
 export { buildCalendar, downloadCalendar } from "./calendar";
 export { buildCliffChart, type CliffChart, type CliffPoint, type CliffMarker } from "./cliff";
+export { projectGap, type Projection, type ProjectionPoint } from "./projection";
 
 const DISCLAIMERS = [
   "정보 제공 목적이며 투자·세무 자문이 아닙니다.",
