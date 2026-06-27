@@ -34,12 +34,12 @@ export interface Sourced<T> {
 // 입력 측 타입 (사용자 프로필) — 엔진 입력
 // ─────────────────────────────────────────────────────────────
 
-export type IncomeType = "earned" | "comprehensive"; // 총급여 | 종합소득
+export type IncomeType = "earned" | "comprehensive" | "none"; // 총급여 | 종합소득 | 무소득
 
 /** 자격 판정에 쓰는 사용자 상태. 미입력 항목은 엔진이 하이브리드 기본값으로 채움(Q16). */
 export interface UserProfile {
   age: number;
-  incomeType: IncomeType; // 직장인/사업자 토글 (Q15)
+  incomeType: IncomeType; // 직장인/사업자/무소득 (Q15)
   income: number; // 위 유형 기준 연소득(원)
   monthlyInvestable: number; // 월 투자가능액(원)
   horizonYears: number; // 기간 = 언제 쓸 돈인지 (Q14, 기본 3)
@@ -47,9 +47,37 @@ export interface UserProfile {
 
   // 선택 입력 (점진공개). undefined면 기본값 가정 + 배지.
   householdMedianPct?: number; // 가구중위소득 %
-  isFinanceTopTaxpayer?: boolean; // 금융소득종합과세 대상 여부
-  overseasHoldings?: OverseasHoldings; // RIA 조건부 입력 (Q13)
+  isFinanceTopTaxpayer?: boolean; // 금융소득종합과세 대상 여부 (없으면 financialIncome로 도출)
+  overseasHoldings?: OverseasHoldings; // RIA 계산용 보유 해외주식 (Q13)
+
+  // 병합(PRD) — 전략 액션 판정용 확장 입력
+  hasPension?: boolean; // 연금저축 보유
+  pensionContribution?: number; // 연 납입액(원)
+  hasIrp?: boolean;
+  irpContribution?: number;
+  hasIsa?: boolean;
+  investTypes?: InvestType[]; // 보유 투자 유형
+  overseasUnrealizedProfit?: number; // 해외주식 미실현 수익(원) — 분산매도·증여 트리거
+  financialIncome?: number; // 연 금융소득(이자+배당, 원) — 금소세 게이트(>2,000만)
+  dividendIncome?: number; // 연 배당소득(원)
+  holdsHighDividend?: boolean; // 고배당주 보유
+  hasSpouse?: boolean;
+  hasChildren?: boolean;
+  hasMinorChildren?: boolean;
+  riskTolerance?: RiskTolerance;
 }
+
+export type InvestType =
+  | "domestic_stock"
+  | "foreign_stock"
+  | "etf_domestic"
+  | "etf_foreign"
+  | "fund"
+  | "deposit"
+  | "bond"
+  | "reit";
+
+export type RiskTolerance = "low" | "medium" | "high";
 
 /** RIA 계산용 보유 해외주식 (Q13). */
 export interface OverseasHoldings {

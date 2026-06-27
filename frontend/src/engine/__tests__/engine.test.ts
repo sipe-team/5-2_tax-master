@@ -46,13 +46,16 @@ describe("락업 하드 제약 (Q14)", () => {
   });
 });
 
-describe("긴급 트랙 (Q9)", () => {
+const action = (rec: ReturnType<typeof recommend>, id: string) => rec.actions.find((a) => a.id === id);
+
+describe("긴급 액션 (Q9)", () => {
   it("청년미래적금 신청 마감 D-day", () => {
     const rec = recommend({ ...base, age: 28, income: 30_000_000 }, ruleSet);
-    const youth = rec.urgent.find((u) => u.productId === "youth-future-savings");
+    const youth = action(rec, "urgent-youth-future-savings");
     expect(youth).toBeDefined();
     expect(youth!.deadline).toBe("2026-07-03");
     expect(youth!.dDay).toBe(12); // 2026-06-21 → 07-03
+    expect(youth!.urgency).toBe("immediate");
   });
 
   it("RIA 감면율 절벽 + 보유 해외주식 기준 추정 절감액", () => {
@@ -60,11 +63,45 @@ describe("긴급 트랙 (Q9)", () => {
       { ...base, overseasHoldings: { marketValue: 50_000_000, costBasis: 5_000_000 } },
       ruleSet,
     );
-    const ria = rec.urgent.find((u) => u.productId === "ria");
+    const ria = action(rec, "urgent-ria");
     expect(ria).toBeDefined();
     expect(ria!.deadline).toBe("2026-07-31"); // 현재 80% 구간
     // (4500만 - 250만) × 22% × 80% = 748만
     expect(ria!.estimatedBenefit).toBe(7_480_000);
+  });
+});
+
+describe("전략 액션 (PRD 병합)", () => {
+  it("해외주식 미실현 수익 > 250만 → 분산 매도 전략", () => {
+    const rec = recommend({ ...base, overseasUnrealizedProfit: 15_000_000 }, ruleSet);
+    const split = action(rec, "strategy-split-sell");
+    expect(split).toBeDefined();
+    // (1500만 - 250만) × 22% = 275만
+    expect(split!.estimatedBenefit).toBe(2_750_000);
+  });
+
+  it("미실현 수익 크고 배우자 있음 → 가족 증여 전략 + 보유기간 경고", () => {
+    const rec = recommend(
+      { ...base, overseasUnrealizedProfit: 50_000_000, hasSpouse: true },
+      ruleSet,
+    );
+    const gift = action(rec, "strategy-family-gift");
+    expect(gift).toBeDefined();
+    expect(gift!.warning).toContain("10년");
+  });
+
+  it("금융소득 2,000만 초과 → 금소세 관리 경고 + ISA 가입불가(게이트 탈락)", () => {
+    const rec = recommend({ ...base, financialIncome: 25_000_000 }, ruleSet);
+    expect(action(rec, "strategy-finance-top")).toBeDefined();
+    expect(find(rec, "isa")).toBeUndefined(); // 금소세 대상 도출 → ISA 자격 탈락
+  });
+
+  it("금소세 여부는 financialIncome로 도출 — 비대상이면 ISA 자격 통과", () => {
+    const isaProduct = ruleSet.products.find((p) => p.id === "isa")!;
+    // 미입력(비대상 가정) → 통과
+    expect(resolveProduct(isaProduct, { ...base }).resolved).not.toBeNull();
+    // 2,000만 초과 도출은 recommend가 하므로 여기선 명시 플래그로 확인
+    expect(resolveProduct(isaProduct, { ...base, isFinanceTopTaxpayer: true }).resolved).toBeNull();
   });
 });
 

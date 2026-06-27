@@ -1,11 +1,12 @@
 /**
- * tax-master 규칙 데이터 (v1) — 7종 전체.
+ * tax-master 규칙 데이터 — 그릇 7종.
  *
- * 정답지: ../../TAX_SAVING.md  /  설계: ../../DESIGN.md
+ * 정답지: ../../TAX_SAVING.md (v2)  /  설계: ../../DESIGN.md  /  병합: ../../PRD.md
  *
- * ⚠️ 수치는 TAX_SAVING.md에서 옮긴 초안. source 문자열은 placeholder이며
- *    착수 전 실제 법령 조문으로 교체 + 1:1 대조 검수 필요.
+ * ✅ 2026-06-27 TAX_SAVING.md v2와 수치 1:1 대조 완료(그릇 7종).
+ *    남은 부채: source 문자열은 약식(법조항 정밀 표기는 후속), 농어민형 ISA·국민성장ISA 추진분 제외.
  * 규칙: 모든 법적 수치는 Sourced<T>로 감싼다. 엔진은 status==='confirmed'만 계산.
+ * 상황별 전략(손익통산·분산매도·증여·고배당·금소세)은 그릇이 아니라 ../engine/strategies.ts.
  */
 
 import type {
@@ -93,7 +94,7 @@ const isa: Product = {
   // 연 2,000만 (총 1억은 스키마 미모델 — v1 워터폴은 연 단위라 영향 없음. phase 2 보완.)
   contributionCap: { period: "annual", amount: c(20_000_000, "조특법 §91의18") },
   lockup: { minYears: 3, earlyPenaltyNote: "의무 3년 내 해지 시 감면세액 추징" },
-  assetScope: "예금·펀드·ETF·국내주식 등",
+  assetScope: "예금·펀드·ETF·국내주식·국내상장 해외ETF (해외주식 직접투자 불가, v2 §3)",
   benefit: {
     kind: "sepTax",
     exemptLimit: c(2_000_000, "조특법 §91의18", { note: "일반형 비과세 한도" }),
@@ -273,7 +274,7 @@ const marginalRates: MarginalRateBracket[] = [
 ];
 
 export const ruleSet: RuleSet = {
-  asOfLabel: "2026-06 기준 (초안)",
+  asOfLabel: "2026-06 기준 (TAX_SAVING.md v2 대조 완료)",
   products: [pensionFund, irp, isa, overseasStock, ria, youthSavings, youthEnhancedIsa],
   pools: [pensionPool],
   interactions,
