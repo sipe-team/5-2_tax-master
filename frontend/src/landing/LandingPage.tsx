@@ -133,7 +133,7 @@ export default function LandingPage() {
           >
             절세 시작하기
           </button>
-          <p className="mt-2 text-center text-[12px] text-muted">개인정보를 저장하지 않아요</p>
+          <p className="mt-2 text-center text-[12px] text-muted">입력한 정보는 저장되지 않아요</p>
         </div>
       </div>
     </>

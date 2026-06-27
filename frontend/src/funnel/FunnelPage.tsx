@@ -37,7 +37,6 @@ import {
   type IncomeTypeUI,
   toProfile,
 } from "../rules/profile";
-import { PERSONAS, personaToProfile, type Persona } from "../personas";
 
 function SegmentedControl<T extends string>({
   value,
@@ -240,43 +239,13 @@ function StepShell({
   );
 }
 
-// 페르소나 원클릭 칩: 입력을 건너뛰고 예시 결과로 바로 이동 (와우모먼트)
-function PersonaChips({ onPick }: { onPick: (p: Persona) => void }) {
-  return (
-    <div className="mb-8">
-      <p className="mb-2.5 text-[13px] font-medium text-muted">
-        입력이 귀찮다면, 예시로 30초 만에 결과부터 보기
-      </p>
-      <div className="flex flex-col gap-2">
-        {PERSONAS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => onPick(p)}
-            className="flex w-full items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 text-left transition-colors hover:border-gold focus-visible:border-gold"
-          >
-            <span className="text-[22px] leading-none">{p.emoji}</span>
-            <span className="flex flex-col">
-              <span className="text-[14px] font-semibold text-gray800">{p.label}</span>
-              <span className="text-[12px] text-muted">{p.tagline}</span>
-            </span>
-            <span className="ml-auto text-[13px] text-gold">바로 보기 →</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // ── 1단계: 기본정보 ─────────────────────────────────────
 function StepBasic({
   value,
   onNext,
-  onPersona,
 }: {
   value: Ctx;
   onNext: (p: Ctx) => void;
-  onPersona: (p: Persona) => void;
 }) {
   const [age, setAge] = useState(value.age ?? 30);
   const [incomeTypeUI, setIncomeTypeUI] = useState<IncomeTypeUI>(value.incomeTypeUI ?? "employee");
@@ -295,7 +264,6 @@ function StepBasic({
       primaryDisabled={!valid}
       onPrimary={() => onNext({ age, incomeTypeUI, incomeMan, monthlyMan, horizonYears })}
     >
-      <PersonaChips onPick={onPersona} />
       <NumberField label="나이" value={age} onChange={setAge} suffix="세" />
       <div className="flex flex-col gap-2">
         <span className="text-[14px] font-semibold text-gray800">소득 유형</span>
@@ -522,17 +490,12 @@ export default function FunnelPage() {
     navigate("/result", { state: toProfile(parsed.data) });
   }
 
-  function startPersona(p: Persona) {
-    navigate("/result", { state: personaToProfile(p) });
-  }
-
   return (
     <funnel.Render
       basic={({ context, history }) => (
         <StepBasic
           value={context}
           onNext={(p) => history.push("accounts", { ...context, ...p })}
-          onPersona={startPersona}
         />
       )}
       accounts={({ context, history }) => (
